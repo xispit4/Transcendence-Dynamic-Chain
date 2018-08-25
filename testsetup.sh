@@ -116,4 +116,5 @@ COUNTER=1
   
   let COUNTER=COUNTER+1
 done
+fi
 exit
