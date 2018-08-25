@@ -24,7 +24,6 @@ IP4=$(curl -s4 api.ipify.org)
 echo "What's your ipv6 full address?"
 read IP6
 wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
-
 if [ $DOSETUP = "y" ]
 then
   echo "iface ens3 inet6 static" >> /etc/network/interfaces
