@@ -76,7 +76,8 @@ let COUNTER=1
  while [  $COUNTER -lt $MNCOUNT ]; do
  echo "up /sbin/ip -6 addr add dev ens3 ${IP6:0:18}::$counter" >> /etc/network/interfaces
  PORT=22123 
- RPCPORT=$(($PORT*10+$counter))
+ RPCPORTT=$(($PORT*10))
+ RPCPORT=$(($RPCPORTT+$COUNTER))
   echo ""
   echo "Enter alias for new node"
   read ALIAS
