@@ -119,7 +119,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
   sudo ufw allow $PORT/tcp
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf 
-  bin/transcendenced_$ALIAS.sh
+  sh ~/bin/transcendenced_$ALIAS.sh
   echo "Your ip is $IP4"
   COUNTER=$((COUNTER+1))
 done
@@ -181,7 +181,7 @@ let COUNTER=COUNTER+IP6COUNT
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf 
   systemctl restart networking.service
   sleep 2
-  bin/transcendenced_$ALIAS.sh
+  sh ~/bin/transcendenced_$ALIAS.sh
   echo "Your ip is [${IP6:0:19}::$COUNTER]"
   COUNTER=$((COUNTER+1))
 done
