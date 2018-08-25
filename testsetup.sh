@@ -17,11 +17,19 @@ echo && echo && echo
 echo "Is this your first Transcendence masternode? [y/n]"
 read DOSETUP
 echo ""
+echo "What interface do you want to use? (4 For ipv4 or 6 for ipv6)"
+read INTERFACE
+echo ""
 echo "Enter alias for new node"
 read ALIAS
+IP4=$(curl -s4 api.ipify.org)
+IP6=$(curl v6.ipv6-test.com/api/myip.php)
 
 if [ $DOSETUP = "y" ]
 then
+  echo "iface ens3 inet6 static" >> /etc/network/interfaces
+  echo "address $IP6" >> /etc/network/interfaces
+  echo "netmask 64" >> /etc/network/interfaces
   sudo apt-get update
   sudo apt-get -y upgrade
   sudo apt-get -y dist-upgrade
@@ -55,48 +63,30 @@ then
   echo 'export PATH=~/bin:$PATH' > ~/.bash_aliases
   source ~/.bashrc
   echo ""
-  echo "Enter alias for new node"
-  read ALIAS
 fi
 
  ## Setup conf
- echo ""
- echo "What interface do you want to use? (4 For ipv4 or 6 for ipv6)"
- read INTERFACE
 if [ $INTERFACE = "6" ]
 then
- IP=$(curl v6.ipv6-test.com/api/myip.php)
- echo "iface ens3 inet6 static" >> /etc/network/interfaces
- echo "address $IP" >> /etc/network/interfaces
- echo "netmask 64" >> /etc/network/interfaces
- echo "up /sbin/ip -6 addr add dev ens3 ${IP:0:19}::1"
- 
- CHANGEIP="n"
-elif [ $INTERFACE = "4" ]
-then
- IP=$(curl -s4 api.ipify.org)
- echo ""
- echo "Your ipv4 is:'$IP', do you want to change it? [y/n]"
- read CHANGEIP
+echo ""
+echo "How many nodes do you want to create on this server? [min:1 Max:20]  followed by [ENTER]:"
+read MNCOUNT
+IP=IP6
+COUNTER=1
+ while [  $COUNTER -lt $MNCOUNT ]; do
+ echo "up /sbin/ip -6 addr add dev ens3 ${IP6:0:19}::$COUNTER" >> /etc/network/interfaces
+ let COUNTER=COUNTER+1
+done
 fi
-if [ $CHANGEIP = "y" ]
+if [ $INTERFACE = "4" ]
 then
- echo ""
- echo "Enter the ipv4 you want to use"
- read IP
+ IP=IP4
 fi
-if [ $CHANGEIP = "n" -o $CHANGEIP = "y" ]
-then
  echo ""
- echo "Enter RPC port for node$ALIAS (Usually 221230)"
- read RPCPORT
- echo ""
- echo "Enter Port for node$ALIAS (Usually 22123)"
+ echo "Enter Port for node $ALIAS(Usually 22123)"
  read PORTD
  PORT=22123
- echo ""
- echo "Do you want to use bind feature? [y/n] (n if you don't know)"
- read BIND
+ RPCPORT=$(($PORTD*10))
  echo ""
  echo "Enter masternode private key for node $ALIAS"
  read PRIVKEY
@@ -137,7 +127,7 @@ fi
   sudo ufw allow $PORT/tcp
   sudo ufw allow $PORTD/tcp
 
-  mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
+  mv transcendence.conf_TEMP $CONF_DIR/tanscendence.conf
   sh  ~/bin/transcendenced_$ALIAS.sh
   echo ""
   echo "Auto-start this masternode in system boot? (Not fully functional yet)"
@@ -148,6 +138,5 @@ then
  chmod +x /etc/init.d/transcendenced_$ALIAS.sh
  chmod 777 /etc/init.d/transcendenced_$ALIAS.sh
  update-rc.d transcendenced_$ALIAS.sh defaults
-fi
 fi
 exit
