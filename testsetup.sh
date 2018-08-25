@@ -19,6 +19,9 @@ read DOSETUP
 echo ""
 echo "What interface do you want to use? (4 For ipv4 or 6 for ipv6)"
 read INTERFACE
+echo ""
+echo "Enter alias for new node"
+read ALIAS
 IP4=$(curl -s4 api.ipify.org)
 IP6=$(curl v6.ipv6-test.com/api/myip.php)
 
@@ -69,11 +72,12 @@ echo ""
 echo "How many nodes do you want to create on this server? [min:1 Max:20]  followed by [ENTER]:"
 read MNCOUNT
 let MNCOUNT=MNCOUNT+1
-COUNTER=1
+let COUNTER=1
  while [  $COUNTER -lt $MNCOUNT ]; do
- echo "up /sbin/ip -6 addr add dev ens3 ${IP6:0:18}::$COUNTER" >> /etc/network/interfaces
+ let bindd=1
+ echo "up /sbin/ip -6 addr add dev ens3 ${IP6:0:18}::$bindd" >> /etc/network/interfaces
  PORT=22123 
- RPCPORT=$(($PORT*10+$COUNTER))
+ RPCPORT=$(($PORT*10+$bindd))
   echo ""
   echo "Enter alias for new node"
   read ALIAS
@@ -107,10 +111,10 @@ COUNTER=1
   echo "" >> transcendence.conf_TEMP
   echo "bind=[${IP6:0:18}]" >> transcendence.conf_TEMP
   echo "port=$PORT" >> transcendence.conf_TEMP
-  echo "masternodeaddr=[${IP6:0:18}::$COUNTER]:$PORT" >> transcendence.conf_TEMP
+  echo "masternodeaddr=[${IP6:0:18}::$bindd]:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
   sudo ufw allow $PORT/tcp
-  
+  let bindd=bindd+1  
   let COUNTER=COUNTER+1
 done
 fi
