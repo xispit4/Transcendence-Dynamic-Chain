@@ -135,7 +135,7 @@ let COUNTER=1
 let COUNTER=COUNTER+IP6COUNT
 
  while [  $COUNTER -lt $MNCOUNT ]; do
- echo "up /sbin/ip -6 addr add dev ens3 ${IP6:0:18}::$COUNTER" >> /etc/network/interfaces
+ echo "up /sbin/ip -6 addr add dev ens3 ${IP6:0:19}::$COUNTER" >> /etc/network/interfaces
  PORT=22123 
  RPCPORTT=$(($PORT*10))
  RPCPORT=$(($RPCPORTT+$COUNTER))
@@ -169,16 +169,16 @@ let COUNTER=COUNTER+IP6COUNT
   echo "" >> transcendence.conf_TEMP
 
   echo "" >> transcendence.conf_TEMP
-  echo "bind=[${IP6:0:18}::$COUNTER]" >> transcendence.conf_TEMP
+  echo "bind=[${IP6:0:19}::$COUNTER]" >> transcendence.conf_TEMP
   echo "port=$PORT" >> transcendence.conf_TEMP
-  echo "masternodeaddr=[${IP6:0:18}::$COUNTER]:$PORT" >> transcendence.conf_TEMP
+  echo "masternodeaddr=[${IP6:0:19}::$COUNTER]:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
   sudo ufw allow $PORT/tcp
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf 
   systemctl restart networking.service
   sleep 2
   bin/transcendenced_$ALIAS.sh
-  echo "Your ip is [${IP6:0:18}::$COUNTER]"
+  echo "Your ip is [${IP6:0:19}::$COUNTER]"
   COUNTER=$((COUNTER+1))
 done
 fi
