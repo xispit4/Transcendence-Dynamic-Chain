@@ -32,7 +32,7 @@ then
   echo "iface $face inet6 static" >> /etc/network/interfaces
   echo "address $IP6" >> /etc/network/interfaces
   echo "netmask 64" >> /etc/network/interfaces
-done
+fi
   sudo apt-get update
   sudo apt-get -y upgrade
   sudo apt-get -y dist-upgrade
