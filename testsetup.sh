@@ -114,6 +114,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   sudo ufw allow $PORT/tcp
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf 
   COUNTER=$((COUNTER+1))
+  bin/transcendenced_$ALIAS.sh
 done
 fi
 
