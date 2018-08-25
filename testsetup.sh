@@ -20,8 +20,6 @@ echo ""
 echo "What interface do you want to use? (4 For ipv4 or 6 for ipv6)"
 read INTERFACE
 echo ""
-echo "Enter alias for new node"
-read ALIAS
 IP4=$(curl -s4 api.ipify.org)
 IP6=$(curl v6.ipv6-test.com/api/myip.php)
 
