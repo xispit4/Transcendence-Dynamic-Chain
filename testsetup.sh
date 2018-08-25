@@ -23,6 +23,7 @@ echo ""
 IP4=$(curl -s4 api.ipify.org)
 echo "What's your ipv6 full address?"
 read IP6
+wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
 
 if [ $DOSETUP = "y" ]
 then
@@ -85,10 +86,8 @@ let COUNTER=1
   echo ""
   echo "Enter masternode private key for node $ALIAS"
   read PRIVKEY
-  wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
   mkdir ~/.transcendence_$ALIAS
   unzip DynamicChain.zip -d ~/.transcendence_$ALIAS
-  rm DynamicChain.zip
   CONF_DIR=~/.transcendence_$ALIAS
   echo '#!/bin/bash' > ~/bin/transcendenced_$ALIAS.sh
   echo "transcendenced -daemon -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendenced_$ALIAS.sh
@@ -120,4 +119,5 @@ let COUNTER=1
 done
 fi
 systemctl restart networking.service
+rm DynamicChain.zip
 exit
