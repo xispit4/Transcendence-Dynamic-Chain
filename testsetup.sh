@@ -71,12 +71,14 @@ then
 echo ""
 echo "How many nodes do you want to create on this server? [min:1 Max:20]  followed by [ENTER]:"
 read MNCOUNT
-IP=IP6
+let MNCOUNT=MNCOUNT+1
 COUNTER=1
  while [  $COUNTER -lt $MNCOUNT ]; do
  echo "up /sbin/ip -6 addr add dev ens3 ${IP6:0:19}::$COUNTER" >> /etc/network/interfaces
  let COUNTER=COUNTER+1
 done
+IP=$(([$IP6]))
+echo IP
 fi
 if [ $INTERFACE = "4" ]
 then
