@@ -21,8 +21,7 @@ echo "What interface do you want to use? (4 For ipv4 or 6 for ipv6)"
 read INTERFACE
 echo ""
 IP4=$(curl -s4 api.ipify.org)
-echo "What's your ipv6 full address?"
-read IP6
+IP6=$(curl v6.ipv6-test.com/api/myip.php)
 wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
 
 if [ $DOSETUP = "y" ]
