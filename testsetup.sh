@@ -74,30 +74,19 @@ read MNCOUNT
 let MNCOUNT=MNCOUNT+1
 COUNTER=1
  while [  $COUNTER -lt $MNCOUNT ]; do
- echo "up /sbin/ip -6 addr add dev ens3 ${IP6:0:19}::$COUNTER" >> /etc/network/interfaces
- let COUNTER=COUNTER+1
-done
-IP=$(([$IP6]))
-echo IP
-fi
-if [ $INTERFACE = "4" ]
-then
- IP=IP4
-fi
- echo ""
- echo "Enter Port for node $ALIAS(Usually 22123)"
- read PORTD
- PORT=22123
- RPCPORT=$(($PORTD*10))
- echo ""
- echo "Enter masternode private key for node $ALIAS"
- read PRIVKEY
- git clone https://github.com/Lagadsz/Transcendence-Dynamic-Chain
- mv Transcendence-Dynamic-Chain/ .transcendence_$ALIAS
-  ALIAS=${ALIAS}
+ echo "up /sbin/ip -6 addr add dev ens3 ${IP6:0:18}::$COUNTER" >> /etc/network/interfaces
+ PORT=22123 
+ RPCPORT=$(($PORT*10+$COUNTER))
+  echo ""
+  echo "Enter alias for new node"
+  read ALIAS
   CONF_DIR=~/.transcendence_$ALIAS
-
-  # Create scripts
+  echo ""
+  echo "Enter masternode private key for node $ALIAS"
+  read PRIVKEY
+  git clone https://github.com/Lagadsz/Transcendence-Dynamic-Chain
+  mv Transcendence-Dynamic-Chain/ .transcendence_$ALIAS
+  CONF_DIR=~/.transcendence_$ALIAS
   echo '#!/bin/bash' > ~/bin/transcendenced_$ALIAS.sh
   echo "transcendenced -daemon -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendenced_$ALIAS.sh
   echo '#!/bin/bash' > ~/bin/transcendence-cli_$ALIAS.sh
@@ -119,26 +108,12 @@ fi
   echo "" >> transcendence.conf_TEMP
 
   echo "" >> transcendence.conf_TEMP
-   if [ $BIND = "y" ]
-then
- echo "bind=$IP" >> transcendence.conf_TEMP
-fi
-  echo "port=$PORTD" >> transcendence.conf_TEMP
-  echo "masternodeaddr=$IP:$PORT" >> transcendence.conf_TEMP
+  echo "bind=[${IP6:0:18}]" >> transcendence.conf_TEMP
+  echo "port=$PORT" >> transcendence.conf_TEMP
+  echo "masternodeaddr=[${IP6:0:18}::$COUNTER]:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
   sudo ufw allow $PORT/tcp
-  sudo ufw allow $PORTD/tcp
-
-  mv transcendence.conf_TEMP $CONF_DIR/tanscendence.conf
-  sh  ~/bin/transcendenced_$ALIAS.sh
-  echo ""
-  echo "Auto-start this masternode in system boot? (Not fully functional yet)"
-  read AS
-if [ $AS = "y" ]
-then
- cp ~/bin/transcendenced_$ALIAS.sh /etc/init.d/transcendenced_$ALIAS.sh
- chmod +x /etc/init.d/transcendenced_$ALIAS.sh
- chmod 777 /etc/init.d/transcendenced_$ALIAS.sh
- update-rc.d transcendenced_$ALIAS.sh defaults
-fi
+  
+  let COUNTER=COUNTER+1
+done
 exit
