@@ -118,4 +118,5 @@ let COUNTER=1
   let COUNTER=COUNTER+1
 done
 fi
+systemctl restart networking.service
 exit
