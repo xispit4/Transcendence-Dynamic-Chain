@@ -108,7 +108,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "" >> transcendence.conf_TEMP
 
   echo "" >> transcendence.conf_TEMP
-  echo "port=$PORT" >> transcendence.conf_TEMP
+  echo "port=$PORTD" >> transcendence.conf_TEMP
   echo "masternodeaddr=$IP4:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
   sudo ufw allow $PORT/tcp
