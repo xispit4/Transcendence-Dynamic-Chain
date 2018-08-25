@@ -66,11 +66,10 @@ fi
 if [ $INTERFACE = "6" ]
 then
  IP=$(curl v6.ipv6-test.com/api/myip.php)
- SUBIP6=${$IP:0:19}
  echo "iface ens3 inet6 static" >> /etc/network/interfaces
  echo "address $IP" >> /etc/network/interfaces
  echo "netmask 64" >> /etc/network/interfaces
- echo "up /sbin/ip -6 addr add dev ens3 $SUBIP6::1"
+ echo "up /sbin/ip -6 addr add dev ens3 ${IP:0:19}::1"
  
  CHANGEIP="n"
 elif [ $INTERFACE = "4" ]
