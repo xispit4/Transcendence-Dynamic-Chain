@@ -121,10 +121,16 @@ fi
 if [ $INTERFACE = "6" ]
 then
 echo ""
+echo "How many ipv6 nodes do you have on this server? (0 if none)"
+read IP6COUNT
+echo ""
 echo "How many nodes do you want to create on this server? [min:1 Max:20]  followed by [ENTER]:"
 read MNCOUNT
 let MNCOUNT=MNCOUNT+1
+let MNCOUNT=MNCOUNT+IP6COUNT
 let COUNTER=1
+let COUNTER=COUNTER+IP6COUNT
+
  while [  $COUNTER -lt $MNCOUNT ]; do
  echo "up /sbin/ip -6 addr add dev ens3 ${IP6:0:18}::$COUNTER" >> /etc/network/interfaces
  PORT=22123 
