@@ -79,7 +79,7 @@ let COUNTER=1
  PORT=22123 
  RPCPORTT=$(($PORT*10))
  RPCPORT=$(($RPCPORTT+$COUNTER))
-  echo ""
+    echo ""
   echo "Enter alias for new node"
   read ALIAS
   CONF_DIR=~/.transcendence_$ALIAS
@@ -88,7 +88,6 @@ let COUNTER=1
   read PRIVKEY
   mkdir ~/.transcendence_$ALIAS
   unzip DynamicChain.zip -d ~/.transcendence_$ALIAS
-  CONF_DIR=~/.transcendence_$ALIAS
   echo '#!/bin/bash' > ~/bin/transcendenced_$ALIAS.sh
   echo "transcendenced -daemon -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendenced_$ALIAS.sh
   echo '#!/bin/bash' > ~/bin/transcendence-cli_$ALIAS.sh
@@ -110,14 +109,16 @@ let COUNTER=1
   echo "" >> transcendence.conf_TEMP
 
   echo "" >> transcendence.conf_TEMP
-  echo "bind=[${IP6:0:18}]" >> transcendence.conf_TEMP
+  echo "bind=[${IP6:0:18}::$COUNTER]" >> transcendence.conf_TEMP
   echo "port=$PORT" >> transcendence.conf_TEMP
-  echo "masternodeaddr=[${IP6:0:18}::$counter]:$PORT" >> transcendence.conf_TEMP
+  echo "masternodeaddr=[${IP6:0:18}::$COUNTER]:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
   sudo ufw allow $PORT/tcp
+  mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf 
   COUNTER=$((COUNTER+1))
 done
 fi
 systemctl restart networking.service
 rm DynamicChain.zip
 exit
+
