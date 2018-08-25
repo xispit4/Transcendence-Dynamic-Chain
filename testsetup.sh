@@ -117,6 +117,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf 
   COUNTER=$((COUNTER+1))
   bin/transcendenced_$ALIAS.sh
+  echo "Your ip is $IP4"
 done
 fi
 
@@ -178,6 +179,7 @@ let COUNTER=COUNTER+IP6COUNT
   systemctl restart networking.service
   sleep 2
   bin/transcendenced_$ALIAS.sh
+  echo "Your ip is [${IP6:0:18}::$COUNTER]"
 done
 fi
 rm DynamicChain.zip
