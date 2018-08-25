@@ -23,6 +23,7 @@ echo ""
 IP4=$(curl -s4 api.ipify.org)
 echo "What's your ipv6 full address?"
 read IP6
+
 if [ $DOSETUP = "y" ]
 then
   echo "iface ens3 inet6 static" >> /etc/network/interfaces
