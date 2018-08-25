@@ -21,7 +21,8 @@ echo "What interface do you want to use? (4 For ipv4 or 6 for ipv6)"
 read INTERFACE
 echo ""
 IP4=$(curl -s4 api.ipify.org)
-
+echo "What's your ipv6 full address?"
+read IP6
 if [ $DOSETUP = "y" ]
 then
   echo "iface ens3 inet6 static" >> /etc/network/interfaces
@@ -66,15 +67,13 @@ fi
 if [ $INTERFACE = "6" ]
 then
 echo ""
-echo "What's your ipv6 full address?"
-read IP6
 echo ""
 echo "How many nodes do you want to create on this server? [min:1 Max:20]  followed by [ENTER]:"
 read MNCOUNT
 let MNCOUNT=MNCOUNT+1
 let COUNTER=1
  while [  $COUNTER -lt $MNCOUNT ]; do
- echo "up /sbin/ip -6 addr add dev ens3 ${IP6:0:18}::$counter" >> /etc/network/interfaces
+ echo "up /sbin/ip -6 addr add dev ens3 ${IP6:0:18}::$COUNTER" >> /etc/network/interfaces
  PORT=22123 
  RPCPORTT=$(($PORT*10))
  RPCPORT=$(($RPCPORTT+$COUNTER))
