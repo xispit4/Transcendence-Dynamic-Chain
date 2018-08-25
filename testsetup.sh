@@ -65,6 +65,61 @@ then
 fi
 
  ## Setup conf
+if [ $INTERFACE = "4" ]
+then
+echo ""
+echo "How many nodes do you want to create on this server? [min:1 Max:20]  followed by [ENTER]:"
+read MNCOUNT
+let MNCOUNT=MNCOUNT+1
+let COUNTER=1
+while [  $COUNTER -lt $MNCOUNT ]; do
+ PORT=22123
+ echo "What port do you want to use? (Usually 22123)"
+ read PORTD
+ RPCPORTT=$(($PORT*10))
+ RPCPORT=$(($RPCPORTT+$COUNTER))
+  echo ""
+  echo "Enter alias for new node"
+  read ALIAS
+  CONF_DIR=~/.transcendence_$ALIAS
+  echo ""
+  echo "Enter masternode private key for node $ALIAS"
+  read PRIVKEY
+  mkdir ~/.transcendence_$ALIAS
+  unzip DynamicChain.zip -d ~/.transcendence_$ALIAS
+  echo '#!/bin/bash' > ~/bin/transcendenced_$ALIAS.sh
+  echo "transcendenced -daemon -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendenced_$ALIAS.sh
+  echo '#!/bin/bash' > ~/bin/transcendence-cli_$ALIAS.sh
+  echo "transcendence-cli -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendence-cli_$ALIAS.sh
+  echo '#!/bin/bash' > ~/bin/transcendence-tx_$ALIAS.sh
+  echo "transcendence-tx -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendence-tx_$ALIAS.sh
+  chmod 755 ~/bin/transcendence*.sh
+  mkdir -p $CONF_DIR
+  echo "rpcuser=user"`shuf -i 100000-10000000 -n 1` >> transcendence.conf_TEMP
+  echo "rpcpassword=pass"`shuf -i 100000-10000000 -n 1` >> transcendence.conf_TEMP
+  echo "rpcallowip=127.0.0.1" >> transcendence.conf_TEMP
+  echo "rpcport=$RPCPORT" >> transcendence.conf_TEMP
+  echo "listen=1" >> transcendence.conf_TEMP
+  echo "server=1" >> transcendence.conf_TEMP
+  echo "daemon=1" >> transcendence.conf_TEMP
+  echo "logtimestamps=1" >> transcendence.conf_TEMP
+  echo "maxconnections=256" >> transcendence.conf_TEMP
+  echo "masternode=1" >> transcendence.conf_TEMP
+  echo "" >> transcendence.conf_TEMP
+
+  echo "" >> transcendence.conf_TEMP
+  echo "port=$PORT" >> transcendence.conf_TEMP
+  echo "masternodeaddr=$IP4:$PORT" >> transcendence.conf_TEMP
+  echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
+  sudo ufw allow $PORT/tcp
+  mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf 
+  COUNTER=$((COUNTER+1))
+done
+fi
+
+
+
+
 if [ $INTERFACE = "6" ]
 then
 echo ""
