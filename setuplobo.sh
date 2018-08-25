@@ -17,7 +17,7 @@ echo && echo && echo
 echo "Is this your first time using this script? [y/n]"
 read DOSETUP
 echo ""
-echo "What interface do you want to use? (4 For ipv4 or 6 for ipv6) (AUTOMATIC IPV6 CONFIG ONLY WORKS ON VULTR)"
+echo "What interface do you want to use? (4 For ipv4 or 6 for ipv6) (Automatic ipv6 optimized for vultr)"
 read INTERFACE
 echo ""
 IP4=$(curl -s4 api.ipify.org)
