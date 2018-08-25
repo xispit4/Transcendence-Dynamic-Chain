@@ -28,7 +28,8 @@ if [ $DOSETUP = "y" ]
 then
 if [ $INTERFACE = "6" ]
 then
-  echo "iface ens3 inet6 static" >> /etc/network/interfaces
+  face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
+  echo "iface $face inet6 static" >> /etc/network/interfaces
   echo "address $IP6" >> /etc/network/interfaces
   echo "netmask 64" >> /etc/network/interfaces
 done
