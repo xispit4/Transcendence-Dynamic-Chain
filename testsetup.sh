@@ -73,6 +73,7 @@ let MNCOUNT=MNCOUNT+1
 let COUNTER=1
 while [  $COUNTER -lt $MNCOUNT ]; do
  PORT=22123
+ echo ""
  echo "What port do you want to use? (Usually 22123)"
  read PORTD
  RPCPORTT=$(($PORT*10))
@@ -121,7 +122,6 @@ fi
 
 if [ $INTERFACE = "6" ]
 then
-echo ""
 echo ""
 echo "How many nodes do you want to create on this server? [min:1 Max:20]  followed by [ENTER]:"
 read MNCOUNT
