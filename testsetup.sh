@@ -63,7 +63,6 @@ then
   source ~/.bashrc
   echo ""
 fi
-
  ## Setup conf
 if [ $INTERFACE = "4" ]
 then
