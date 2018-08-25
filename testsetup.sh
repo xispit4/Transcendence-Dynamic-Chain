@@ -85,9 +85,11 @@ let COUNTER=1
   echo ""
   echo "Enter masternode private key for node $ALIAS"
   read PRIVKEY
-  git clone https://github.com/Lagadsz/Transcendence-Dynamic-Chain
-  mv Transcendence-Dynamic-Chain/ .transcendence_$ALIAS
-  CONF_DIR=~/.transcendence_$ALIAS
+  wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/blob/master/DynamicChain.zip
+  mkdir ~/.transcendence_$ALIAS
+  unzip DynamicChain.zip -d ~/.transcendence_$ALIAS
+  rm DynamicChain.zip
+  CONF_DIR.transcendence_$ALIAS
   echo '#!/bin/bash' > ~/bin/transcendenced_$ALIAS.sh
   echo "transcendenced -daemon -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendenced_$ALIAS.sh
   echo '#!/bin/bash' > ~/bin/transcendence-cli_$ALIAS.sh
