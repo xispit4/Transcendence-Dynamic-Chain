@@ -17,7 +17,7 @@ echo && echo && echo
 echo "Is this your first time using this script? [y/n]"
 read DOSETUP
 echo ""
-echo "What interface do you want to use? (4 For ipv4 or 6 for ipv6)"
+echo "What interface do you want to use? (4 For ipv4 or 6 for ipv6) (AUTOMATIC IPV6 CONFIG ONLY WORKS ON VULTR)"
 read INTERFACE
 echo ""
 IP4=$(curl -s4 api.ipify.org)
@@ -26,9 +26,12 @@ wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0
 
 if [ $DOSETUP = "y" ]
 then
+if [ $INTERFACE = "6" ]
+then
   echo "iface ens3 inet6 static" >> /etc/network/interfaces
   echo "address $IP6" >> /etc/network/interfaces
   echo "netmask 64" >> /etc/network/interfaces
+done
   sudo apt-get update
   sudo apt-get -y upgrade
   sudo apt-get -y dist-upgrade
