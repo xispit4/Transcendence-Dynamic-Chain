@@ -14,7 +14,7 @@ echo "!                                                 !"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo && echo && echo
 
-echo "Is this your first Transcendence masternode? [y/n]"
+echo "Is this your first time using this script? [y/n]"
 read DOSETUP
 echo ""
 echo "What interface do you want to use? (4 For ipv4 or 6 for ipv6)"
@@ -117,9 +117,6 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 done
 fi
 
-
-
-
 if [ $INTERFACE = "6" ]
 then
 echo ""
@@ -169,10 +166,11 @@ let COUNTER=1
   sudo ufw allow $PORT/tcp
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf 
   COUNTER=$((COUNTER+1))
+  systemctl restart networking.service
+  sleep 2
   bin/transcendenced_$ALIAS.sh
 done
 fi
-systemctl restart networking.service
 rm DynamicChain.zip
 exit
 
