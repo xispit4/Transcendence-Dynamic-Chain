@@ -195,6 +195,8 @@ done
 fi
 rm DynamicChain.zip
 echo ""
+echo "Transcendence Address for donations: GWe4v6A6tLg9pHYEN5MoAsYLTadtefd9o6"
+echo ""
 echo "Commands:"
 echo "ALIAS_start"
 echo "ALIAS_status"
