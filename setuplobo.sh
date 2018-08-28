@@ -22,8 +22,9 @@ read INTERFACE
 echo ""
 IP4=$(curl -s4 api.ipify.org)
 IP6=$(curl v6.ipv6-test.com/api/myip.php)
+cd
+rm DynamicChain.zip
 wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
-
 if [ $DOSETUP = "y" ]
 then
 if [ $INTERFACE = "6" ]
@@ -120,8 +121,11 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   sudo ufw allow $PORT/tcp
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf 
   sh ~/bin/transcendenced_$ALIAS.sh
-  echo "Your ip is $IP4"
+  echo "Your ip is $IP4:$PORTD"
   COUNTER=$((COUNTER+1))
+  echo "alias ${ALIAS}_status=\"cd && transcendence-cli -datadir=.transcendence_$ALIAS masternode status\"" >> .bashrc
+  echo "alias ${ALIAS}_stop=\"cd && transcendence-cli -datadir=.transcendence_$ALIAS stop\"" >> .bashrc
+  echo "alias ${ALIAS}_start=\"~/bin/transcendenced_${ALIAS}.sh\""  >> .bashrc
 done
 fi
 
@@ -178,14 +182,24 @@ let COUNTER=COUNTER+IP6COUNT
   echo "masternodeaddr=[${IP6:0:19}::$COUNTER]:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
   sudo ufw allow $PORT/tcp
-  mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf 
+  mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   systemctl restart networking.service
   sleep 2
   sh ~/bin/transcendenced_$ALIAS.sh
   echo "Your ip is [${IP6:0:19}::$COUNTER]"
   COUNTER=$((COUNTER+1))
+  echo "alias ${ALIAS}_status=\"cd && transcendence-cli -datadir=.transcendence_$ALIAS masternode status\"" >> .bashrc
+  echo "alias ${ALIAS}_stop=\"cd && transcendence-cli -datadir=.transcendence_$ALIAS stop\"" >> .bashrc
+  echo "alias ${ALIAS}_start=\"~/bin/transcendenced_${ALIAS}.sh\""  >> .bashrc
 done
 fi
 rm DynamicChain.zip
+echo ""
+echo "Commands:"
+echo "ALIAS_start"
+echo "ALIAS_status"
+echo "ALIAS_stop"
+exec bash
 exit
+
 
