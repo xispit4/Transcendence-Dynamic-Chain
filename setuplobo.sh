@@ -24,8 +24,10 @@ echo ""
 IP4=$(curl -s4 api.ipify.org)
 IP6=$(curl v6.ipv6-test.com/api/myip.php)
 cd
-rm DynamicChain.zip
+if [ ! -f DynamicChain.zip ]
+then
 wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
+fi
 if [ $DOSETUP = "y" ]
 then
 if [ $INTERFACE = "6" ]
@@ -226,7 +228,6 @@ fi
 monit reload
 sleep 1
 monit start all
-rm DynamicChain.zip
 ## Final echos
 echo ""
 echo "Made by lobo and g0dz0r"
