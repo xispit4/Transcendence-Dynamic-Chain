@@ -9,10 +9,11 @@ echo "**************************************************************************
 echo && echo && echo
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!                                                 !"
-echo "! Make sure you double check before hitting enter !"
+echo "!    THIS SCRIPT MUST BE RUN AS ROOT, NOT SUDO    !"
 echo "!                                                 !"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo && echo && echo
+
 
 echo "Is this your first time using this script? [y/n]"
 read DOSETUP
@@ -67,8 +68,22 @@ fi
   echo 'export PATH=~/bin:$PATH' > ~/.bash_aliases
   source ~/.bashrc
   echo ""
+  
 fi
- ## Setup conf
+## Setup Monit
+if [ ! -f /etc/monit/monitrc ]
+then
+	echo ""
+    echo "Monit not found, installing it"
+	apt-get install monit=1:5.16-2 -y
+	wget https://raw.githubusercontent.com/Lagadsz/Transcendence-Dynamic-Chain/master/monitrc
+	rm /etc/monit/monitrc
+	cp -a monitrc /etc/monit/monitrc
+	chmod 700 /etc/monit/monitrc
+fi
+
+
+ ## Setup conf 
 if [ $INTERFACE = "4" ]
 then
 echo ""
@@ -123,9 +138,15 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   sh ~/bin/transcendenced_$ALIAS.sh
   echo "Your ip is $IP4:$PORTD"
   COUNTER=$((COUNTER+1))
-  echo "alias ${ALIAS}_status=\"cd && transcendence-cli -datadir=.transcendence_$ALIAS masternode status\"" >> .bashrc
-  echo "alias ${ALIAS}_stop=\"cd && transcendence-cli -datadir=.transcendence_$ALIAS stop\"" >> .bashrc
-  echo "alias ${ALIAS}_start=\"~/bin/transcendenced_${ALIAS}.sh\""  >> .bashrc
+  ## Config Alias
+  echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
+  echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop\ && monit stop transcendenced${ALIAS}\"" >> .bashrc
+  echo "alias ${ALIAS}_start=\"/root/bin/transcendenced_${ALIAS}.sh && sleep 2 && mv ~/.transcendence_${ALIAS}/transcendenced.pid ~/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid && monit start transcendenced${ALIAS}\""  >> .bashrc
+  echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
+  ## Config Monit
+  echo "check process transcendenced${ALIAS} with pidfile /root/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid" >> /etc/monit/monitrc
+  echo "start program = \"/root/bin/transcendenced_${ALIAS}.sh\" with timeout 60 seconds" >> /etc/monit/monitrc
+  echo "stop program = \"/root/bin/transcendenced_${ALIAS}.sh stop\"" >> /etc/monit/monitrc
 done
 fi
 
@@ -186,19 +207,36 @@ let COUNTER=COUNTER+IP6COUNT
   systemctl restart networking.service
   sleep 2
   sh ~/bin/transcendenced_$ALIAS.sh
+  mv ~/.transcendence_${ALIAS}/transcendenced.pid ~/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid
   echo "Your ip is [${IP6:0:19}::$COUNTER]"
   COUNTER=$((COUNTER+1))
-  echo "alias ${ALIAS}_status=\"cd && transcendence-cli -datadir=.transcendence_$ALIAS masternode status\"" >> .bashrc
-  echo "alias ${ALIAS}_stop=\"cd && transcendence-cli -datadir=.transcendence_$ALIAS stop\"" >> .bashrc
-  echo "alias ${ALIAS}_start=\"~/bin/transcendenced_${ALIAS}.sh\""  >> .bashrc
+  ## Config Alias
+  echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
+  echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop && monit stop transcendenced${ALIAS} && rm ~/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid\"" >> .bashrc
+  echo "alias ${ALIAS}_start=\"/root/bin/transcendenced_${ALIAS}.sh && sleep 2 && mv ~/.transcendence_${ALIAS}/transcendenced.pid ~/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid && monit start transcendenced${ALIAS}\""  >> .bashrc
+  echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
+  ## Config Monit
+  echo "check process transcendenced${ALIAS} with pidfile /root/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid" >> /etc/monit/monitrc
+  echo "start program = \"/root/bin/transcendenced_${ALIAS}.sh\" with timeout 60 seconds" >> /etc/monit/monitrc
+  echo "stop program = \"/root/bin/transcendenced_${ALIAS}.sh stop\"" >> /etc/monit/monitrc
+  
 done
 fi
+# Final configs
+monit reload
+sleep 1
+monit start all
 rm DynamicChain.zip
+## Final echos
+echo ""
+echo "Made by lobo and g0dz0r"
+echo "Transcendence Address for donations: GWe4v6A6tLg9pHYEN5MoAsYLTadtefd9o6"
 echo ""
 echo "Commands:"
 echo "ALIAS_start"
 echo "ALIAS_status"
 echo "ALIAS_stop"
+echo "ALIAS_config"
 exec bash
 exit
 
