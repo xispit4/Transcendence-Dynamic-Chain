@@ -140,7 +140,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   COUNTER=$((COUNTER+1))
   ## Config Alias
   echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
-  echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop\ && monit stop transcendenced${ALIAS}\"" >> .bashrc
+  echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop && monit stop transcendenced${ALIAS} && rm ~/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid\"" >> .bashrc
   echo "alias ${ALIAS}_start=\"/root/bin/transcendenced_${ALIAS}.sh && sleep 2 && mv ~/.transcendence_${ALIAS}/transcendenced.pid ~/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid && monit start transcendenced${ALIAS}\""  >> .bashrc
   echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
   ## Config Monit
