@@ -150,7 +150,11 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "stop program = \"/root/bin/transcendenced_${ALIAS}.sh stop\"" >> /etc/monit/monitrc
   monit reload
   sleep 1
-  /root/bin/transcendenced_${ALIAS}.sh && sleep 1 && mv ~/.transcendence_${ALIAS}/transcendenced.pid ~/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid && monit start transcendenced${ALIAS}
+  /root/bin/transcendenced_${ALIAS}.sh
+  monit
+  sleep 1 
+  mv ~/.transcendence_${ALIAS}/transcendenced.pid ~/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid
+  monit start transcendenced${ALIAS}
 done
 fi
 
@@ -224,7 +228,11 @@ let COUNTER=COUNTER+IP6COUNT
   echo "stop program = \"/root/bin/transcendenced_${ALIAS}.sh stop\"" >> /etc/monit/monitrc
   monit reload
   sleep 1
-  /root/bin/transcendenced_${ALIAS}.sh && sleep 1 && mv ~/.transcendence_${ALIAS}/transcendenced.pid ~/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid && monit start transcendenced${ALIAS}
+  /root/bin/transcendenced_${ALIAS}.sh
+  monit
+  sleep 1 
+  mv ~/.transcendence_${ALIAS}/transcendenced.pid ~/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid
+  monit start transcendenced${ALIAS}
 done
 fi
 # Final configs
