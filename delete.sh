@@ -5,7 +5,7 @@ read ALIAS
 transcendence-cli -datadir=/root/.transcendence_$ALIAS stop
 rm /root/.transcendence_$ALIAS -r
 sed -i '/$ALIAS/d' .bashrc
-sleep 1
+sleep 5
 sed -i '/$ALIAS/d' /etc/monit/monitrc
 monit reload
 echo ""
