@@ -235,10 +235,6 @@ let COUNTER=COUNTER+IP6COUNT
   monit start transcendenced${ALIAS}
 done
 fi
-# Final configs
-monit reload
-sleep 1
-monit start all
 ## Final echos
 echo ""
 echo "Made by lobo and g0dz0r"
