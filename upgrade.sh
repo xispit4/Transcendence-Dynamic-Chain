@@ -22,8 +22,14 @@ fi
   echo "check process transcendenced${ALIAS} with pidfile /root/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid" >> /etc/monit/monitrc
   echo "start program = \"/root/bin/transcendenced_${ALIAS}.sh\" with timeout 60 seconds" >> /etc/monit/monitrc
   echo "stop program = \"/root/bin/transcendenced_${ALIAS}.sh stop\"" >> /etc/monit/monitrc
+  transcendence-cli -datadir=/root/.transcendence_$ALIAS stop
   monit reload
   sleep 1
   monit
+  sleep 1
+  /root/bin/transcendenced_${ALIAS}.sh
+  sleep 1
+  mv ~/.transcendence_${ALIAS}/transcendenced.pid ~/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid 
+  monit start transcendenced${ALIAS}
   exec bash
   exit
