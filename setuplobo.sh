@@ -23,6 +23,7 @@ read INTERFACE
 echo ""
 IP4=$(curl -s4 api.ipify.org)
 IP6=$(curl v6.ipv6-test.com/api/myip.php)
+
 cd
 if [ ! -f DynamicChain.zip ]
 then
@@ -161,11 +162,21 @@ fi
 
 if [ $INTERFACE = "6" ]
 then
+face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
+gateway1=$(/sbin/route -A inet6 | grep -w "$face")
+gateway2=${gateway1:0:26}
+gateway3="$(echo -e "${gateway2}" | tr -d '[:space:]')"
+if [[ $gateway3 = *"128"* ]]; then
+  gateway=${gateway3::-5}
+fi
+if [[ $gateway3 = *"64"* ]]; then
+  gateway=${gateway3::-3}
+fi
 echo ""
 echo "How many ipv6 nodes do you have on this server? (0 if none)"
 read IP6COUNT
 echo ""
-echo "How many nodes do you want to create on this server? [min:1 Max:20]  followed by [ENTER]:"
+echo "How many nodes do you want to create on this server?"
 read MNCOUNT
 let MNCOUNT=MNCOUNT+1
 let MNCOUNT=MNCOUNT+IP6COUNT
@@ -173,7 +184,7 @@ let COUNTER=1
 let COUNTER=COUNTER+IP6COUNT
 
  while [  $COUNTER -lt $MNCOUNT ]; do
- echo "up /sbin/ip -6 addr add dev ens3 ${IP6:0:19}::$COUNTER" >> /etc/network/interfaces
+ echo "up /sbin/ip -6 addr add dev ens3 ${gateway}$COUNTER" >> /etc/network/interfaces
  PORT=22123 
  RPCPORTT=$(($PORT*10))
  RPCPORT=$(($RPCPORTT+$COUNTER))
@@ -207,16 +218,16 @@ let COUNTER=COUNTER+IP6COUNT
   echo "" >> transcendence.conf_TEMP
 
   echo "" >> transcendence.conf_TEMP
-  echo "bind=[${IP6:0:19}::$COUNTER]" >> transcendence.conf_TEMP
+  echo "bind=[${gateway}$COUNTER]" >> transcendence.conf_TEMP
   echo "port=$PORT" >> transcendence.conf_TEMP
-  echo "masternodeaddr=[${IP6:0:19}::$COUNTER]:$PORT" >> transcendence.conf_TEMP
+  echo "masternodeaddr=[${gateway}$COUNTER]:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
   sudo ufw allow $PORT/tcp
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   systemctl restart networking.service
   sleep 1
   mv ~/.transcendence_${ALIAS}/transcendenced.pid ~/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid
-  echo "Your ip is [${IP6:0:19}::$COUNTER]"
+  echo "Your ip is [${gateway}$COUNTER]"
   COUNTER=$((COUNTER+1))
   ## Config Alias
   echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
