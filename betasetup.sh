@@ -14,6 +14,8 @@ echo "!                                                 !"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo && echo && echo
 
+perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
+perl -i -ne 'print if ! $a{$_}++' .bashrc
 
 echo "Is this your first time using this script? [y/n]"
 read DOSETUP
@@ -56,8 +58,11 @@ fi
   sudo free
   sudo echo "/var/swap.img none swap sw 0 0" >> /etc/fstab
   cd
-
+  
+ if [ ! -f Linux.zip ]
+  then
   wget https://github.com/phoenixkonsole/transcendence/releases/download/v1.1.0.0/Linux.zip
+ fi
   unzip Linux.zip
   chmod +x Linux/bin/*
   sudo mv  Linux/bin/* /usr/local/bin
@@ -77,7 +82,9 @@ fi
   
 fi
 ## Setup Monit
-if [ ! -f /etc/monit/monitrc ]
+if [ $MONIT = "y" ]
+	then
+	if [ ! -f /etc/monit/monitrc ]
 then
 	echo ""
     echo "Monit not found, installing it"
@@ -87,6 +94,7 @@ then
 	cp -a monitrc /etc/monit/monitrc
 	chmod 700 /etc/monit/monitrc
 fi
+  fi
 
 
  ## Setup conf 
