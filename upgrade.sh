@@ -24,7 +24,7 @@ fi
   echo "stop program = \"/root/bin/transcendenced_${ALIAS}.sh stop\"" >> /etc/monit/monitrc
   transcendence-cli -datadir=/root/.transcendence_$ALIAS stop
   monit reload
-  sleep 1
+  sleep 3
   monit
   sleep 1
   /root/bin/transcendenced_${ALIAS}.sh
