@@ -31,5 +31,7 @@ fi
   sleep 1
   mv ~/.transcendence_${ALIAS}/transcendenced.pid ~/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid 
   monit start transcendenced${ALIAS}
+  echo ""
+  echo "Reboot is recommended after upgrading all your nodes, tho not necessary"
   exec bash
   exit
