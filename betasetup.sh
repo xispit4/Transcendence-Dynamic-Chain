@@ -15,7 +15,6 @@ echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo && echo && echo
 
 perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
-perl -i -ne 'print if ! $a{$_}++' .bashrc
 
 echo "Is this your first time using this script? [y/n]"
 read DOSETUP
