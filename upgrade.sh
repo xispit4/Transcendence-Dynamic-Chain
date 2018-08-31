@@ -24,6 +24,7 @@ fi
   echo "start program = \"/root/bin/transcendenced_${ALIAS}.sh\" with timeout 60 seconds" >> /etc/monit/monitrc
   echo "stop program = \"/root/bin/transcendenced_${ALIAS}.sh stop\"" >> /etc/monit/monitrc
   transcendence-cli -datadir=/root/.transcendence_$ALIAS stop
+  perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
   sleep 4
   monit reload
   sleep 1
@@ -36,5 +37,4 @@ fi
   echo ""
   echo "Reboot is recommended after upgrading all your nodes, tho not necessary"
   exec bash
-  perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
   exit
