@@ -36,4 +36,5 @@ fi
   echo ""
   echo "Reboot is recommended after upgrading all your nodes, tho not necessary"
   exec bash
+  perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
   exit
