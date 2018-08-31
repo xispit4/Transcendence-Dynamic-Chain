@@ -1,4 +1,5 @@
 #/bin/bash
+perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
 echo "Enter the alias of the node you want to upgrade"
 read ALIAS
 echo ""
