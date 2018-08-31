@@ -1,4 +1,5 @@
 #/bin/bash
+perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
 echo ""
 echo "Input the alias of the node that you want to delete"
 read ALIAS
