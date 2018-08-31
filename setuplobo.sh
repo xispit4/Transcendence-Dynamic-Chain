@@ -292,5 +292,6 @@ echo "ALIAS_status"
 echo "ALIAS_stop"
 echo "ALIAS_config"
 echo "ALIAS_getinfo"
+perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
 exec bash
 exit
