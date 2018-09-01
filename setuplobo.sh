@@ -140,6 +140,8 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "logtimestamps=1" >> transcendence.conf_TEMP
   echo "maxconnections=32" >> transcendence.conf_TEMP
   echo "masternode=1" >> transcendence.conf_TEMP
+  echo "dbcache=50" >> transcendence.conf_TEMP
+  echo " banscore=10" >> transcendence.conf_TEMP
   echo "" >> transcendence.conf_TEMP
 
   echo "" >> transcendence.conf_TEMP
@@ -238,6 +240,8 @@ let COUNTER=COUNTER+IP6COUNT
   echo "logtimestamps=1" >> transcendence.conf_TEMP
   echo "maxconnections=256" >> transcendence.conf_TEMP
   echo "masternode=1" >> transcendence.conf_TEMP
+  echo "dbcache=50" >> transcendence.conf_TEMP
+  echo " banscore=10" >> transcendence.conf_TEMP
   echo "" >> transcendence.conf_TEMP
 
   echo "" >> transcendence.conf_TEMP
