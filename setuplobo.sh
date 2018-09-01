@@ -284,9 +284,13 @@ let COUNTER=COUNTER+IP6COUNT
 done
 fi
 ## Final echos
+wget https://raw.githubusercontent.com/Lagadsz/Transcendence-Dynamic-Chain/master/delete.sh
+chmod 777 delete.sh
 echo ""
 echo "Made by lobo and g0dz0r"
 echo "Transcendence Address for donations: GWe4v6A6tLg9pHYEN5MoAsYLTadtefd9o6"
+echo ""
+echo "To delete a node for reinstalling or just removing it, use delete script using ./delete.sh"
 echo ""
 echo "Commands:"
 echo "ALIAS_start"
