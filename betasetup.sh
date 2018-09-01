@@ -116,11 +116,11 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo ""
   echo "Enter alias for new node"
   read ALIAS
-  if [ -d .transcendence_* ]
+  if [ -d ".transcendence_*" ]
 then
 cp .transcendence_*/* .transcendence_$ALIAS -r
 fi
-  if [ ! -d .transcendence_* ]
+  if [ ! -d ".transcendence_*" ]
 then
 unzip DynamicChain.zip -d ~/.transcendence_$ALIAS
 fi
