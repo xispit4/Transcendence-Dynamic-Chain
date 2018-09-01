@@ -100,7 +100,7 @@ fi
 if [ $INTERFACE = "4" ]
 then
 echo ""
-echo "How many ipv4 nodes do you have on this server? (0 if none)"
+echo "How many ipv4 nodes do you already have on this server? (0 if none)"
 read IP4COUNT
 echo ""
 echo "How many nodes do you want to create on this server? [min:1 Max:20]  followed by [ENTER]:"
@@ -196,7 +196,7 @@ if [[ $gateway3 = *"64"* ]]; then
   gateway=${gateway3::-3}
 fi
 echo ""
-echo "How many ipv6 nodes do you have on this server? (0 if none)"
+echo "How many ipv6 nodes do you already have on this server? (0 if none)"
 read IP6COUNT
 echo ""
 echo "How many nodes do you want to create on this server?"
