@@ -283,9 +283,13 @@ let COUNTER=COUNTER+IP6COUNT
   fi
 done
 fi
-## Final echos
+
+if [ ! -f delete.sh ]
+then
 wget https://raw.githubusercontent.com/Lagadsz/Transcendence-Dynamic-Chain/master/delete.sh
+fi
 chmod 777 delete.sh
+## Final echos
 echo ""
 echo "Made by lobo and g0dz0r"
 echo "Transcendence Address for donations: GWe4v6A6tLg9pHYEN5MoAsYLTadtefd9o6"
