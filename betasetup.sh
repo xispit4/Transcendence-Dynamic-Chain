@@ -100,7 +100,7 @@ fi
 if [ $INTERFACE = "4" ]
 then
 echo ""
-echo "How many ipv4 nodes do you have on this server? (0 if none)"
+echo "How many ipv4 nodes do you already have on this server? (0 if none)"
 read IP4COUNT
 echo ""
 echo "How many nodes do you want to create on this server? [min:1 Max:20]  followed by [ENTER]:"
@@ -116,12 +116,19 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo ""
   echo "Enter alias for new node"
   read ALIAS
+  if [ ! -t .transcendence_* ]
+then
+cp .transcendence_ .transcendence_$ALIAS -r
+fi
+  if [ ! -f .transcendence_* ]
+then
+unzip DynamicChain.zip -d ~/.transcendence_$ALIAS
+fi
   CONF_DIR=~/.transcendence_$ALIAS
   echo ""
   echo "Enter masternode private key for node $ALIAS"
   read PRIVKEY
   mkdir ~/.transcendence_$ALIAS
-  unzip DynamicChain.zip -d ~/.transcendence_$ALIAS
   echo '#!/bin/bash' > ~/bin/transcendenced_$ALIAS.sh
   echo "transcendenced -daemon -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendenced_$ALIAS.sh
   echo '#!/bin/bash' > ~/bin/transcendence-cli_$ALIAS.sh
@@ -140,6 +147,8 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "logtimestamps=1" >> transcendence.conf_TEMP
   echo "maxconnections=32" >> transcendence.conf_TEMP
   echo "masternode=1" >> transcendence.conf_TEMP
+  echo "dbcache=50" >> transcendence.conf_TEMP
+  echo " banscore=10" >> transcendence.conf_TEMP
   echo "" >> transcendence.conf_TEMP
 
   echo "" >> transcendence.conf_TEMP
@@ -162,6 +171,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 	echo "start program = \"/root/bin/transcendenced_${ALIAS}.sh\" with timeout 60 seconds" >> /etc/monit/monitrc
 	echo "stop program = \"/root/bin/transcendenced_${ALIAS}.sh stop\"" >> /etc/monit/monitrc
 	/root/bin/transcendenced_${ALIAS}.sh
+	perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
 	monit reload
 	sleep 1
 	monit
@@ -195,7 +205,7 @@ if [[ $gateway3 = *"64"* ]]; then
   gateway=${gateway3::-3}
 fi
 echo ""
-echo "How many ipv6 nodes do you have on this server? (0 if none)"
+echo "How many ipv6 nodes do you already have on this server? (0 if none)"
 read IP6COUNT
 echo ""
 echo "How many nodes do you want to create on this server?"
@@ -237,6 +247,8 @@ let COUNTER=COUNTER+IP6COUNT
   echo "logtimestamps=1" >> transcendence.conf_TEMP
   echo "maxconnections=256" >> transcendence.conf_TEMP
   echo "masternode=1" >> transcendence.conf_TEMP
+  echo "dbcache=50" >> transcendence.conf_TEMP
+  echo " banscore=10" >> transcendence.conf_TEMP
   echo "" >> transcendence.conf_TEMP
 
   echo "" >> transcendence.conf_TEMP
@@ -263,6 +275,7 @@ let COUNTER=COUNTER+IP6COUNT
 	echo "start program = \"/root/bin/transcendenced_${ALIAS}.sh\" with timeout 60 seconds" >> /etc/monit/monitrc
 	echo "stop program = \"/root/bin/transcendenced_${ALIAS}.sh stop\"" >> /etc/monit/monitrc
 	/root/bin/transcendenced_${ALIAS}.sh
+	perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
 	monit reload
 	sleep 1
 	monit
@@ -281,10 +294,18 @@ let COUNTER=COUNTER+IP6COUNT
   fi
 done
 fi
+
+if [ ! -f delete.sh ]
+then
+wget https://raw.githubusercontent.com/Lagadsz/Transcendence-Dynamic-Chain/master/delete.sh
+fi
+chmod 777 delete.sh
 ## Final echos
 echo ""
 echo "Made by lobo and g0dz0r"
 echo "Transcendence Address for donations: GWe4v6A6tLg9pHYEN5MoAsYLTadtefd9o6"
+echo ""
+echo "To delete a node for reinstalling or just removing it, use delete script using ./delete.sh"
 echo ""
 echo "Commands:"
 echo "ALIAS_start"
@@ -292,5 +313,6 @@ echo "ALIAS_status"
 echo "ALIAS_stop"
 echo "ALIAS_config"
 echo "ALIAS_getinfo"
+perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
 exec bash
 exit
