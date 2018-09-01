@@ -118,7 +118,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   read ALIAS
   if [ ! -t .transcendence_* ]
 then
-cp .transcendence_ .transcendence_$ALIAS -r
+cp .transcendence_* .transcendence_$ALIAS -r
 fi
   if [ ! -f .transcendence_* ]
 then
