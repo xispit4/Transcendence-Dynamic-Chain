@@ -256,8 +256,7 @@ let COUNTER=COUNTER+IP6COUNT
   sudo ufw allow $PORT/tcp
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   systemctl restart networking.service
-  sleep 1
-  mv ~/.transcendence_${ALIAS}/transcendenced.pid ~/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid
+  sleep 2
   echo "Your ip is [${gateway}$COUNTER]"
   COUNTER=$((COUNTER+1))
   if [ $MONIT = "y" ]
@@ -274,7 +273,7 @@ let COUNTER=COUNTER+IP6COUNT
 	/root/bin/transcendenced_${ALIAS}.sh
 	perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
 	monit reload
-	sleep 1
+	sleep 2
 	monit
 	sleep 1 
 	mv ~/.transcendence_${ALIAS}/transcendenced.pid ~/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid
