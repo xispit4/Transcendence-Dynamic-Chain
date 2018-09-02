@@ -14,6 +14,7 @@ echo "!                                                 !"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo && echo && echo
 
+perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
 perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
 
 echo "Is this your first time using this script? [y/n]"
@@ -288,6 +289,7 @@ let COUNTER=COUNTER+IP6COUNT
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
 	/root/bin/transcendenced_${ALIAS}.sh
   fi
+  perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
 done
 fi
 
@@ -295,6 +297,7 @@ if [ ! -f delete.sh ]
 then
 wget https://raw.githubusercontent.com/Lagadsz/Transcendence-Dynamic-Chain/master/delete.sh
 fi
+perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
 chmod 777 delete.sh
 ## Final echos
 echo ""
