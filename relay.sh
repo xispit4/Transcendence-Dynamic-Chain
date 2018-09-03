@@ -6,5 +6,5 @@ sleep 1
 monit stop all
 sleep 2
 monit start all
-sleep 1000
+sleep 10000
 done
