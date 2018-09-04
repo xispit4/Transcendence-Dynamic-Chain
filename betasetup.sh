@@ -14,24 +14,7 @@ echo "!                                                 !"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo && echo && echo
 
-perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
-if [ ! -d "/root/bin" ]; then
- DOSETUP="y"
-else
- DOSETUP="n"
-fi
-if grep -qF "inet6 static" /etc/network/interfaces
-then
-   IP6SET="y"
-else
-   IP6SET="n"
-fi
-echo ""
-echo "What interface do you want to use? (4 For ipv4 or 6 for ipv6) (Automatic ipv6 optimized for vultr)"
-read INTERFACE
-echo ""
-IP4=$(curl -s4 api.ipify.org)
-IP6=$(curl v6.ipv6-test.com/api/myip.php)
+cd
 function configure_systemd() {
   cat << EOF > /etc/systemd/system/transcendenced$ALIAS.service
 [Unit]
@@ -63,7 +46,31 @@ EOF
   sleep 3
   systemctl start transcendenced$ALIAS.service
 }
-cd
+IP4=$(curl -s4 api.ipify.org)
+IP6=$(curl v6.ipv6-test.com/api/myip.php)
+perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
+if [ ! -d "/root/bin" ]; then
+ DOSETUP="y"
+else
+ DOSETUP="n"
+fi
+if grep -qF "inet6 static" /etc/network/interfaces
+then
+   IP6SET="y"
+else
+   IP6SET="n"
+fi
+echo "1 - Create new nodes"
+echo "2 - Remove an existing node"
+echo "3 - Upgrade an existing node"
+echo "What would you like to do?"
+read DO
+
+
+echo ""
+echo "What interface do you want to use? (4 For ipv4 or 6 for ipv6) (Automatic ipv6 optimized for vultr)"
+read INTERFACE
+echo ""
 if [ $IP6SET = "n" ]
 then
   face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
@@ -113,10 +120,53 @@ then
   echo 'export PATH=~/bin:$PATH' > ~/.bash_aliases
   source ~/.bashrc
   echo ""
-  
 fi
 
- ## Setup conf 
+if [ $DO = "3" ]
+then
+perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
+echo "Enter the alias of the node you want to upgrade"
+read ALIAS
+  sed -i '/$ALIAS/d' .bashrc
+  sleep 1
+  ## Config Alias
+  echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
+  echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop && systemctl stop transcendenced$ALIAS\"" >> .bashrc
+  echo "alias ${ALIAS}_start=\"/root/bin/transcendenced_${ALIAS}.sh && systemctl start transcendenced$ALIAS\""  >> .bashrc
+  echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
+  echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
+  configure_systemd
+  sleep 1
+  source .bashrc
+fi
+
+if [ $DO = "2" ]
+then
+perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc 
+echo ""
+echo "Input the alias of the node that you want to delete"
+read ALIASD
+## Removing service
+systemctl stop transcendenced$ALIASD
+systemctl disable transcendenced$ALIASD
+rm /etc/systemd/system/transcendenced${ALIASD}.service
+systemctl daemon-reload
+systemctl reset-failed
+## Stopping node
+transcendence-cli -datadir=/root/.transcendence_$ALIASD stop
+sleep 5
+## Removing monit and directory
+rm /root/.transcendence_$ALIASD -r
+sed -i '/$ALIASD/d' .bashrc
+sleep 1
+sed -i '/$ALIASD/d' /etc/monit/monitrc
+monit reload
+echo ""
+echo "You can ignore any errors that appear during/after this script"
+source .bashrc
+fi
+if [ $DO = "1" ]
+then
 if [ $INTERFACE = "4" ]
 then
 echo ""
@@ -183,7 +233,6 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 	configure_systemd
 done
 fi
-
 if [ $INTERFACE = "6" ]
 then
 face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
@@ -265,13 +314,7 @@ let COUNTER=COUNTER+IP6COUNT
 	configure_systemd
 done
 fi
-
-if [ ! -f delete.sh ]
-then
-wget https://raw.githubusercontent.com/Lagadsz/Transcendence-Dynamic-Chain/master/delete.sh
 fi
-perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
-chmod 777 delete.sh
 ## Final echos
 echo ""
 echo "Made by lobo with the help of all Transcendence team "
