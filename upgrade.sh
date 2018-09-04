@@ -42,7 +42,6 @@ EOF
   systemctl start transcendenced$ALIAS.service
 }
   perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
-  perl -i -ne 'print if ! $a{$_}++' .bashrc
   configure_systemd
   sleep 5
   exec bash
