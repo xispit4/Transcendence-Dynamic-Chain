@@ -28,7 +28,37 @@ echo "Do you want to install monit? (Automatically restarts node if it crashes) 
 read MONIT
 IP4=$(curl -s4 api.ipify.org)
 IP6=$(curl v6.ipv6-test.com/api/myip.php)
+function configure_systemd() {
+	cat << EOF > /etc/systemd/system/transcendenced$ALIAS.service
+	[Unit]
+	Description=transcendenced$ALIAS service
+	After=network.target
 
+	[Service]
+	User=root
+	Group=root
+	
+	Type=forking
+	#PIDFile=/root/.transcendence_$ALIAS/transcendenced.pid
+	ExecStart=/root/bin/transcendenced_$ALIAS.sh
+	ExecStop=-/root/bin/transcendence-cli_$ALIAS.sh -datadir=/root/.transcendence_$ALIAS stop
+
+	Restart=always
+	PrivateTmp=true
+	TimeoutStopSec=60s
+	TimeoutStartSec=10s
+	StartLimitInterval=120s
+	StartLimitBurst=5
+
+	[Install]
+	WantedBy=multi-user.target
+	EOF
+	
+	systemctl daemon-reload
+	sleep 3
+	systemctl start transcendenced$ALIAS.service
+	systemctl enable transcendenced$ALIAS.service >/dev/null 2>&1
+	}
 cd
 if [ ! -f DynamicChain.zip ]
 then
@@ -163,37 +193,6 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
 	## Config Systemctl
-	function configure_systemd() {
-	cat << EOF > /etc/systemd/system/transcendenced$ALIAS.service
-	[Unit]
-	Description=transcendenced$ALIAS service
-	After=network.target
-
-	[Service]
-	User=root
-	Group=root
-	
-	Type=forking
-	#PIDFile=/root/.transcendence_$ALIAS/transcendenced.pid
-	ExecStart=/root/bin/transcendenced_$ALIAS.sh
-	ExecStop=-/root/bin/transcendence-cli_$ALIAS.sh -datadir=/root/.transcendence_$ALIAS stop
-
-	Restart=always
-	PrivateTmp=true
-	TimeoutStopSec=60s
-	TimeoutStartSec=10s
-	StartLimitInterval=120s
-	StartLimitBurst=5
-
-	[Install]
-	WantedBy=multi-user.target
-	EOF
-	
-	systemctl daemon-reload
-	sleep 3
-	systemctl start transcendenced$ALIAS.service
-	systemctl enable transcendenced$ALIAS.service >/dev/null 2>&1
-	}
 	configure_systemd
   fi
   if [ $MONIT = "n" ]
@@ -289,37 +288,6 @@ let COUNTER=COUNTER+IP6COUNT
 	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
 	## Config Systemctl
-	function configure_systemd() {
-	cat << EOF > /etc/systemd/system/transcendenced$ALIAS.service
-	[Unit]
-	Description=transcendenced$ALIAS service
-	After=network.target
-
-	[Service]
-	User=root
-	Group=root
-	
-	Type=forking
-	#PIDFile=/root/.transcendence_$ALIAS/transcendenced.pid
-	ExecStart=/root/bin/transcendenced_$ALIAS.sh
-	ExecStop=-/root/bin/transcendence-cli_$ALIAS.sh -datadir=/root/.transcendence_$ALIAS stop
-
-	Restart=always
-	PrivateTmp=true
-	TimeoutStopSec=60s
-	TimeoutStartSec=10s
-	StartLimitInterval=120s
-	StartLimitBurst=5
-
-	[Install]
-	WantedBy=multi-user.target
-	EOF
-	
-	systemctl daemon-reload
-	sleep 3
-	systemctl start transcendenced$ALIAS.service
-	systemctl enable transcendenced$ALIAS.service >/dev/null 2>&1
-	}
 	configure_systemd
   fi
   if [ $MONIT = "n" ]
