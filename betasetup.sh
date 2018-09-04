@@ -14,6 +14,7 @@ echo "!                                                 !"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo && echo && echo
 
+perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
 perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
 
 echo "Is this your first time using this script? [y/n]"
@@ -116,19 +117,12 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo ""
   echo "Enter alias for new node"
   read ALIAS
-  if [ -d ".transcendence_*" ]
-then
-cp .transcendence_*/* .transcendence_$ALIAS -r
-fi
-  if [ ! -d ".transcendence_*" ]
-then
-unzip DynamicChain.zip -d ~/.transcendence_$ALIAS
-fi
   CONF_DIR=~/.transcendence_$ALIAS
   echo ""
   echo "Enter masternode private key for node $ALIAS"
   read PRIVKEY
   mkdir ~/.transcendence_$ALIAS
+  unzip DynamicChain.zip -d ~/.transcendence_$ALIAS
   echo '#!/bin/bash' > ~/bin/transcendenced_$ALIAS.sh
   echo "transcendenced -daemon -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendenced_$ALIAS.sh
   echo '#!/bin/bash' > ~/bin/transcendence-cli_$ALIAS.sh
@@ -148,7 +142,9 @@ fi
   echo "maxconnections=32" >> transcendence.conf_TEMP
   echo "masternode=1" >> transcendence.conf_TEMP
   echo "dbcache=50" >> transcendence.conf_TEMP
-  echo " banscore=10" >> transcendence.conf_TEMP
+  echo "banscore=10" >> transcendence.conf_TEMP
+  echo "maxorphantx=10" >> transcendence.conf_TEMP
+  echo "maxmempool=100" >> transcendence.conf_TEMP
   echo "" >> transcendence.conf_TEMP
 
   echo "" >> transcendence.conf_TEMP
@@ -162,14 +158,40 @@ fi
   if [ $MONIT = "y" ]
 	then
 	echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
-	echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop && monit stop transcendenced${ALIAS} && rm ~/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid\"" >> .bashrc
-	echo "alias ${ALIAS}_start=\"/root/bin/transcendenced_${ALIAS}.sh && sleep 1 && mv ~/.transcendence_${ALIAS}/transcendenced.pid ~/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid && monit start transcendenced${ALIAS}\""  >> .bashrc
+	echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop && systemctl stop transcendenced$ALIAS\"" >> .bashrc
+	echo "alias ${ALIAS}_start=\"/root/bin/transcendenced_${ALIAS}.sh && systemctl start transcendenced$ALIAS\""  >> .bashrc
 	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
-	## Config Monit
-	echo "check process transcendenced${ALIAS} with pidfile /root/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid" >> /etc/monit/monitrc
-	echo "start program = \"/root/bin/transcendenced_${ALIAS}.sh\" with timeout 60 seconds" >> /etc/monit/monitrc
-	echo "stop program = \"/root/bin/transcendenced_${ALIAS}.sh stop\"" >> /etc/monit/monitrc
+	## Config Systemctl
+	cat << EOF > /etc/systemd/system/transcendenced$ALIAS.service
+	[Unit]
+	Description=transcendenced$ALIAS service
+	After=network.target
+
+	[Service]
+	User=root
+	Group=root
+	
+	Type=forking
+	#PIDFile=/root/.transcendence_$ALIAS/transcendenced.pid
+	ExecStart=/root/bin/transcendenced_$ALIAS.sh
+	ExecStop=-/root/bin/transcendence-cli_$ALIAS.sh -datadir=/root/.transcendence_$ALIAS stop
+
+	Restart=always
+	PrivateTmp=true
+	TimeoutStopSec=60s
+	TimeoutStartSec=10s
+	StartLimitInterval=120s
+	StartLimitBurst=5
+
+	[Install]
+	WantedBy=multi-user.target
+	EOF
+	
+	systemctl daemon-reload
+	sleep 3
+	systemctl start transcendenced$ALIAS.service
+	systemctl enable transcendenced$ALIAS.service >/dev/null 2>&1
 	/root/bin/transcendenced_${ALIAS}.sh
 	perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
 	monit reload
@@ -245,10 +267,12 @@ let COUNTER=COUNTER+IP6COUNT
   echo "server=1" >> transcendence.conf_TEMP
   echo "daemon=1" >> transcendence.conf_TEMP
   echo "logtimestamps=1" >> transcendence.conf_TEMP
-  echo "maxconnections=256" >> transcendence.conf_TEMP
+  echo "maxconnections=32" >> transcendence.conf_TEMP
   echo "masternode=1" >> transcendence.conf_TEMP
   echo "dbcache=50" >> transcendence.conf_TEMP
-  echo " banscore=10" >> transcendence.conf_TEMP
+  echo "banscore=10" >> transcendence.conf_TEMP
+  echo "maxorphantx=10" >> transcendence.conf_TEMP
+  echo "maxmempool=100" >> transcendence.conf_TEMP
   echo "" >> transcendence.conf_TEMP
 
   echo "" >> transcendence.conf_TEMP
@@ -259,21 +283,46 @@ let COUNTER=COUNTER+IP6COUNT
   sudo ufw allow $PORT/tcp
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   systemctl restart networking.service
-  sleep 1
-  mv ~/.transcendence_${ALIAS}/transcendenced.pid ~/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid
+  sleep 2
   echo "Your ip is [${gateway}$COUNTER]"
   COUNTER=$((COUNTER+1))
   if [ $MONIT = "y" ]
 	then
 	echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
-	echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop && monit stop transcendenced${ALIAS} && rm ~/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid\"" >> .bashrc
-	echo "alias ${ALIAS}_start=\"/root/bin/transcendenced_${ALIAS}.sh && sleep 1 && mv ~/.transcendence_${ALIAS}/transcendenced.pid ~/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid && monit start transcendenced${ALIAS}\""  >> .bashrc
+	echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop && systemctl stop transcendenced$ALIAS\"" >> .bashrc
+	echo "alias ${ALIAS}_start=\"/root/bin/transcendenced_${ALIAS}.sh && systemctl start transcendenced$ALIAS\""  >> .bashrc
 	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
-	## Config Monit
-	echo "check process transcendenced${ALIAS} with pidfile /root/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid" >> /etc/monit/monitrc
-	echo "start program = \"/root/bin/transcendenced_${ALIAS}.sh\" with timeout 60 seconds" >> /etc/monit/monitrc
-	echo "stop program = \"/root/bin/transcendenced_${ALIAS}.sh stop\"" >> /etc/monit/monitrc
+	## Config Systemctl
+	cat << EOF > /etc/systemd/system/transcendenced$ALIAS.service
+	[Unit]
+	Description=transcendenced$ALIAS service
+	After=network.target
+
+	[Service]
+	User=root
+	Group=root
+	
+	Type=forking
+	#PIDFile=/root/.transcendence_$ALIAS/transcendenced.pid
+	ExecStart=/root/bin/transcendenced_$ALIAS.sh
+	ExecStop=-/root/bin/transcendence-cli_$ALIAS.sh -datadir=/root/.transcendence_$ALIAS stop
+
+	Restart=always
+	PrivateTmp=true
+	TimeoutStopSec=60s
+	TimeoutStartSec=10s
+	StartLimitInterval=120s
+	StartLimitBurst=5
+
+	[Install]
+	WantedBy=multi-user.target
+	EOF
+	
+	systemctl daemon-reload
+	sleep 3
+	systemctl start transcendenced$ALIAS.service
+	systemctl enable transcendenced$ALIAS.service >/dev/null 2>&1
 	/root/bin/transcendenced_${ALIAS}.sh
 	perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
 	monit reload
@@ -292,6 +341,7 @@ let COUNTER=COUNTER+IP6COUNT
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
 	/root/bin/transcendenced_${ALIAS}.sh
   fi
+  perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
 done
 fi
 
@@ -299,6 +349,7 @@ if [ ! -f delete.sh ]
 then
 wget https://raw.githubusercontent.com/Lagadsz/Transcendence-Dynamic-Chain/master/delete.sh
 fi
+perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
 chmod 777 delete.sh
 ## Final echos
 echo ""
