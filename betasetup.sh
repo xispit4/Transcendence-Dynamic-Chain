@@ -163,6 +163,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
 	## Config Systemctl
+	function configure_systemd() {
 	cat << EOF > /etc/systemd/system/transcendenced$ALIAS.service
 	[Unit]
 	Description=transcendenced$ALIAS service
@@ -192,14 +193,8 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 	sleep 3
 	systemctl start transcendenced$ALIAS.service
 	systemctl enable transcendenced$ALIAS.service >/dev/null 2>&1
-	/root/bin/transcendenced_${ALIAS}.sh
-	perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
-	monit reload
-	sleep 1
-	monit
-	sleep 1 
-	mv ~/.transcendence_${ALIAS}/transcendenced.pid ~/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid
-	monit start transcendenced${ALIAS}
+	}
+	configure_systemd
   fi
   if [ $MONIT = "n" ]
 	then
@@ -294,6 +289,7 @@ let COUNTER=COUNTER+IP6COUNT
 	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
 	## Config Systemctl
+	function configure_systemd() {
 	cat << EOF > /etc/systemd/system/transcendenced$ALIAS.service
 	[Unit]
 	Description=transcendenced$ALIAS service
@@ -323,14 +319,8 @@ let COUNTER=COUNTER+IP6COUNT
 	sleep 3
 	systemctl start transcendenced$ALIAS.service
 	systemctl enable transcendenced$ALIAS.service >/dev/null 2>&1
-	/root/bin/transcendenced_${ALIAS}.sh
-	perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
-	monit reload
-	sleep 1
-	monit
-	sleep 1 
-	mv ~/.transcendence_${ALIAS}/transcendenced.pid ~/.transcendence_${ALIAS}/transcendenced${ALIAS}.pid
-	monit start transcendenced${ALIAS}
+	}
+	configure_systemd
   fi
   if [ $MONIT = "n" ]
 	then
