@@ -15,7 +15,6 @@ echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo && echo && echo
 
 perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
-perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
 
 echo "Is this your first time using this script? [y/n]"
 read DOSETUP
@@ -23,9 +22,6 @@ echo ""
 echo "What interface do you want to use? (4 For ipv4 or 6 for ipv6) (Automatic ipv6 optimized for vultr)"
 read INTERFACE
 echo ""
-echo ""
-echo "Do you want to install monit? (Automatically restarts node if it crashes) [y/n]"
-read MONIT
 IP4=$(curl -s4 api.ipify.org)
 IP6=$(curl v6.ipv6-test.com/api/myip.php)
 function configure_systemd() {
@@ -111,21 +107,6 @@ fi
   echo ""
   
 fi
-## Setup Monit
-if [ $MONIT = "y" ]
-	then
-	if [ ! -f /etc/monit/monitrc ]
-then
-	echo ""
-    echo "Monit not found, installing it"
-	apt-get install monit=1:5.16-2 -y
-	wget https://raw.githubusercontent.com/Lagadsz/Transcendence-Dynamic-Chain/master/monitrc
-	rm /etc/monit/monitrc
-	cp -a monitrc /etc/monit/monitrc
-	chmod 700 /etc/monit/monitrc
-fi
-  fi
-
 
  ## Setup conf 
 if [ $INTERFACE = "4" ]
@@ -185,8 +166,6 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf 
   echo "Your ip is $IP4:$PORTD"
   COUNTER=$((COUNTER+1))
-  if [ $MONIT = "y" ]
-	then
 	echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
 	echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop && systemctl stop transcendenced$ALIAS\"" >> .bashrc
 	echo "alias ${ALIAS}_start=\"/root/bin/transcendenced_${ALIAS}.sh && systemctl start transcendenced$ALIAS\""  >> .bashrc
@@ -194,17 +173,6 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
 	## Config Systemctl
 	configure_systemd
-  fi
-  if [ $MONIT = "n" ]
-	then
-	echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
-	echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop\"" >> .bashrc
-	echo "alias ${ALIAS}_start=\"/root/bin/transcendenced_${ALIAS}.sh\""  >> .bashrc
-	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
-	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
-	/root/bin/transcendenced_${ALIAS}.sh
-  fi
-  
 done
 fi
 
@@ -280,26 +248,13 @@ let COUNTER=COUNTER+IP6COUNT
   sleep 2
   echo "Your ip is [${gateway}$COUNTER]"
   COUNTER=$((COUNTER+1))
-  if [ $MONIT = "y" ]
-	then
 	echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
 	echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop && systemctl stop transcendenced$ALIAS\"" >> .bashrc
 	echo "alias ${ALIAS}_start=\"/root/bin/transcendenced_${ALIAS}.sh && systemctl start transcendenced$ALIAS\""  >> .bashrc
 	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
-	## Config Systemctl
 	configure_systemd
-  fi
-  if [ $MONIT = "n" ]
-	then
-	echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
-	echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop\"" >> .bashrc
-	echo "alias ${ALIAS}_start=\"/root/bin/transcendenced_${ALIAS}.sh\""  >> .bashrc
-	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
-	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
-	/root/bin/transcendenced_${ALIAS}.sh
-  fi
-  perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
+	perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
 done
 fi
 
@@ -311,7 +266,7 @@ perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
 chmod 777 delete.sh
 ## Final echos
 echo ""
-echo "Made by lobo and g0dz0r"
+echo "Made by lobo with the help of all Transcendence team "
 echo "Transcendence Address for donations: GWe4v6A6tLg9pHYEN5MoAsYLTadtefd9o6"
 echo ""
 echo "To delete a node for reinstalling or just removing it, use delete script using ./delete.sh"
@@ -322,6 +277,5 @@ echo "ALIAS_status"
 echo "ALIAS_stop"
 echo "ALIAS_config"
 echo "ALIAS_getinfo"
-perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
 exec bash
 exit
