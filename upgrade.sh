@@ -43,6 +43,6 @@ EOF
   systemctl start transcendenced$ALIAS.service
 }
   configure_systemd
-  sleep 5
+  sleep 1
   exec bash
   exit
