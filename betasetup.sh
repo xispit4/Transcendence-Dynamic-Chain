@@ -15,9 +15,15 @@ echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo && echo && echo
 
 perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
-
-echo "Is this your first time using this script? [y/n]"
-read DOSETUP
+if [ ! -d "/root/bin" ]; then
+ DOSETUP=y
+fi
+if grep -qF "inet6 static" /etc/network/interfaces
+then
+   echo "ipv6 already set"
+else
+   IP6SET="n"
+fi
 echo ""
 echo "What interface do you want to use? (4 For ipv4 or 6 for ipv6) (Automatic ipv6 optimized for vultr)"
 read INTERFACE
@@ -56,19 +62,19 @@ EOF
   systemctl start transcendenced$ALIAS.service
 }
 cd
-if [ ! -f DynamicChain.zip ]
-then
-wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
-fi
-if [ $DOSETUP = "y" ]
-then
-if [ $INTERFACE = "6" ]
+if [ $IP6SET = "n" ]
 then
   face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
   echo "iface $face inet6 static" >> /etc/network/interfaces
   echo "address $IP6" >> /etc/network/interfaces
   echo "netmask 64" >> /etc/network/interfaces
 fi
+if [ ! -f DynamicChain.zip ]
+then
+wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
+fi
+if [ $DOSETUP = "y" ]
+then
   sudo apt-get update
   sudo apt-get -y upgrade
   sudo apt-get -y dist-upgrade
