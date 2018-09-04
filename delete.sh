@@ -17,6 +17,7 @@ rm /root/.transcendence_$ALIAS -r
 sed -i '/$ALIAS/d' /etc/monit/monitrc
 sed -i '/$ALIAS/d' .bashrc
 perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
+perl -i -ne 'print if ! $a{$_}++' .bashrc
 monit reload
 echo ""
 echo "You can ignore any errors that appear during/after this script"
