@@ -29,36 +29,36 @@ read MONIT
 IP4=$(curl -s4 api.ipify.org)
 IP6=$(curl v6.ipv6-test.com/api/myip.php)
 function configure_systemd() {
-	cat << EOF > /etc/systemd/system/transcendenced$ALIAS.service
-	[Unit]
-	Description=transcendenced$ALIAS service
-	After=network.target
+  cat << EOF > /etc/systemd/system/transcendenced$ALIAS.service
+[Unit]
+Description=transcendenced$ALIAS service
+After=network.target
 
-	[Service]
-	User=root
-	Group=root
-	
-	Type=forking
-	#PIDFile=/root/.transcendence_$ALIAS/transcendenced.pid
-	ExecStart=/root/bin/transcendenced_$ALIAS.sh
-	ExecStop=-/root/bin/transcendence-cli_$ALIAS.sh -datadir=/root/.transcendence_$ALIAS stop
+[Service]
+User=root
+Group=root
 
-	Restart=always
-	PrivateTmp=true
-	TimeoutStopSec=60s
-	TimeoutStartSec=10s
-	StartLimitInterval=120s
-	StartLimitBurst=5
+Type=forking
+#PIDFile=/root/.transcendence_$ALIAS/transcendenced.pid
 
-	[Install]
-	WantedBy=multi-user.target
-	EOF
-	
-	systemctl daemon-reload
-	sleep 3
-	systemctl start transcendenced$ALIAS.service
-	systemctl enable transcendenced$ALIAS.service >/dev/null 2>&1
-	}
+ExecStart=/root/bin/transcendenced_$ALIAS.sh
+ExecStop=-/root/bin/transcendence-cli_$ALIAS.sh stop
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=10s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+  systemctl daemon-reload
+  sleep 3
+  systemctl start transcendenced$ALIAS.service
+}
 cd
 if [ ! -f DynamicChain.zip ]
 then
