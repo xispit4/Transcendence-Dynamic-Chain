@@ -16,7 +16,6 @@ sleep 5
 rm /root/.transcendence_$ALIAS -r
 sed -i '/$ALIAS/d' /etc/monit/monitrc
 sed -i '/$ALIAS/d' .bashrc
-sleep 5
 perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
 monit reload
 echo ""
