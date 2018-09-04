@@ -299,6 +299,7 @@ let COUNTER=COUNTER+IP6COUNT
   sudo ufw allow $PORT/tcp
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
+  sleep 1
   systemctl restart networking.service
   sleep 2
   echo "Your ip is [${gateway}$COUNTER]"
@@ -311,11 +312,6 @@ let COUNTER=COUNTER+IP6COUNT
 	configure_systemd
 done
 fi
-fi
-## Final echos
-echo ""
-echo "Made by lobo with the help of all Transcendence team "
-echo "Transcendence Address for donations: GWe4v6A6tLg9pHYEN5MoAsYLTadtefd9o6"
 echo ""
 echo "Commands:"
 echo "ALIAS_start"
@@ -323,5 +319,9 @@ echo "ALIAS_status"
 echo "ALIAS_stop"
 echo "ALIAS_config"
 echo "ALIAS_getinfo"
+fi
+echo ""
+echo "Made by lobo with the help of all Transcendence team "
+echo "Transcendence Address for donations: GWe4v6A6tLg9pHYEN5MoAsYLTadtefd9o6"
 exec bash
 exit
