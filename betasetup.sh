@@ -16,7 +16,7 @@ echo && echo && echo
 
 perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
 if [ ! -d "/root/bin" ]; then
- DOSETUP=y
+ DOSETUP="y"
 fi
 if grep -qF "inet6 static" /etc/network/interfaces
 then
