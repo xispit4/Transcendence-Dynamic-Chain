@@ -39,7 +39,7 @@ WantedBy=multi-user.target
 EOF
 
   systemctl daemon-reload
-  sleep 3
+  sleep 6
   systemctl start transcendenced$ALIAS.service
 }
   configure_systemd
