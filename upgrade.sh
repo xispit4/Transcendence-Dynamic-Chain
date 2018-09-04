@@ -2,7 +2,6 @@
 perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
 echo "Enter the alias of the node you want to upgrade"
 read ALIAS
-echo ""
   ## Config Alias
   echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
   echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop && systemctl stop transcendenced$ALIAS\"" >> .bashrc
