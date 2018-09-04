@@ -65,11 +65,6 @@ echo "2 - Remove an existing node"
 echo "3 - Upgrade an existing node"
 echo "What would you like to do?"
 read DO
-
-
-echo ""
-echo "What interface do you want to use? (4 For ipv4 or 6 for ipv6) (Automatic ipv6 optimized for vultr)"
-read INTERFACE
 echo ""
 if [ $IP6SET = "n" ]
 then
@@ -167,6 +162,8 @@ source .bashrc
 fi
 if [ $DO = "1" ]
 then
+echo "What interface do you want to use? (4 For ipv4 or 6 for ipv6) (Automatic ipv6 optimized for vultr)"
+read INTERFACE
 if [ $INTERFACE = "4" ]
 then
 echo ""
