@@ -17,10 +17,13 @@ echo && echo && echo
 perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
 if [ ! -d "/root/bin" ]; then
  DOSETUP="y"
+else
+ DOSETUP="n"
 fi
 if grep -qF "inet6 static" /etc/network/interfaces
 then
    echo "ipv6 already set"
+   IP6SET="y"
 else
    IP6SET="n"
 fi
