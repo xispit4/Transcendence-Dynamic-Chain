@@ -60,6 +60,7 @@ then
 else
    IP6SET="n"
 fi
+echo ""
 echo "1 - Create new nodes"
 echo "2 - Remove an existing node"
 echo "3 - Upgrade an existing node"
