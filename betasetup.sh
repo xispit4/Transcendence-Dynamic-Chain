@@ -22,7 +22,6 @@ else
 fi
 if grep -qF "inet6 static" /etc/network/interfaces
 then
-   echo "ipv6 already set"
    IP6SET="y"
 else
    IP6SET="n"
