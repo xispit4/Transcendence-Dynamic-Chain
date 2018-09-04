@@ -244,6 +244,7 @@ let COUNTER=COUNTER+IP6COUNT
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
   sudo ufw allow $PORT/tcp
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
+  perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
   systemctl restart networking.service
   sleep 2
   echo "Your ip is [${gateway}$COUNTER]"
@@ -254,7 +255,6 @@ let COUNTER=COUNTER+IP6COUNT
 	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
 	configure_systemd
-	perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
 done
 fi
 
