@@ -116,6 +116,9 @@ then
   echo "address $IP6" >> /etc/network/interfaces
   echo "netmask 64" >> /etc/network/interfaces
 fi
+fi
+if [ $DO = "1" ]
+then
 if [ ! -f DynamicChain.zip ]
 then
 wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
@@ -158,9 +161,6 @@ then
   echo 'export PATH=~/bin:$PATH' > ~/.bash_aliases
   source ~/.bashrc
   echo ""
-fi
-if [ $DO = "1" ]
-then
 echo "What interface do you want to use? (4 For ipv4 or 6 for ipv6) (Automatic ipv6 optimized for vultr)"
 read INTERFACE
 if [ $INTERFACE = "4" ]
