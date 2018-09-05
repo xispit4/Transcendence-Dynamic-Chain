@@ -119,6 +119,7 @@ fi
 fi
 if [ $DO = "1" ]
 then
+
 if [ ! -f DynamicChain.zip ]
 then
 wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
