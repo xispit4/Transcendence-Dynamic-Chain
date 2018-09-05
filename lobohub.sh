@@ -49,6 +49,24 @@ EOF
 IP4=$(curl -s4 api.ipify.org)
 IP6=$(curl v6.ipv6-test.com/api/myip.php)
 perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
+if [ ! -d "/root/bin" ]; then
+ DOSETUP="y"
+else
+ DOSETUP="n"
+fi
+if grep -qF "inet6 static" /etc/network/interfaces
+then
+   IP6SET="y"
+else
+   IP6SET="n"
+fi
+echo ""
+echo "1 - Create new nodes"
+echo "2 - Remove an existing node"
+echo "3 - Upgrade an existing node"
+echo "What would you like to do?"
+read DO
+echo ""
 if [ $DO = "3" ]
 then
 perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
@@ -66,7 +84,6 @@ read ALIAS
   sleep 1
   source .bashrc
 fi
-
 if [ $DO = "2" ]
 then
 perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc 
@@ -92,24 +109,6 @@ echo ""
 echo "You can ignore any errors that appear during/after this script"
 source .bashrc
 fi
-if [ ! -d "/root/bin" ]; then
- DOSETUP="y"
-else
- DOSETUP="n"
-fi
-if grep -qF "inet6 static" /etc/network/interfaces
-then
-   IP6SET="y"
-else
-   IP6SET="n"
-fi
-echo ""
-echo "1 - Create new nodes"
-echo "2 - Remove an existing node"
-echo "3 - Upgrade an existing node"
-echo "What would you like to do?"
-read DO
-echo ""
 if [ $IP6SET = "n" ]
 then
   face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
