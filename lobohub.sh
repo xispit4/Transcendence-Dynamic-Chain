@@ -49,6 +49,49 @@ EOF
 IP4=$(curl -s4 api.ipify.org)
 IP6=$(curl v6.ipv6-test.com/api/myip.php)
 perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
+if [ $DO = "3" ]
+then
+perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
+echo "Enter the alias of the node you want to upgrade"
+read ALIAS
+  sed -i '/$ALIAS/d' .bashrc
+  sleep 1
+  ## Config Alias
+  echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
+  echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop && systemctl stop transcendenced$ALIAS\"" >> .bashrc
+  echo "alias ${ALIAS}_start=\"/root/bin/transcendenced_${ALIAS}.sh && systemctl start transcendenced$ALIAS\""  >> .bashrc
+  echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
+  echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
+  configure_systemd
+  sleep 1
+  source .bashrc
+fi
+
+if [ $DO = "2" ]
+then
+perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc 
+echo ""
+echo "Input the alias of the node that you want to delete"
+read ALIASD
+## Removing service
+systemctl stop transcendenced$ALIASD
+systemctl disable transcendenced$ALIASD
+rm /etc/systemd/system/transcendenced${ALIASD}.service
+systemctl daemon-reload
+systemctl reset-failed
+## Stopping node
+transcendence-cli -datadir=/root/.transcendence_$ALIASD stop
+sleep 5
+## Removing monit and directory
+rm /root/.transcendence_$ALIASD -r
+sed -i '/$ALIASD/d' .bashrc
+sleep 1
+sed -i '/$ALIASD/d' /etc/monit/monitrc
+monit reload
+echo ""
+echo "You can ignore any errors that appear during/after this script"
+source .bashrc
+fi
 if [ ! -d "/root/bin" ]; then
  DOSETUP="y"
 else
@@ -116,50 +159,6 @@ then
   echo 'export PATH=~/bin:$PATH' > ~/.bash_aliases
   source ~/.bashrc
   echo ""
-fi
-
-if [ $DO = "3" ]
-then
-perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
-echo "Enter the alias of the node you want to upgrade"
-read ALIAS
-  sed -i '/$ALIAS/d' .bashrc
-  sleep 1
-  ## Config Alias
-  echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
-  echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop && systemctl stop transcendenced$ALIAS\"" >> .bashrc
-  echo "alias ${ALIAS}_start=\"/root/bin/transcendenced_${ALIAS}.sh && systemctl start transcendenced$ALIAS\""  >> .bashrc
-  echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
-  echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
-  configure_systemd
-  sleep 1
-  source .bashrc
-fi
-
-if [ $DO = "2" ]
-then
-perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc 
-echo ""
-echo "Input the alias of the node that you want to delete"
-read ALIASD
-## Removing service
-systemctl stop transcendenced$ALIASD
-systemctl disable transcendenced$ALIASD
-rm /etc/systemd/system/transcendenced${ALIASD}.service
-systemctl daemon-reload
-systemctl reset-failed
-## Stopping node
-transcendence-cli -datadir=/root/.transcendence_$ALIASD stop
-sleep 5
-## Removing monit and directory
-rm /root/.transcendence_$ALIASD -r
-sed -i '/$ALIASD/d' .bashrc
-sleep 1
-sed -i '/$ALIASD/d' /etc/monit/monitrc
-monit reload
-echo ""
-echo "You can ignore any errors that appear during/after this script"
-source .bashrc
 fi
 if [ $DO = "1" ]
 then
