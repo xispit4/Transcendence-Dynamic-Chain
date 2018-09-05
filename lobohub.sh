@@ -109,6 +109,8 @@ echo ""
 echo "You can ignore any errors that appear during/after this script"
 source .bashrc
 fi
+if [ $DO = "1" ]
+then
 if [ $IP6SET = "n" ]
 then
   face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
@@ -116,10 +118,6 @@ then
   echo "address $IP6" >> /etc/network/interfaces
   echo "netmask 64" >> /etc/network/interfaces
 fi
-fi
-if [ $DO = "1" ]
-then
-
 if [ ! -f DynamicChain.zip ]
 then
 wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
