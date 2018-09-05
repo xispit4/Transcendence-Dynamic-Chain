@@ -76,7 +76,7 @@ read ALIAS
   sleep 1
   source .bashrc
 fi
- if [ $DO = "2" ]
+if [ $DO = "2" ]
 then
 perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc 
 echo ""
