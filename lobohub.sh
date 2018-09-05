@@ -1,6 +1,5 @@
 #/bin/bash
-
-cd ~
+ cd ~
 echo "****************************************************************************"
 echo "* Ubuntu 16.04 is the recommended opearting system for this install.       *"
 echo "*                                                                          *"
@@ -13,36 +12,29 @@ echo "!    THIS SCRIPT MUST BE RUN AS ROOT, NOT SUDO    !"
 echo "!                                                 !"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo && echo && echo
-
-cd
+ cd
 function configure_systemd() {
   cat << EOF > /etc/systemd/system/transcendenced$ALIAS.service
 [Unit]
 Description=transcendenced$ALIAS service
 After=network.target
-
-[Service]
+ [Service]
 User=root
 Group=root
-
-Type=forking
+ Type=forking
 #PIDFile=/root/.transcendence_$ALIAS/transcendenced.pid
-
-ExecStart=/root/bin/transcendenced_$ALIAS.sh
+ ExecStart=/root/bin/transcendenced_$ALIAS.sh
 ExecStop=-/root/bin/transcendence-cli_$ALIAS.sh stop
-
-Restart=always
+ Restart=always
 PrivateTmp=true
 TimeoutStopSec=60s
 TimeoutStartSec=10s
 StartLimitInterval=120s
 StartLimitBurst=5
-
-[Install]
+ [Install]
 WantedBy=multi-user.target
 EOF
-
-  systemctl daemon-reload
+   systemctl daemon-reload
   sleep 6
   systemctl start transcendenced$ALIAS.service
 }
@@ -67,7 +59,54 @@ echo "3 - Upgrade an existing node"
 echo "What would you like to do?"
 read DO
 echo ""
-if [ $DO = "3" ]
+if [ $IP6SET = "n" ]
+then
+  face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
+  echo "iface $face inet6 static" >> /etc/network/interfaces
+  echo "address $IP6" >> /etc/network/interfaces
+  echo "netmask 64" >> /etc/network/interfaces
+fi
+if [ ! -f DynamicChain.zip ]
+then
+wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
+fi
+if [ $DOSETUP = "y" ]
+then
+  sudo apt-get update
+  sudo apt-get -y upgrade
+  sudo apt-get -y dist-upgrade
+  sudo apt-get update
+  sudo apt-get install -y zip unzip
+   cd /var
+  sudo touch swap.img
+  sudo chmod 600 swap.img
+  sudo dd if=/dev/zero of=/var/swap.img bs=1024k count=2000
+  sudo mkswap /var/swap.img
+  sudo swapon /var/swap.img
+  sudo free
+  sudo echo "/var/swap.img none swap sw 0 0" >> /etc/fstab
+  cd
+  
+ if [ ! -f Linux.zip ]
+  then
+  wget https://github.com/phoenixkonsole/transcendence/releases/download/v1.1.0.0/Linux.zip
+ fi
+  unzip Linux.zip
+  chmod +x Linux/bin/*
+  sudo mv  Linux/bin/* /usr/local/bin
+  rm -rf Linux.zip Windows Linux Mac
+   sudo apt-get install -y ufw
+  sudo ufw allow ssh/tcp
+  sudo ufw limit ssh/tcp
+  sudo ufw logging on
+  echo "y" | sudo ufw enable
+  sudo ufw status
+   mkdir -p ~/bin
+  echo 'export PATH=~/bin:$PATH' > ~/.bash_aliases
+  source ~/.bashrc
+  echo ""
+fi
+ if [ $DO = "3" ]
 then
 perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
 echo "Enter the alias of the node you want to upgrade"
@@ -84,7 +123,7 @@ read ALIAS
   sleep 1
   source .bashrc
 fi
-if [ $DO = "2" ]
+ if [ $DO = "2" ]
 then
 perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc 
 echo ""
@@ -111,55 +150,6 @@ source .bashrc
 fi
 if [ $DO = "1" ]
 then
-if [ $IP6SET = "n" ]
-then
-  face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
-  echo "iface $face inet6 static" >> /etc/network/interfaces
-  echo "address $IP6" >> /etc/network/interfaces
-  echo "netmask 64" >> /etc/network/interfaces
-fi
-if [ ! -f DynamicChain.zip ]
-then
-wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
-fi
-if [ $DOSETUP = "y" ]
-then
-  sudo apt-get update
-  sudo apt-get -y upgrade
-  sudo apt-get -y dist-upgrade
-  sudo apt-get update
-  sudo apt-get install -y zip unzip
-
-  cd /var
-  sudo touch swap.img
-  sudo chmod 600 swap.img
-  sudo dd if=/dev/zero of=/var/swap.img bs=1024k count=2000
-  sudo mkswap /var/swap.img
-  sudo swapon /var/swap.img
-  sudo free
-  sudo echo "/var/swap.img none swap sw 0 0" >> /etc/fstab
-  cd
-  
- if [ ! -f Linux.zip ]
-  then
-  wget https://github.com/phoenixkonsole/transcendence/releases/download/v1.1.0.0/Linux.zip
- fi
-  unzip Linux.zip
-  chmod +x Linux/bin/*
-  sudo mv  Linux/bin/* /usr/local/bin
-  rm -rf Linux.zip Windows Linux Mac
-
-  sudo apt-get install -y ufw
-  sudo ufw allow ssh/tcp
-  sudo ufw limit ssh/tcp
-  sudo ufw logging on
-  echo "y" | sudo ufw enable
-  sudo ufw status
-
-  mkdir -p ~/bin
-  echo 'export PATH=~/bin:$PATH' > ~/.bash_aliases
-  source ~/.bashrc
-  echo ""
 echo "What interface do you want to use? (4 For ipv4 or 6 for ipv6) (Automatic ipv6 optimized for vultr)"
 read INTERFACE
 if [ $INTERFACE = "4" ]
@@ -210,8 +200,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "maxorphantx=10" >> transcendence.conf_TEMP
   echo "maxmempool=100" >> transcendence.conf_TEMP
   echo "" >> transcendence.conf_TEMP
-
-  echo "" >> transcendence.conf_TEMP
+   echo "" >> transcendence.conf_TEMP
   echo "port=$PORTD" >> transcendence.conf_TEMP
   echo "masternodeaddr=$IP4:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
@@ -250,8 +239,7 @@ let MNCOUNT=MNCOUNT+1
 let MNCOUNT=MNCOUNT+IP6COUNT
 let COUNTER=1
 let COUNTER=COUNTER+IP6COUNT
-
- while [  $COUNTER -lt $MNCOUNT ]; do
+  while [  $COUNTER -lt $MNCOUNT ]; do
  echo "up /sbin/ip -6 addr add dev ens3 ${gateway}$COUNTER" >> /etc/network/interfaces
  PORT=22123 
  RPCPORTT=$(($PORT*10))
@@ -288,8 +276,7 @@ let COUNTER=COUNTER+IP6COUNT
   echo "maxorphantx=10" >> transcendence.conf_TEMP
   echo "maxmempool=100" >> transcendence.conf_TEMP
   echo "" >> transcendence.conf_TEMP
-
-  echo "" >> transcendence.conf_TEMP
+   echo "" >> transcendence.conf_TEMP
   echo "bind=[${gateway}$COUNTER]" >> transcendence.conf_TEMP
   echo "port=$PORT" >> transcendence.conf_TEMP
   echo "masternodeaddr=[${gateway}$COUNTER]:$PORT" >> transcendence.conf_TEMP
