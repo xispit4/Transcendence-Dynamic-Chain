@@ -1,5 +1,5 @@
 #/bin/bash
- cd ~
+cd ~
 echo "****************************************************************************"
 echo "* Ubuntu 16.04 is the recommended opearting system for this install.       *"
 echo "*                                                                          *"
@@ -12,7 +12,6 @@ echo "!    THIS SCRIPT MUST BE RUN AS ROOT, NOT SUDO    !"
 echo "!                                                 !"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo && echo && echo
- cd
 function configure_systemd() {
   cat << EOF > /etc/systemd/system/transcendenced$ALIAS.service
 [Unit]
