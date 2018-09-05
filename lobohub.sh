@@ -102,13 +102,6 @@ source .bashrc
 fi
 if [ $DO = "1" ]
 then
-if [ $IP6SET = "n" ]
-then
-  face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
-  echo "iface $face inet6 static" >> /etc/network/interfaces
-  echo "address $IP6" >> /etc/network/interfaces
-  echo "netmask 64" >> /etc/network/interfaces
-fi
 if [ ! -f DynamicChain.zip ]
 then
 wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
@@ -218,6 +211,13 @@ done
 fi
 if [ $INTERFACE = "6" ]
 then
+if [ $IP6SET = "n" ]
+then
+  face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
+  echo "iface $face inet6 static" >> /etc/network/interfaces
+  echo "address $IP6" >> /etc/network/interfaces
+  echo "netmask 64" >> /etc/network/interfaces
+fi
 face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
 gateway1=$(/sbin/route -A inet6 | grep -w "$face")
 gateway2=${gateway1:0:26}
