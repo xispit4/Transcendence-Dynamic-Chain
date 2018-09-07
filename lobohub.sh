@@ -102,6 +102,20 @@ source .bashrc
 fi
 if [ $DO = "1" ]
 then
+echo ""
+echo "1 - Easy mode"
+echo "2 - Expert mode"
+echo "Please select a option:"
+read EE
+if [ $EE = "1" ] 
+then
+MAXC="64"
+fi
+if [ $EE = "2" ] 
+then
+echo "Enter max connections value"
+read MAXC
+fi
 if [ ! -f DynamicChain.zip ]
 then
 wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
@@ -167,6 +181,11 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo ""
   echo "Enter masternode private key for node $ALIAS"
   read PRIVKEY
+  if [ $EE = "2" ] 
+	then
+	echo "Enter port for $ALIAS"
+	read PORTD
+  fi
   mkdir ~/.transcendence_$ALIAS
   unzip DynamicChain.zip -d ~/.transcendence_$ALIAS
   echo '#!/bin/bash' > ~/bin/transcendenced_$ALIAS.sh
@@ -185,7 +204,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "server=1" >> transcendence.conf_TEMP
   echo "daemon=1" >> transcendence.conf_TEMP
   echo "logtimestamps=1" >> transcendence.conf_TEMP
-  echo "maxconnections=64" >> transcendence.conf_TEMP
+  echo "maxconnections=$MAXC" >> transcendence.conf_TEMP
   echo "masternode=1" >> transcendence.conf_TEMP
   echo "dbcache=50" >> transcendence.conf_TEMP
   echo "banscore=10" >> transcendence.conf_TEMP
@@ -268,7 +287,7 @@ let COUNTER=COUNTER+IP6COUNT
   echo "server=1" >> transcendence.conf_TEMP
   echo "daemon=1" >> transcendence.conf_TEMP
   echo "logtimestamps=1" >> transcendence.conf_TEMP
-  echo "maxconnections=64" >> transcendence.conf_TEMP
+  echo "maxconnections=$MAXC" >> transcendence.conf_TEMP
   echo "masternode=1" >> transcendence.conf_TEMP
   echo "dbcache=50" >> transcendence.conf_TEMP
   echo "banscore=10" >> transcendence.conf_TEMP
