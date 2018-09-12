@@ -33,8 +33,12 @@ StartLimitBurst=5
  [Install]
 WantedBy=multi-user.target
 EOF
-   systemctl daemon-reload
+  systemctl daemon-reload
   sleep 6
+  crontab -l > cron$ALIAS
+  echo "@reboot systemctl start transcendenced$ALIAS" >> cron$ALIAS
+  crontab cron$ALIAS
+  rm cron$ALIAS
   systemctl start transcendenced$ALIAS.service
 }
 IP4=$(curl -s4 api.ipify.org)
