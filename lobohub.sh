@@ -187,6 +187,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   read PRIVKEY
   if [ $EE = "2" ] 
 	then
+	echo ""
 	echo "Enter port for $ALIAS"
 	read PORTD
   fi
