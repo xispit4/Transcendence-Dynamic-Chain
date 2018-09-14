@@ -329,6 +329,8 @@ echo "ALIAS_stop"
 echo "ALIAS_config"
 echo "ALIAS_getinfo"
 fi
+sudo ufw disable
+sudo ufw enable
 echo ""
 echo "Made by lobo with the help of all Transcendence team "
 echo "Transcendence Address for donations: GWe4v6A6tLg9pHYEN5MoAsYLTadtefd9o6"
