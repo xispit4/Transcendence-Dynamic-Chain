@@ -41,8 +41,7 @@ EOF
   rm cron$ALIAS
   systemctl start transcendenced$ALIAS.service
 }
-IP4=$(curl -s4 api.ipify.org) >/dev/null 2>&1
-IP6=$(curl v6.ipv6-test.com/api/myip.php) >/dev/null 2>&1
+IP4=$(curl -s4 api.ipify.org)
 perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
 if [ ! -d "/root/bin" ]; then
  DOSETUP="y"
@@ -235,6 +234,7 @@ done
 fi
 if [ $INTERFACE = "6" ]
 then
+IP6=$(curl v6.ipv6-test.com/api/myip.php)
 if [ $IP6SET = "n" ]
 then
   face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
