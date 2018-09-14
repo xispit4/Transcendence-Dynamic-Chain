@@ -221,7 +221,6 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "masternodeaddr=$IP4:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
   sudo ufw allow 22123/tcp
-  sudo ufw allow $PORTD/tcp
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf 
   echo "Your ip is $IP4:$PORT"
   COUNTER=$((COUNTER+1))
