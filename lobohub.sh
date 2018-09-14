@@ -110,7 +110,7 @@ sleep 1
 sed -i '/$ALIASD/d' /etc/monit/monitrc >/dev/null 2>&1
 monit reload >/dev/null 2>&1
 sed -i '/$ALIASD/d' /etc/monit/monitrc >/dev/null 2>&1
-crontab -l -u root | grep -v transcendenced$ALIASD | crontab -u root -
+crontab -l -u root | grep -v transcendenced$ALIASD | crontab -u root - >/dev/null 2>&1
 source .bashrc
 echo -e "${ALIASD} Successfully deleted."
 fi
