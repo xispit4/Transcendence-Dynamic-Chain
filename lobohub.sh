@@ -41,8 +41,8 @@ EOF
   rm cron$ALIAS
   systemctl start transcendenced$ALIAS.service
 }
-IP4=$(curl -s4 api.ipify.org)
-IP6=$(curl v6.ipv6-test.com/api/myip.php)
+IP4=$(curl -s4 api.ipify.org) >/dev/null 2>&1
+IP6=$(curl v6.ipv6-test.com/api/myip.php) >/dev/null 2>&1
 perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
 if [ ! -d "/root/bin" ]; then
  DOSETUP="y"
@@ -64,7 +64,7 @@ read DO
 echo ""
  if [ $DO = "3" ]
 then
-perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc
+perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc >/dev/null 2>&1
 echo "Enter the alias of the node you want to upgrade"
 read ALIAS
   sed -i '/$ALIAS/d' .bashrc
@@ -81,42 +81,42 @@ read ALIAS
 fi
 if [ $DO = "2" ]
 then
-perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc 
-echo ""
+perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc >/dev/null 2>&1
 echo "Input the alias of the node that you want to delete"
 read ALIASD
 ## Removing service
-systemctl stop transcendenced$ALIASD
-systemctl disable transcendenced$ALIASD
-rm /etc/systemd/system/transcendenced${ALIASD}.service
-systemctl daemon-reload
-systemctl reset-failed
+systemctl stop transcendenced$ALIASD >/dev/null 2>&1
+systemctl disable transcendenced$ALIASD >/dev/null 2>&1
+rm /etc/systemd/system/transcendenced${ALIASD}.service >/dev/null 2>&1
+systemctl daemon-reload >/dev/null 2>&1
+systemctl reset-failed >/dev/null 2>&1
 ## Stopping node
-transcendence-cli -datadir=/root/.transcendence_$ALIASD stop
+transcendence-cli -datadir=/root/.transcendence_$ALIASD stop >/dev/null 2>&1
 sleep 5
 ## Removing monit and directory
-rm /root/.transcendence_$ALIASD -r
-sed -i '/$ALIASD/d' .bashrc
+rm /root/.transcendence_$ALIASD -r >/dev/null 2>&1
+sed -i '/$ALIASD/d' .bashrc >/dev/null 2>&1
 sleep 1
-sed -i '/$ALIASD/d' /etc/monit/monitrc
-monit reload
-echo ""
-echo "You can ignore any errors that appear during/after this script"
+sed -i '/$ALIASD/d' /etc/monit/monitrc >/dev/null 2>&1
+monit reload >/dev/null 2>&1
+sed -i '/$ALIASD/d' /etc/monit/monitrc >/dev/null 2>&1
+crontab -l -u root | grep -v transcendenced$ALIASD | crontab -u root -
 source .bashrc
 fi
 if [ $DO = "1" ]
 then
-echo ""
 echo "1 - Easy mode"
 echo "2 - Expert mode"
 echo "Please select a option:"
 read EE
+echo ""
 if [ $EE = "1" ] 
 then
 MAXC="96"
 fi
 if [ $EE = "2" ] 
 then
+echo ""
 echo "Enter max connections value"
 read MAXC
 fi
@@ -143,19 +143,18 @@ then
   
  if [ ! -f Linux.zip ]
   then
-  wget https://github.com/phoenixkonsole/transcendence/releases/download/v1.1.0.0/Linux.zip
+  wget https://github.com/phoenixkonsole/transcendence/releases/download/v1.1.0.0/Linux.zip -q
  fi
-  unzip Linux.zip
-  chmod +x Linux/bin/*
+  unzip Linux.zip >/dev/null 2>&1
+  chmod +x Linux/bin/* >/dev/null 2>&1 
   sudo mv  Linux/bin/* /usr/local/bin
   rm -rf Linux.zip Windows Linux Mac
    sudo apt-get install -y ufw
-  sudo ufw allow ssh/tcp
-  sudo ufw limit ssh/tcp
-  sudo ufw logging on
-  echo "y" | sudo ufw enable
-  sudo ufw status
-   mkdir -p ~/bin
+  sudo ufw allow ssh/tcp >/dev/null 2>&1
+  sudo ufw limit ssh/tcp >/dev/null 2>&1
+  sudo ufw logging on 
+  echo "y" | sudo ufw enable >/dev/null 2>&1
+  mkdir -p ~/bin 
   echo 'export PATH=~/bin:$PATH' > ~/.bash_aliases
   source ~/.bashrc
   echo ""
@@ -168,7 +167,7 @@ echo ""
 echo "How many ipv4 nodes do you already have on this server? (0 if none)"
 read IP4COUNT
 echo ""
-echo "How many nodes do you want to create on this server? [min:1 Max:20]  followed by [ENTER]:"
+echo "How many nodes do you want to create on this server?"
 read MNCOUNT
 let COUNTER=0
 let MNCOUNT=MNCOUNT+IP4COUNT
@@ -192,7 +191,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 	read PORTD
   fi
   mkdir ~/.transcendence_$ALIAS
-  unzip DynamicChain.zip -d ~/.transcendence_$ALIAS
+  unzip DynamicChain.zip -d ~/.transcendence_$ALIAS >/dev/null 2>&1
   echo '#!/bin/bash' > ~/bin/transcendenced_$ALIAS.sh
   echo "transcendenced -daemon -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendenced_$ALIAS.sh
   echo '#!/bin/bash' > ~/bin/transcendence-cli_$ALIAS.sh
@@ -220,8 +219,9 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "port=$PORTD" >> transcendence.conf_TEMP
   echo "masternodeaddr=$IP4:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
-  sudo ufw allow 22123/tcp
-  mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf 
+  sudo ufw allow 22123/tcp >/dev/null 2>&1
+  mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
+  echo ""
   echo "Your ip is $IP4:$PORT"
   COUNTER=$((COUNTER+1))
 	echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
@@ -304,7 +304,7 @@ let COUNTER=COUNTER+IP6COUNT
   echo "port=$PORT" >> transcendence.conf_TEMP
   echo "masternodeaddr=[${gateway}$COUNTER]:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
-  sudo ufw allow 22123/tcp
+  sudo ufw allow 22123/tcp >/dev/null 2>&1
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
   sleep 1
