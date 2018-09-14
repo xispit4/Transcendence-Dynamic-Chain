@@ -220,10 +220,10 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "port=$PORTD" >> transcendence.conf_TEMP
   echo "masternodeaddr=$IP4:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
-  sudo ufw allow $PORT/tcp
+  sudo ufw allow 22123/tcp
   sudo ufw allow $PORTD/tcp
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf 
-  echo "Your ip is $IP4:$PORTD"
+  echo "Your ip is $IP4:$PORT"
   COUNTER=$((COUNTER+1))
 	echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
 	echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop && systemctl stop transcendenced$ALIAS\"" >> .bashrc
@@ -305,7 +305,7 @@ let COUNTER=COUNTER+IP6COUNT
   echo "port=$PORT" >> transcendence.conf_TEMP
   echo "masternodeaddr=[${gateway}$COUNTER]:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
-  sudo ufw allow $PORT/tcp
+  sudo ufw allow 22123/tcp
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
   sleep 1
