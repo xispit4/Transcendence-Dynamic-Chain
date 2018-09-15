@@ -170,7 +170,7 @@ if [ ! -f DynamicChain.zip ]
 then
 wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
 fi
-IP4COUNT=$(find /root/.transcendence_* -maxdepth 0 -type d | wc -l)
+IP4COUNT=$(find /root/.transcendence_* -maxdepth 0 -type d > count.tmp| wc -l count.tmp)
 echo "How many nodes do you want to create on this server?"
 read MNCOUNT
 let COUNTER=0
