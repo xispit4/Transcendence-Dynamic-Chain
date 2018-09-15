@@ -171,7 +171,7 @@ then
 wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
 fi
 IP4COUNT=$(find /root/.transcendence_* -maxdepth 0 -type d | wc -l)
-echo "Telos nodes currently installed: ${GREEN}{$IP4COUNT}${NC}"
+echo -e "Telos nodes currently installed: ${GREEN}{$IP4COUNT}${NC}"
 echo ""
 echo "How many nodes do you want to install on this server?"
 read MNCOUNT
