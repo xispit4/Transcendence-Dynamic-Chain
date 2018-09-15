@@ -131,10 +131,6 @@ echo ""
 echo "Enter max connections value"
 read MAXC
 fi
-if [ ! -f DynamicChain.zip ]
-then
-wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip -q
-fi
 if [ $DOSETUP = "y" ]
 then
   echo -e "Installing ${GREEN}Transcendence dependencies${NC}. Please wait."
@@ -170,6 +166,10 @@ then
   source ~/.bashrc
   echo ""
 fi
+if [ ! -f DynamicChain.zip ]
+then
+wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
+fi
 IP4COUNT=$(find /root/.transcendence_* -maxdepth 0 -type d | wc -l)
 echo "How many nodes do you want to create on this server?"
 read MNCOUNT
@@ -195,7 +195,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 	read PORTD
   fi
   mkdir ~/.transcendence_$ALIAS
-  unzip DynamicChain.zip -d ~/.transcendence_$ALIAS
+  unzip DynamicChain.zip -d ~/.transcendence_$ALIAS >/dev/null 2>&1
   echo '#!/bin/bash' > ~/bin/transcendenced_$ALIAS.sh
   echo "transcendenced -daemon -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendenced_$ALIAS.sh
   echo '#!/bin/bash' > ~/bin/transcendence-cli_$ALIAS.sh
