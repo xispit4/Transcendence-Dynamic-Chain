@@ -124,11 +124,9 @@ echo ""
 if [ $EE = "1" ] 
 then
 MAXC="96"
-AS=">/dev/null 2>&1"
 fi
 if [ $EE = "2" ] 
 then
-AS=" "
 echo ""
 echo "Enter max connections value"
 read MAXC
@@ -140,33 +138,33 @@ fi
 if [ $DOSETUP = "y" ]
 then
   echo -e "Installing ${GREEN}Transcendence dependencies${NC}. Please wait."
-  sudo apt-get update $AS
-  sudo apt-get -y upgrade $AS
-  sudo apt-get -y dist-upgrade $AS
-  sudo apt-get update $AS
-  sudo apt-get install -y zip unzip $AS
+  sudo apt-get update 
+  sudo apt-get -y upgrade
+  sudo apt-get -y dist-upgrade
+  sudo apt-get update
+  sudo apt-get install -y zip unzip
   cd /var
-  sudo touch swap.img $AS
-  sudo chmod 600 swap.img $AS
-  sudo dd if=/dev/zero of=/var/swap.img bs=1024k count=2000 $AS
-  sudo mkswap /var/swap.img $AS
-  sudo swapon /var/swap.img $AS
-  sudo free $AS
+  sudo touch swap.img
+  sudo chmod 600 swap.img
+  sudo dd if=/dev/zero of=/var/swap.img bs=1024k count=2000
+  sudo mkswap /var/swap.img 
+  sudo swapon /var/swap.img 
+  sudo free 
   sudo echo "/var/swap.img none swap sw 0 0" >> /etc/fstab
   cd
  if [ ! -f Linux.zip ]
   then
-  wget https://github.com/phoenixkonsole/transcendence/releases/download/v1.1.0.0/Linux.zip $AS
+  wget https://github.com/phoenixkonsole/transcendence/releases/download/v1.1.0.0/Linux.zip  
  fi
-  unzip Linux.zip $AS
-  chmod +x Linux/bin/* $AS
+  unzip Linux.zip 
+  chmod +x Linux/bin/* 
   sudo mv  Linux/bin/* /usr/local/bin
   rm -rf Linux.zip Windows Linux Mac
-  sudo apt-get install -y ufw $AS
-  sudo ufw allow ssh/tcp $AS
-  sudo ufw limit ssh/tcp $AS
-  sudo ufw logging on $AS
-  echo "y" | sudo ufw enable $AS
+  sudo apt-get install -y ufw 
+  sudo ufw allow ssh/tcp 
+  sudo ufw limit ssh/tcp 
+  sudo ufw logging on
+  echo "y" | sudo ufw enable 
   mkdir -p ~/bin 
   echo 'export PATH=~/bin:$PATH' > ~/.bash_aliases
   source ~/.bashrc
@@ -197,7 +195,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 	read PORTD
   fi
   mkdir ~/.transcendence_$ALIAS
-  unzip DynamicChain.zip -d ~/.transcendence_$ALIAS $AS
+  unzip DynamicChain.zip -d ~/.transcendence_$ALIAS
   echo '#!/bin/bash' > ~/bin/transcendenced_$ALIAS.sh
   echo "transcendenced -daemon -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendenced_$ALIAS.sh
   echo '#!/bin/bash' > ~/bin/transcendence-cli_$ALIAS.sh
@@ -225,7 +223,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "port=$PORTD" >> transcendence.conf_TEMP
   echo "masternodeaddr=$IP4:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
-  sudo ufw allow 22123/tcp $AS
+  sudo ufw allow 22123/tcp
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   echo ""
   echo -e "Your ip is ${GREEN}$IP4:$PORT${NC}"
