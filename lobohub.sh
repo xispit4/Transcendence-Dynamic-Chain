@@ -131,44 +131,44 @@ echo ""
 echo "Enter max connections value"
 read MAXC
 fi
-if [ ! -f DynamicChain.zip ]
-then
-wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip -q
-fi
 if [ $DOSETUP = "y" ]
 then
   echo -e "Installing ${GREEN}Transcendence dependencies${NC}. Please wait."
-  sudo apt-get update >/dev/null 2>&1
-  sudo apt-get -y upgrade >/dev/null 2>&1
-  sudo apt-get -y dist-upgrade >/dev/null 2>&1
-  sudo apt-get update >/dev/null 2>&1
-  sudo apt-get install -y zip unzip >/dev/null 2>&1
+  sudo apt-get update 
+  sudo apt-get -y upgrade
+  sudo apt-get -y dist-upgrade
+  sudo apt-get update
+  sudo apt-get install -y zip unzip
   cd /var
-  sudo touch swap.img >/dev/null 2>&1
-  sudo chmod 600 swap.img >/dev/null 2>&1
-  sudo dd if=/dev/zero of=/var/swap.img bs=1024k count=2000 >/dev/null 2>&1
-  sudo mkswap /var/swap.img >/dev/null 2>&1
-  sudo swapon /var/swap.img >/dev/null 2>&1
-  sudo free >/dev/null 2>&1
+  sudo touch swap.img
+  sudo chmod 600 swap.img
+  sudo dd if=/dev/zero of=/var/swap.img bs=1024k count=2000
+  sudo mkswap /var/swap.img 
+  sudo swapon /var/swap.img 
+  sudo free 
   sudo echo "/var/swap.img none swap sw 0 0" >> /etc/fstab
   cd
  if [ ! -f Linux.zip ]
   then
-  wget https://github.com/phoenixkonsole/transcendence/releases/download/v1.1.0.0/Linux.zip -q
+  wget https://github.com/phoenixkonsole/transcendence/releases/download/v1.1.0.0/Linux.zip  
  fi
-  unzip Linux.zip >/dev/null 2>&1
-  chmod +x Linux/bin/* >/dev/null 2>&1 
+  unzip Linux.zip 
+  chmod +x Linux/bin/* 
   sudo mv  Linux/bin/* /usr/local/bin
   rm -rf Linux.zip Windows Linux Mac
-  sudo apt-get install -y ufw >/dev/null 2>&1 
-  sudo ufw allow ssh/tcp >/dev/null 2>&1
-  sudo ufw limit ssh/tcp >/dev/null 2>&1
-  sudo ufw logging on >/dev/null 2>&1 
-  echo "y" | sudo ufw enable >/dev/null 2>&1
+  sudo apt-get install -y ufw 
+  sudo ufw allow ssh/tcp 
+  sudo ufw limit ssh/tcp 
+  sudo ufw logging on
+  echo "y" | sudo ufw enable 
   mkdir -p ~/bin 
   echo 'export PATH=~/bin:$PATH' > ~/.bash_aliases
   source ~/.bashrc
   echo ""
+fi
+if [ ! -f DynamicChain.zip ]
+then
+wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
 fi
 IP4COUNT=$(find /root/.transcendence_* -maxdepth 0 -type d | wc -l)
 echo "How many nodes do you want to create on this server?"
@@ -223,7 +223,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "port=$PORTD" >> transcendence.conf_TEMP
   echo "masternodeaddr=$IP4:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
-  sudo ufw allow 22123/tcp >/dev/null 2>&1
+  sudo ufw allow 22123/tcp
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   echo ""
   echo -e "Your ip is ${GREEN}$IP4:$PORT${NC}"
