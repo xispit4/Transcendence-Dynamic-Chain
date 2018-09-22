@@ -189,6 +189,9 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   read ALIAS
   CONF_DIR=~/.transcendence_$ALIAS
   echo ""
+  echo "Enter ip"
+  read IP4
+  echo ""
   echo "Enter masternode private key for node $ALIAS"
   read PRIVKEY
   if [ $EE = "2" ] 
