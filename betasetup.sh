@@ -123,7 +123,7 @@ read EE
 echo ""
 if [ $EE = "1" ] 
 then
-MAXC="96"
+MAXC="32"
 fi
 if [ $EE = "2" ] 
 then
@@ -170,8 +170,11 @@ if [ ! -f DynamicChain.zip ]
 then
 wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
 fi
-IP4COUNT=$(find /root/.transcendence_* -maxdepth 0 -type d -print > count.tmp| wc -l count.tmp)
-echo "How many nodes do you want to create on this server?"
+IP4COUNT=$(find /root/.transcendence_* -maxdepth 0 -type d | wc -l)
+
+echo -e "Telos nodes currently installed: ${GREEN}${IP4COUNT}${NC}"
+echo ""
+echo "How many nodes do you want to install on this server?"
 read MNCOUNT
 let COUNTER=0
 let MNCOUNT=MNCOUNT+IP4COUNT
