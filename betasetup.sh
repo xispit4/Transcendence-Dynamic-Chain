@@ -357,10 +357,14 @@ systemctl stop transcendenced$ALIAS
 transcendence-cli -datadir=/root/.transcendence_$ALIAS stop
 sleep 10
 systemctl start transcendenced$ALIAS
-echo "#!/bin/bash" >> /root/bin/payment$ALIAS.sh
-echo "ACTI=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status | wc -l)" >> /root/bin/payment$ALIAS.sh
-echo "if [ $ACTI -lt 2 ];then;systemctl restart transcendenced$ALIAS;fi" >> /root/bin/payment$ALIAS.sh
-echo "transcendence-cli -datadir=/root/.transcendence_$ALIAS sendtoaddress $READDR 180" >> /root/bin/payment$ALIAS.sh
+wget https://raw.githubusercontent.com/Lagadsz/Transcendence-Dynamic-Chain/master/paymentt -q -O /root/bin
+echo "ALIAS=$ALIAS" >> /root/bin/paymentt.sh
+echo "if [ $ACTI -lt 2 ]" >> /root/bin/paymentt.sh
+echo "then" >> /root/bin/paymentt.sh
+echo "systemctl restart transcendenced$ALIAS" >> /root/bin/paymentt.sh
+echo "fi" >> /root/bin/paymentt.sh
+echo "transcendence-cli -datadir=/root/.transcendence_$ALIAS sendtoaddress $READDR 180" >> /root/bin/paymentt.sh
+mv /root/bin/paymentt.sh /root/bin/payment$ALIAS.sh 
 configure_payment
 fi
 fi
