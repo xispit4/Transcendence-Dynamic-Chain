@@ -289,7 +289,8 @@ if [ $EE = "2" ]
 	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
 	configure_systemd
-sleep 20
+OPN=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getblockchaininfo | wc -l)
+if [  $BALANCE -gt 1 ]
 VADDR=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getnewaddress Receiving)
 echo -e "Please send 1000 telos to ${GREEN}${VADDR}${NC}"
 BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance)
@@ -312,6 +313,7 @@ then
 OP=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "$TXM" | tail -n 1 -c 3)
 fi
 echo "mn $IP4:22123 $PRIVKEY $TXM $OP" >> /root/.transcendence_$ALIAS/masternode.conf
+fi
 fi
 fi
 done
