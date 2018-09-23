@@ -330,12 +330,7 @@ if [ $EE = "2" ]
 echo ""
 echo "Please enter receiving address to get rewards"
 read READDR
-sleep 10
-OPN=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getblockchaininfo | wc -l)
-while [  $OPN -lt 2 ]; do
-sleep 10
-OPN=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getblockchaininfo | wc -l)
-done
+loadwallet
 if [  $OPN -gt 1 ]
 then
 VADDR=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getnewaddress Receiving)
