@@ -1,0 +1,2 @@
+#!/bin/bash
+ACTI=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status | wc -l)
