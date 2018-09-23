@@ -12,14 +12,21 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 function getoutput() {
+let CDS=0
 CF=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "$TXM" | tail -n 1 | wc -l)
 while [  $CF -lt 1 ]; do
 sleep 5
 CF=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "$TXM" | tail -n 1 | wc -l)
+CDS=$((CDS+1))
 done
 if [  $CF -gt 0 ]
 then
 OP=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "$TXM" | tail -n 1 -c 3)
+fi
+if [  $CDS -gt 3 ]
+then
+systemctl restart transcendenced$ALIAS
+loadwallet
 fi
 }
 function loadwallet() {
