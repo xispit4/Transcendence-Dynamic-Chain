@@ -151,10 +151,10 @@ sed -i '/$ALIASD/d' /etc/monit/monitrc >/dev/null 2>&1
 monit reload >/dev/null 2>&1
 sed -i '/$ALIASD/d' /etc/monit/monitrc >/dev/null 2>&1
 crontab -l -u root | grep -v transcendenced$ALIASD | crontab -u root - >/dev/null 2>&1
-rm /root/bin/transcendenced_$ALIASD.sh
-rm /root/bin/transcendence-cli_$ALIASD.sh
-rm /root/bin/transcendence-tx_$ALIASD.sh
-rm /root/bin/payment$ALIASD.sh
+rm /root/bin/transcendenced_$ALIASD.sh >/dev/null 2>&1
+rm /root/bin/transcendence-cli_$ALIASD.sh >/dev/null 2>&1
+rm /root/bin/transcendence-tx_$ALIASD.sh >/dev/null 2>&1
+rm /root/bin/payment$ALIASD.sh >/dev/null 2>&1
 source .bashrc
 echo -e "${ALIASD} Successfully deleted."
 fi
