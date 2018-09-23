@@ -312,11 +312,11 @@ TXM=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS sendtoaddress "$MNA
 CF=$(masternode outputs | grep -A1 "f86ffe7792e620668ec5324b52138ec0dac1ee989cb14006737cad9f9a7cccd" | tail -n 1 | wc -l)
 while [  $CF -lt 1 ]; do
 sleep 1
-CF=$(masternode outputs | grep -A1 "f86ffe7792e620668ec5324b52138ec0dac1ee989cb14006737cad9f9a7cccd" | tail -n 1 | wc -l)
+CF=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "f86ffe7792e620668ec5324b52138ec0dac1ee989cb14006737cad9f9a7cccd" | tail -n 1 | wc -l)
 done
 if [  $CF -gt 0 ]
 then
-OP=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "$TXM" | tail -n 1 -c 3)
+OP=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "$TXM" | tail -n 1 -c 3)
 fi
 echo "mn $IP4:22123 $PRIVKEY $TXM $OP" >> /root/.transcendence_$ALIAS/masternode.conf
 fi
