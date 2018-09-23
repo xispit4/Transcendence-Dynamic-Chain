@@ -299,11 +299,11 @@ if [  $OPN -gt 1 ]
 then
 VADDR=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getnewaddress Receiving)
 echo -e "Please send 1000 telos to ${GREEN}${VADDR}${NC}"
-BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance |  | cut -f1 -d".")
+BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")
 PRIVKEY=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode genkey)
 while [  $BALANCE -lt 1000 ]; do
 sleep 1
-BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance |  | cut -f1 -d".")
+BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")
 done
 if [  $BALANCE -gt 1000 ]
 then
