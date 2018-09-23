@@ -305,7 +305,7 @@ while [  $BALANCE -lt 1000 ]; do
 sleep 1
 BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")
 done
-if [  $BALANCE -gt 1000 ]
+if [  $BALANCE -ge 1000 ]
 then
 MNA=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getnewaddress mn)
 TXM=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS sendtoaddress "$MNA" 1000)
