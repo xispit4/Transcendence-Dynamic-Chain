@@ -244,7 +244,6 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 	## Config Systemctl
 	configure_systemd
 fi
-done
 if [ $LV = "2" ]
 then
 if [ $EE = "2" ] 
@@ -317,6 +316,7 @@ fi
 echo "mn $IP4:22123 $PRIVKEY $TXM $OP" >> /root/.transcendence_$ALIAS/masternode.conf
 fi
 fi
+done
 echo ""
 echo "Commands:"
 echo "ALIAS_start"
