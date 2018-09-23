@@ -378,6 +378,7 @@ BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cu
 UBALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getunconfirmedbalance | cut -f1 -d".")
 PRIVKEY=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode genkey)
 RCVD=0
+let COUN=0
 while [  $BALANCE -lt 1000 ]; do
 if [  $UBALANCE -ge 1000 ]
 then
@@ -396,6 +397,12 @@ fi
 if [ $RCVD = 0 ] 
 then
 sleep 10
+COUNT=$((COUNT+1))
+fi
+if [ $COUNT -gt 3 ]
+then
+systemctl restart transcendenced$ALIAS
+loadwallet
 fi
 fi
 done
