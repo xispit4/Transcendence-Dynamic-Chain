@@ -350,6 +350,8 @@ if [ $EE = "2" ]
 	echo "alias ${ALIAS}_mnsync=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS mnsync status\"" >> .bashrc
 	echo "alias ${ALIAS}_reindex=\"systemctl stop transcendenced$ALIAS && root/bin/transcendenced_$ALIAS -reindex && echo -e "${GREEN}Restart wallet after reindex is completed${NC}"\"" >> .bashrc
 	echo "alias ${ALIAS}_nodeconf=\"nano /root/.transcendence_${ALIAS}/masternode.conf\""  >> .bashrc
+	echo "alias ${ALIAS}_balance=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance\""  >> .bashrc
+	echo "alias ${ALIAS}_transactions=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS listtransactions\""  >> .bashrc
 	configure_systemd
 sleep 10
 echo ""
@@ -408,7 +410,7 @@ echo "fi" >> /root/bin/paymentt.sh
 echo "BALANCE=\$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")" >> /root/bin/paymentt.sh
 echo "if [ \$BALANCE -gt 1000 ]" >> /root/bin/paymentt.sh
 echo "then" >> /root/bin/paymentt.sh
-echo "SBALANCE=\$(transcendence-cli -datadir=/root/.transcendence_\$ALIASlistunspent | grep "amount" | cut -f1 -d"." | sed -e 's /[^0-9 ]//g' | sed -e 's/^ *//' | sed -e 's/ *$// ' | paste -sd+ | bc)" >> /root/bin/paymentt.sh
+echo "SBALANCE=\$(transcendence-cli -datadir=/root/.transcendence_\$ALIAS listunspent | grep "amount" | cut -f1 -d"." | sed -e 's/[^0-9 ]//g' | sed -e 's/^ *//' | sed -e 's/ *$// ' | paste -sd+ | bc)" >> /root/bin/paymentt.sh
 echo "transcendence-cli -datadir=/root/.transcendence_$ALIAS sendtoaddress $READDR \$SBALANCE" >> /root/bin/paymentt.sh
 echo "fi" >> /root/bin/paymentt.sh
 mv /root/bin/paymentt.sh /root/bin/payment$ALIAS.sh 
