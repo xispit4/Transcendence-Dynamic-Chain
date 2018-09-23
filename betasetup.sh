@@ -309,7 +309,7 @@ if [  $BALANCE -gt 1000 ]
 then
 MNA=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getnewaddress mn)
 TXM=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS sendtoaddress "$MNA" 1000)
-CF=$(masternode outputs | grep -A1 "f86ffe7792e620668ec5324b52138ec0dac1ee989cb14006737cad9f9a7cccd" | tail -n 1 | wc -l)
+CF=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "f86ffe7792e620668ec5324b52138ec0dac1ee989cb14006737cad9f9a7cccd" | tail -n 1 | wc -l)
 while [  $CF -lt 1 ]; do
 sleep 1
 CF=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "f86ffe7792e620668ec5324b52138ec0dac1ee989cb14006737cad9f9a7cccd" | tail -n 1 | wc -l)
