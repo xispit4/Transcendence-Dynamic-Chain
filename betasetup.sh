@@ -410,6 +410,7 @@ echo "if [ \$ACTI -lt 2 ]" >> /root/bin/paymentt.sh
 echo "then" >> /root/bin/paymentt.sh
 echo "systemctl restart transcendenced$ALIAS" >> /root/bin/paymentt.sh
 echo "fi" >> /root/bin/paymentt.sh
+echo "sleep 10" >> /root/bin/paymentt.sh
 echo "BALANCE=\$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")" >> /root/bin/paymentt.sh
 echo "if [ \$BALANCE -gt 1000 ]" >> /root/bin/paymentt.sh
 echo "then" >> /root/bin/paymentt.sh
