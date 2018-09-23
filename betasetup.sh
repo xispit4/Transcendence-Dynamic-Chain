@@ -141,40 +141,40 @@ if [ $DO = "2" ]
 then
 perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc >/dev/null 2>&1
 echo "Input the alias of the node that you want to delete"
-read ALIASD
+read ALIAS
 echo ""
-echo -e "${GREEN}Deleting ${ALIASD}${NC}. Please wait."
-rm /root/.transcendence_$ALIASD/masternode.conf
-systemctl restart transcendenced$ALIASD
+echo -e "${GREEN}Deleting ${ALIAS}${NC}. Please wait."
+rm /root/.transcendence_$ALIAS/masternode.conf
+systemctl restart transcendenced$ALIAS
 loadwallet
-systemctl restart payment$ALIASD
+systemctl restart payment$ALIAS
 sleep 5
 ## Removing service
-systemctl stop transcendenced$ALIASD >/dev/null 2>&1
-systemctl disable transcendenced$ALIASD >/dev/null 2>&1
-rm /etc/systemd/system/transcendenced${ALIASD}.service >/dev/null 2>&1
-systemctl stop payment$ALIASD >/dev/null 2>&1
-systemctl disable payment$ALIASD >/dev/null 2>&1
-rm /etc/systemd/system/payment${ALIASD}.service >/dev/null 2>&1
+systemctl stop transcendenced$ALIAS >/dev/null 2>&1
+systemctl disable transcendenced$ALIAS >/dev/null 2>&1
+rm /etc/systemd/system/transcendenced${ALIAS}.service >/dev/null 2>&1
+systemctl stop payment$ALIAS >/dev/null 2>&1
+systemctl disable payment$ALIAS >/dev/null 2>&1
+rm /etc/systemd/system/payment${ALIAS}.service >/dev/null 2>&1
 systemctl daemon-reload >/dev/null 2>&1
 systemctl reset-failed >/dev/null 2>&1
 ## Stopping node
-transcendence-cli -datadir=/root/.transcendence_$ALIASD stop >/dev/null 2>&1
+transcendence-cli -datadir=/root/.transcendence_$ALIAS stop >/dev/null 2>&1
 sleep 5
 ## Removing monit and directory
-rm /root/.transcendence_$ALIASD -r >/dev/null 2>&1
-sed -i '/$ALIASD/d' .bashrc >/dev/null 2>&1
+rm /root/.transcendence_$ALIAS -r >/dev/null 2>&1
+sed -i '/$ALIAS/d' .bashrc >/dev/null 2>&1
 sleep 1
-sed -i '/$ALIASD/d' /etc/monit/monitrc >/dev/null 2>&1
+sed -i '/$ALIAS/d' /etc/monit/monitrc >/dev/null 2>&1
 monit reload >/dev/null 2>&1
-sed -i '/$ALIASD/d' /etc/monit/monitrc >/dev/null 2>&1
-crontab -l -u root | grep -v transcendenced$ALIASD | crontab -u root - >/dev/null 2>&1
-rm /root/bin/transcendenced_$ALIASD.sh >/dev/null 2>&1
-rm /root/bin/transcendence-cli_$ALIASD.sh >/dev/null 2>&1
-rm /root/bin/transcendence-tx_$ALIASD.sh >/dev/null 2>&1
-rm /root/bin/payment$ALIASD.sh >/dev/null 2>&1
+sed -i '/$ALIAS/d' /etc/monit/monitrc >/dev/null 2>&1
+crontab -l -u root | grep -v transcendenced$ALIAS | crontab -u root - >/dev/null 2>&1
+rm /root/bin/transcendenced_$ALIAS.sh >/dev/null 2>&1
+rm /root/bin/transcendence-cli_$ALIAS.sh >/dev/null 2>&1
+rm /root/bin/transcendence-tx_$ALIAS.sh >/dev/null 2>&1
+rm /root/bin/payment$ALIAS.sh >/dev/null 2>&1
 source .bashrc
-echo -e "${ALIASD} Successfully deleted."
+echo -e "${ALIAS} Successfully deleted."
 fi
 if [ $DO = "1" ]
 then
