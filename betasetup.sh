@@ -102,7 +102,6 @@ echo "1 - Create new nodes"
 echo "2 - Remove an existing node"
 echo "3 - Upgrade an existing node"
 echo "4 - List aliases"
-echo "5 - Return funds from vps node"
 echo "What would you like to do?"
 read DO
 echo ""
@@ -145,6 +144,10 @@ echo "Input the alias of the node that you want to delete"
 read ALIASD
 echo ""
 echo -e "${GREEN}Deleting ${ALIASD}${NC}. Please wait."
+rm /root/.transcendence_$ALIASD/masternode.conf
+systemctl restart transcendenced$ALIASD
+systemctl restart payment$ALIASD
+sleep 5
 ## Removing service
 systemctl stop transcendenced$ALIASD >/dev/null 2>&1
 systemctl disable transcendenced$ALIASD >/dev/null 2>&1
