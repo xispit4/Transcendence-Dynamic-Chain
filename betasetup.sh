@@ -291,7 +291,7 @@ if [ $EE = "2" ]
 	configure_systemd
 sleep 5
 OPN=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getblockchaininfo | wc -l)
-while [  $OPN -gt 1 ]; do
+while [  $OPN -lt 2 ]; do
 sleep 1
 OPN=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getblockchaininfo | wc -l)
 done
@@ -303,7 +303,8 @@ BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance)
 PRIVKEY=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode genkey)
 while [  $BALANCE -lt 1000 ]; do
 sleep 1
-BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance)
+BALANCE2=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance)
+BALANCE=${BALANCE2%.*}
 done
 if [  $BALANCE -gt 1000 ]
 then
