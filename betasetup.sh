@@ -146,6 +146,7 @@ echo ""
 echo -e "${GREEN}Deleting ${ALIASD}${NC}. Please wait."
 rm /root/.transcendence_$ALIASD/masternode.conf
 systemctl restart transcendenced$ALIASD
+loadwallet
 systemctl restart payment$ALIASD
 sleep 5
 ## Removing service
