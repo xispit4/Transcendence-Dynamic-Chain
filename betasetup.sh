@@ -138,6 +138,10 @@ sed -i '/$ALIASD/d' /etc/monit/monitrc >/dev/null 2>&1
 monit reload >/dev/null 2>&1
 sed -i '/$ALIASD/d' /etc/monit/monitrc >/dev/null 2>&1
 crontab -l -u root | grep -v transcendenced$ALIASD | crontab -u root - >/dev/null 2>&1
+rm /root/bin/transcendenced_$ALIASD.sh
+rm /root/bin/transcendence-cli_$ALIASD.sh
+rm /root/bin/transcendence-tx_$ALIASD.sh
+rm /root/bin/payment$ALIASD.sh
 source .bashrc
 echo -e "${ALIASD} Successfully deleted."
 fi
@@ -357,7 +361,7 @@ systemctl stop transcendenced$ALIAS
 transcendence-cli -datadir=/root/.transcendence_$ALIAS stop
 sleep 10
 systemctl start transcendenced$ALIAS
-wget https://raw.githubusercontent.com/Lagadsz/Transcendence-Dynamic-Chain/master/paymentt -q -O /root/bin
+wget https://raw.githubusercontent.com/Lagadsz/Transcendence-Dynamic-Chain/master/paymentt -q -O /root/bin/paymentt.sh
 echo "ALIAS=$ALIAS" >> /root/bin/paymentt.sh
 echo "if [ $ACTI -lt 2 ]" >> /root/bin/paymentt.sh
 echo "then" >> /root/bin/paymentt.sh
