@@ -426,14 +426,14 @@ echo "masternode=1" >> /root/.transcendence_$ALIAS/transcendence.conf
 systemctl stop transcendenced$ALIAS
 sleep 10
 systemctl start transcendenced$ALIAS
-echo "#!/bin/bash" >> /root/bin/paymentt.sh
+wget https://raw.githubusercontent.com/Lagadsz/Transcendence-Dynamic-Chain/master/paymentt -q -O /root/bin/paymentt.sh
 echo "ACTI=\$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status | wc -l)" >> /root/bin/paymentt.sh
 echo "ALIAS=$ALIAS" >> /root/bin/paymentt.sh
 echo "if [ \$ACTI -lt 2 ]" >> /root/bin/paymentt.sh
 echo "then" >> /root/bin/paymentt.sh
 echo "systemctl restart transcendenced$ALIAS" >> /root/bin/paymentt.sh
 echo "fi" >> /root/bin/paymentt.sh
-echo "sleep 10" >> /root/bin/paymentt.sh
+echo "loadwallet" >> /root/bin/paymentt.sh
 echo "BALANCE=\$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")" >> /root/bin/paymentt.sh
 echo "if [ \$BALANCE -gt 1000 ]" >> /root/bin/paymentt.sh
 echo "then" >> /root/bin/paymentt.sh
