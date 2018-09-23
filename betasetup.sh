@@ -243,8 +243,8 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
 	## Config Systemctl
 	configure_systemd
-done
 fi
+done
 if [ $LV = "V" ]
 then
 if [ $EE = "2" ] 
