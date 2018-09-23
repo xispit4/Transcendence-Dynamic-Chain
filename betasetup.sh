@@ -292,7 +292,7 @@ if [ $EE = "2" ]
 sleep 5
 OPN=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getblockchaininfo | wc -l)
 while [  $OPN -lt 2 ]; do
-sleep 1
+sleep 5
 OPN=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getblockchaininfo | wc -l)
 done
 if [  $OPN -gt 1 ]
@@ -302,16 +302,22 @@ echo -e "Please send 1001 telos to ${GREEN}${VADDR}${NC} (1 for redundancy, requ
 BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")
 PRIVKEY=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode genkey)
 while [  $BALANCE -lt 1000 ]; do
-sleep 1
+sleep 5
 BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")
+UBALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getunconfirmedbalance | cut -f1 -d".")
 done
+if [  $UBALANCE -ge 1000 ]
+then
+echo -e "${GREEN}Funds received! Waiting for confirmations${NC}"
+fi
 if [  $BALANCE -ge 1000 ]
 then
+echo "${GREEN}Transaction confirmed! Node creation started, Waiting for confirmations.${NC} "
 MNA=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getnewaddress mn)
 TXM=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS sendtoaddress "$MNA" 1000)
 CF=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "f86ffe7792e620668ec5324b52138ec0dac1ee989cb14006737cad9f9a7cccd" | tail -n 1 | wc -l)
 while [  $CF -lt 1 ]; do
-sleep 1
+sleep 5
 CF=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "f86ffe7792e620668ec5324b52138ec0dac1ee989cb14006737cad9f9a7cccd" | tail -n 1 | wc -l)
 done
 if [  $CF -gt 0 ]
