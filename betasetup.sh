@@ -322,9 +322,17 @@ CF=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs |
 done
 if [  $CF -gt 0 ]
 then
-OP=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "$TXM" | tail -n 1 -c 3)
+OP=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "$TXM" | tail -n 1 -c 3)
 fi
 echo "mn $IP4:22123 $PRIVKEY $TXM $OP" >> /root/.transcendence_$ALIAS/masternode.conf
+echo "masternodeaddr=$IP4:$PORT" >> /root/.transcendence_$ALIAS/transcendence.conf
+echo "masternodeprivkey=$PRIVKEY" >> /root/.transcendence_$ALIAS/transcendence.conf
+echo "masternode=1" >> /root/.transcendence_$ALIAS/transcendence.conf
+systemctl stop transcendenced$ALIAS
+transcendence-cli -datadir=/root/.transcendence_$ALIAS stop
+sleep 10
+transcendence-cli -datadir=/root/.transcendenced_$ALIAS
+systemctl start transcendenced$ALIAS
 fi
 fi
 fi
