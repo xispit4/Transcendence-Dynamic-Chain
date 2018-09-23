@@ -344,10 +344,13 @@ echo -e "Please send 1001 telos to ${GREEN}${VADDR}${NC} (1 for redundancy)"
 BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")
 PRIVKEY=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode genkey)
 while [  $BALANCE -lt 1000 ]; do
-sleep 5
-systemctl restart transcendenced$ALIAS
+sleep 60
 loadwallet
 BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")
+if [  $BALANCE -lt 1000 ]
+then
+systemctl restart transcendenced$ALIAS
+fi
 done
 if [  $BALANCE -ge 1000 ]
 then
