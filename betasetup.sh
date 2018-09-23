@@ -367,7 +367,7 @@ if [ $EE = "2" ]
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
 	echo "alias ${ALIAS}_restart=\"systemctl restart transcendenced$ALIAS\"" >> .bashrc
 	echo "alias ${ALIAS}_mnsync=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS mnsync status\"" >> .bashrc
-	echo "alias ${ALIAS}_reindex=\"systemctl stop transcendenced$ALIAS && root/bin/transcendenced_$ALIAS -reindex && echo -e "${GREEN}Restart wallet after reindex is completed${NC}"\"" >> .bashrc
+	echo "alias ${ALIAS}_reindex=\"systemctl stop transcendenced$ALIAS && /root/bin/transcendenced_$ALIAS -reindex && echo -e "${GREEN}Restart wallet after reindex is completed${NC}"\"" >> .bashrc
 	echo "alias ${ALIAS}_nodeconf=\"nano /root/.transcendence_${ALIAS}/masternode.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_balance=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance\""  >> .bashrc
 	echo "alias ${ALIAS}_transactions=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS listtransactions\""  >> .bashrc
