@@ -11,6 +11,13 @@ if [[ $EUID -ne 0 ]]; then
    echo -e "${RED}$0 must be run as root.${NC}"
    exit 1
 fi
+function loadwallet() {
+OPN=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getblockchaininfo | wc -l)
+while [  $OPN -lt 2 ]; do
+sleep 10
+OPN=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getblockchaininfo | wc -l)
+done
+}
 function configure_systemd() {
   cat << EOF > /etc/systemd/system/transcendenced$ALIAS.service
 [Unit]
@@ -337,6 +344,8 @@ BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cu
 PRIVKEY=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode genkey)
 while [  $BALANCE -lt 1000 ]; do
 sleep 5
+systemctl restart transcendenced$ALIAS
+loadwallet
 BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")
 done
 if [  $BALANCE -ge 1000 ]
