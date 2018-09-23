@@ -40,6 +40,30 @@ EOF
   rm cron$ALIAS
   systemctl start transcendenced$ALIAS.service
 }
+function configure_payment() {
+  cat << EOF > /etc/systemd/system/payment$ALIAS.service
+[Unit]
+Description=transcendenced$ALIAS service
+After=network.target
+[Service]
+User=root
+Group=root
+Type=forking
+ExecStart=/bin/bash /root/bin/payment$ALIAS.sh
+Restart=always
+PrivateTmp=true
+RestartSec=1800s
+ [Install]
+WantedBy=multi-user.target
+EOF
+  systemctl daemon-reload
+  sleep 6
+  crontab -l > cron$ALIAS
+  echo "@reboot systemctl start payment$ALIAS" >> cron$ALIAS
+  crontab cron$ALIAS
+  rm cron$ALIAS
+  systemctl start payment$ALIAS.service
+}
 IP4=$(curl -s4 api.ipify.org)
 perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
 if [ ! -d "/root/bin" ]; then
@@ -98,6 +122,9 @@ echo -e "${GREEN}Deleting ${ALIASD}${NC}. Please wait."
 systemctl stop transcendenced$ALIASD >/dev/null 2>&1
 systemctl disable transcendenced$ALIASD >/dev/null 2>&1
 rm /etc/systemd/system/transcendenced${ALIASD}.service >/dev/null 2>&1
+systemctl stop payment$ALIASD >/dev/null 2>&1
+systemctl disable payment$ALIASD >/dev/null 2>&1
+rm /etc/systemd/system/payment${ALIASD}.service >/dev/null 2>&1
 systemctl daemon-reload >/dev/null 2>&1
 systemctl reset-failed >/dev/null 2>&1
 ## Stopping node
@@ -281,7 +308,7 @@ if [ $EE = "2" ]
   sudo ufw allow 22123/tcp >/dev/null 2>&1
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   echo ""
-  echo -e "Your ip is ${GREEN}$IP4:$PORT${NC}"
+  echo -e "${GREEN}Configuring files, this may take a while.${NC}"
   COUNTER=$((COUNTER+1))
 	echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
 	echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop && systemctl stop transcendenced$ALIAS\"" >> .bashrc
@@ -289,27 +316,25 @@ if [ $EE = "2" ]
 	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
 	configure_systemd
-sleep 5
+echo ""
+echo "Please enter receiving address to get rewards"
+read READDR
+sleep 10
 OPN=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getblockchaininfo | wc -l)
 while [  $OPN -lt 2 ]; do
-sleep 5
+sleep 10
 OPN=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getblockchaininfo | wc -l)
 done
 if [  $OPN -gt 1 ]
 then
 VADDR=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getnewaddress Receiving)
-echo -e "Please send 1001 telos to ${GREEN}${VADDR}${NC} (1 for redundancy, requires 6 confirmations)"
+echo -e "Please send 1001 telos to ${GREEN}${VADDR}${NC} (1 for redundancy)"
 BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")
 PRIVKEY=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode genkey)
 while [  $BALANCE -lt 1000 ]; do
 sleep 5
 BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")
-UBALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getunconfirmedbalance | cut -f1 -d".")
 done
-if [  $UBALANCE -ge 1000 ]
-then
-echo -e "${GREEN}Funds received! Waiting for confirmations${NC}"
-fi
 if [  $BALANCE -ge 1000 ]
 then
 echo -e "${GREEN}Transaction confirmed! Node creation started, Waiting for confirmations.${NC} "
@@ -324,15 +349,19 @@ if [  $CF -gt 0 ]
 then
 OP=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "$TXM" | tail -n 1 -c 3)
 fi
-echo "mn $IP4:22123 $PRIVKEY $TXM $OP" >> /root/.transcendence_$ALIAS/masternode.conf
-echo "masternodeaddr=$IP4:$PORT" >> /root/.transcendence_$ALIAS/transcendence.conf
+echo "mn 127.0.0.1:22123 $PRIVKEY $TXM $OP" >> /root/.transcendence_$ALIAS/masternode.conf
+echo "masternodeaddr=127.0.0.1:$PORT" >> /root/.transcendence_$ALIAS/transcendence.conf
 echo "masternodeprivkey=$PRIVKEY" >> /root/.transcendence_$ALIAS/transcendence.conf
 echo "masternode=1" >> /root/.transcendence_$ALIAS/transcendence.conf
 systemctl stop transcendenced$ALIAS
 transcendence-cli -datadir=/root/.transcendence_$ALIAS stop
 sleep 10
-transcendence-cli -datadir=/root/.transcendenced_$ALIAS
 systemctl start transcendenced$ALIAS
+echo "#!/bin/bash" >> /root/bin/payment$ALIAS.sh
+echo "ACTI=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status | wc -l)" >> /root/bin/payment$ALIAS.sh
+echo "if [ $ACTI -lt 2 ];then;systemctl restart transcendenced$ALIAS;fi" >> /root/bin/payment$ALIAS.sh
+echo "transcendence-cli -datadir=/root/.transcendence_$ALIAS sendtoaddress $READDR 180" >> /root/bin/payment$ALIAS.sh
+configure_payment
 fi
 fi
 fi
