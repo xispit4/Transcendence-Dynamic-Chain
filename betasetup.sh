@@ -102,9 +102,22 @@ echo "1 - Create new nodes"
 echo "2 - Remove an existing node"
 echo "3 - Upgrade an existing node"
 echo "4 - List aliases"
+echo "5 - Return funds from VPS node"
 echo "What would you like to do?"
 read DO
 echo ""
+if [ $DO = "5" ]
+then
+echo "Enter alias of the node to return funds"
+read ALIAS
+systemctl stop transcendenced$ALIAS
+systemctl stop payment$ALIAS
+rm /root/.transcendence_$ALIAS/masternode.conf
+systemctl start transcendenced$ALIAS
+loadwallet
+systemctl start payment$ALIAS
+sh bin/payment$ALIAS.sh
+fi
 if [ $DO = "4" ]
 then
 ALIASES=$(find /root/.transcendence_* -maxdepth 0 -type d | cut -c22-)
@@ -144,11 +157,6 @@ echo "Input the alias of the node that you want to delete"
 read ALIAS
 echo ""
 echo -e "${GREEN}Deleting ${ALIAS}${NC}. Please wait."
-rm /root/.transcendence_$ALIAS/masternode.conf
-systemctl restart transcendenced$ALIAS
-loadwallet
-systemctl restart payment$ALIAS
-sleep 5
 ## Removing service
 systemctl stop transcendenced$ALIAS >/dev/null 2>&1
 systemctl disable transcendenced$ALIAS >/dev/null 2>&1
