@@ -312,7 +312,7 @@ echo -e "${GREEN}Funds received! Waiting for confirmations${NC}"
 fi
 if [  $BALANCE -ge 1000 ]
 then
-echo "${GREEN}Transaction confirmed! Node creation started, Waiting for confirmations.${NC} "
+echo -e "${GREEN}Transaction confirmed! Node creation started, Waiting for confirmations.${NC} "
 MNA=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getnewaddress mn)
 TXM=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS sendtoaddress "$MNA" 1000)
 CF=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "f86ffe7792e620668ec5324b52138ec0dac1ee989cb14006737cad9f9a7cccd" | tail -n 1 | wc -l)
