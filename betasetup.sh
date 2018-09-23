@@ -12,10 +12,16 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 function loadwallet() {
+let COUNTERT=0
 OPN=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getblockchaininfo | wc -l)
 while [  $OPN -lt 2 ]; do
 sleep 10
 OPN=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getblockchaininfo | wc -l)
+COUNTERT=\$((COUNTERT+1))
+if [ $COUNTERT -ge 6 ]
+then
+systemctl restart transcendenced$ALIAS
+fi
 done
 }
 function configure_systemd() {
