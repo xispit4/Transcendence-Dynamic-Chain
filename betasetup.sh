@@ -231,7 +231,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "port=$PORTD" >> transcendence.conf_TEMP
   echo "masternodeaddr=$IP4:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
-  sudo ufw allow 22123/tcp
+  sudo ufw allow 22123/tcp >/dev/null 2>&1
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   echo ""
   echo -e "Your ip is ${GREEN}$IP4:$PORT${NC}"
@@ -278,7 +278,7 @@ if [ $EE = "2" ]
   echo "" >> transcendence.conf_TEMP
   echo "" >> transcendence.conf_TEMP
   echo "port=$PORTD" >> transcendence.conf_TEMP
-  sudo ufw allow 22123/tcp
+  sudo ufw allow 22123/tcp >/dev/null 2>&1
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   echo ""
   echo -e "Your ip is ${GREEN}$IP4:$PORT${NC}"
@@ -298,7 +298,7 @@ done
 if [  $OPN -gt 1 ]
 then
 VADDR=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getnewaddress Receiving)
-echo -e "Please send 1000 telos to ${GREEN}${VADDR}${NC}"
+echo -e "Please send 1001 telos to ${GREEN}${VADDR}${NC} (1 for redundancy, requires 6 confirmations)"
 BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")
 PRIVKEY=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode genkey)
 while [  $BALANCE -lt 1000 ]; do
