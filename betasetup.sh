@@ -292,6 +292,7 @@ if [ $EE = "2" ]
 	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
 	configure_systemd
+sleep 20
 VADDR=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getnewaddress Receiving)
 echo -e "Please send 1000 telos to ${GREEN}${VADDR}${NC}"
 BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance)
