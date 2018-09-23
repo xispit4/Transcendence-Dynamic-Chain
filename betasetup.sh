@@ -11,7 +11,19 @@ if [[ $EUID -ne 0 ]]; then
    echo -e "${RED}$0 must be run as root.${NC}"
    exit 1
 fi
+function getoutput() {
+CF=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "$TXM" | tail -n 1 | wc -l)
+while [  $CF -lt 1 ]; do
+sleep 5
+CF=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "$TXM" | tail -n 1 | wc -l)
+done
+if [  $CF -gt 0 ]
+then
+OP=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "$TXM" | tail -n 1 -c 3)
+fi
+}
 function loadwallet() {
+echo "Loading wallet"
 let COUNTERT=0
 OPN=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getblockchaininfo | wc -l)
 while [  $OPN -lt 2 ]; do
@@ -23,6 +35,7 @@ then
 systemctl restart transcendenced$ALIAS
 fi
 done
+echo "Wallet loaded"
 }
 function configure_systemd() {
   cat << EOF > /etc/systemd/system/transcendenced$ALIAS.service
@@ -89,6 +102,7 @@ echo "1 - Create new nodes"
 echo "2 - Remove an existing node"
 echo "3 - Upgrade an existing node"
 echo "4 - List aliases"
+echo "5 - Return funds from vps node"
 echo "What would you like to do?"
 read DO
 echo ""
@@ -328,11 +342,16 @@ if [ $EE = "2" ]
   echo -e "${GREEN}Configuring files, this may take a while.${NC}"
   COUNTER=$((COUNTER+1))
 	echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
-	echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop && systemctl stop transcendenced$ALIAS\"" >> .bashrc
-	echo "alias ${ALIAS}_start=\"/root/bin/transcendenced_${ALIAS}.sh && systemctl start transcendenced$ALIAS\""  >> .bashrc
+	echo "alias ${ALIAS}_stop=\"systemctl stop transcendenced$ALIAS\"" >> .bashrc
+	echo "alias ${ALIAS}_start=\"systemctl start transcendenced$ALIAS\""  >> .bashrc
 	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
+	echo "alias ${ALIAS}_restart=\"systemctl restart transcendenced$ALIAS\"" >> .bashrc
+	echo "alias ${ALIAS}_mnsync=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS mnsync status\"" >> .bashrc
+	echo "alias ${ALIAS}_reindex=\"systemctl stop transcendenced$ALIAS && root/bin/transcendenced_$ALIAS -reindex && echo -e "${GREEN}Restart wallet after reindex is completed${NC}"\"" >> .bashrc
+	echo "alias ${ALIAS}_nodeconf=\"nano /root/.transcendence_${ALIAS}/masternode.conf\""  >> .bashrc
 	configure_systemd
+sleep 10
 echo ""
 echo "Please enter receiving address to get rewards"
 read READDR
@@ -342,14 +361,28 @@ then
 VADDR=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getnewaddress Receiving)
 echo -e "Please send 1001 telos to ${GREEN}${VADDR}${NC} (1 for redundancy)"
 BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")
+UBALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getunconfirmedbalance | cut -f1 -d".")
 PRIVKEY=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode genkey)
+RCVD=0
 while [  $BALANCE -lt 1000 ]; do
-sleep 60
-loadwallet
+if [  $UBALANCE -ge 1000 ]
+then
+echo "Funds received! waiting for confirmations"
+RCVD=1
+sleep 10
+fi
 BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")
 if [  $BALANCE -lt 1000 ]
 then
+if [ $RCVD = 1 ] 
+then
+sleep 30
 systemctl restart transcendenced$ALIAS
+fi
+if [ $RCVD = 0 ] 
+then
+sleep 10
+fi
 fi
 done
 if [  $BALANCE -ge 1000 ]
@@ -357,21 +390,12 @@ then
 echo -e "${GREEN}Transaction confirmed! Node creation started, Waiting for confirmations.${NC} "
 MNA=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getnewaddress mn)
 TXM=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS sendtoaddress "$MNA" 1000)
-CF=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "$TXM" | tail -n 1 | wc -l)
-while [  $CF -lt 1 ]; do
-sleep 5
-CF=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "$TXM" | tail -n 1 | wc -l)
-done
-if [  $CF -gt 0 ]
-then
-OP=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "$TXM" | tail -n 1 -c 3)
-fi
+getoutput
 echo "mn 127.0.0.1:22123 $PRIVKEY ${TXM}${OP}" >> /root/.transcendence_$ALIAS/masternode.conf
 echo "masternodeaddr=127.0.0.1:$PORT" >> /root/.transcendence_$ALIAS/transcendence.conf
 echo "masternodeprivkey=$PRIVKEY" >> /root/.transcendence_$ALIAS/transcendence.conf
 echo "masternode=1" >> /root/.transcendence_$ALIAS/transcendence.conf
 systemctl stop transcendenced$ALIAS
-transcendence-cli -datadir=/root/.transcendence_$ALIAS stop
 sleep 10
 systemctl start transcendenced$ALIAS
 echo "#!/bin/bash" >> /root/bin/paymentt.sh
@@ -384,7 +408,7 @@ echo "fi" >> /root/bin/paymentt.sh
 echo "BALANCE=\$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")" >> /root/bin/paymentt.sh
 echo "if [ \$BALANCE -gt 1000 ]" >> /root/bin/paymentt.sh
 echo "then" >> /root/bin/paymentt.sh
-echo "SBALANCE=\$((BALANCE-1000))" >> /root/bin/paymentt.sh
+echo "SBALANCE=\$(transcendence-cli -datadir=/root/.transcendence_\$ALIASlistunspent | grep "amount" | cut -f1 -d"." | sed -e 's /[^0-9 ]//g' | sed -e 's/^ *//' | sed -e 's/ *$// ' | paste -sd+ | bc)" >> /root/bin/paymentt.sh
 echo "transcendence-cli -datadir=/root/.transcendence_$ALIAS sendtoaddress $READDR \$SBALANCE" >> /root/bin/paymentt.sh
 echo "fi" >> /root/bin/paymentt.sh
 mv /root/bin/paymentt.sh /root/bin/payment$ALIAS.sh 
