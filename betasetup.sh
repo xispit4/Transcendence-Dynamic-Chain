@@ -271,7 +271,6 @@ if [ $EE = "2" ]
   echo "daemon=1" >> transcendence.conf_TEMP
   echo "logtimestamps=1" >> transcendence.conf_TEMP
   echo "maxconnections=$MAXC" >> transcendence.conf_TEMP
-  echo "masternode=1" >> transcendence.conf_TEMP
   echo "dbcache=50" >> transcendence.conf_TEMP
   echo "banscore=10" >> transcendence.conf_TEMP
   echo "maxorphantx=10" >> transcendence.conf_TEMP
@@ -279,8 +278,6 @@ if [ $EE = "2" ]
   echo "" >> transcendence.conf_TEMP
   echo "" >> transcendence.conf_TEMP
   echo "port=$PORTD" >> transcendence.conf_TEMP
-  echo "masternodeaddr=$IP4:$PORT" >> transcendence.conf_TEMP
-  echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
   sudo ufw allow 22123/tcp
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   echo ""
