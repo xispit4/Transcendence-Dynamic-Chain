@@ -189,9 +189,9 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   read ALIAS
   CONF_DIR=~/.transcendence_$ALIAS
   echo ""
-  echo -e "Press ${GREEN}L${NC} to setup locally or ${GREEN}V${NC} to setup on the VPS"
+  echo -e "Press ${GREEN}1${NC} to setup locally or ${GREEN}2${NC} to setup on the VPS"
   read LV
-  if [ $LV = "L" ] 
+  if [ $LV = "1" ] 
   then
   echo ""
   echo "Enter masternode private key for node $ALIAS"
@@ -245,7 +245,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 	configure_systemd
 fi
 done
-if [ $LV = "V" ]
+if [ $LV = "2" ]
 then
 if [ $EE = "2" ] 
 	then
@@ -294,7 +294,7 @@ if [ $EE = "2" ]
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
 	configure_systemd
 VADDR=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getnewaddress Receiving)
-echo -e "Please send 1000 telos to ${GREEN}${VADDR}${NC})
+echo -e "Please send 1000 telos to ${GREEN}${VADDR}${NC}"
 BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance)
 PRIVKEY=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode genkey)
 while [  $BALANCE -lt 1000 ]; do
