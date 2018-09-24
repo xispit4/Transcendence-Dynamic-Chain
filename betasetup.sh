@@ -423,8 +423,8 @@ echo -e "${GREEN}Transaction confirmed! Node creation started, Waiting for confi
 MNA=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getnewaddress mn)
 TXM=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS sendtoaddress "$MNA" 1000)
 getoutput
-echo "mn 127.0.0.1:22123 $PRIVKEY $TXM $OP" >> /root/.transcendence_$ALIAS/masternode.conf
-echo "masternodeaddr=127.0.0.1:$PORT" >> /root/.transcendence_$ALIAS/transcendence.conf
+echo "mn $IP4:22123 $PRIVKEY $TXM $OP" >> /root/.transcendence_$ALIAS/masternode.conf
+echo "masternodeaddr=$IP4:$PORT" >> /root/.transcendence_$ALIAS/transcendence.conf
 echo "masternodeprivkey=$PRIVKEY" >> /root/.transcendence_$ALIAS/transcendence.conf
 echo "masternode=1" >> /root/.transcendence_$ALIAS/transcendence.conf
 systemctl stop transcendenced$ALIAS
