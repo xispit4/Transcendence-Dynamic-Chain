@@ -120,9 +120,12 @@ echo "Enter alias of the node to return funds"
 read ALIAS
 rm /root/.transcendence_$ALIAS/masternode.conf
 sleep 1
-systemctl restart transcendenced$ALIAS
+systemctl stop transcendenced$ALIAS
+transcendence-cli -datadir=/root/.transcendence_$ALIAS stop
+sleep 1
+/root/bin/transcendenced_$ALIAS.sh
 loadwallet
-RAD=$(grep "sendtoaddress" bin/paymentmn$alias.sh | cut -f1 -d"$" | sed -n -e 's/^.*sendtoaddress //p')
+RAD=$(grep "sendtoaddress" bin/paymentmn$ALIAS.sh | cut -f1 -d"$" | sed -n -e 's/^.*sendtoaddress //p')
 SBAL=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS listunspent | grep "amount" | cut -f1 -d"." | sed -e 's/[^0-9 ]//g' | sed -e 's/^ *//' | sed -e 's/ *$// ' | paste -sd+ | bc)
 transcendence-cli -datadir=/root/.transcendence_$ALIAS sendtoaddress $RAD $SBAL
 fi
@@ -135,6 +138,7 @@ echo "1 - Create new nodes"
 echo "2 - Remove an existing node"
 echo "3 - Upgrade an existing node"
 echo "4 - List aliases"
+echo "5 - Return funds from VPS node"
 echo "What would you like to do?"
 read DO
 echo ""
