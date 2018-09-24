@@ -97,7 +97,7 @@ EOF
   echo "@reboot systemctl start payment$ALIAS" >> cron$ALIAS
   crontab cron$ALIAS
   rm cron$ALIAS
-  systemctl start payment$ALIAS.service
+  systemctl start payment$ALIAS.service >/dev/null 2>&1
 }
 IP4=$(curl -s4 api.ipify.org)
 perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
