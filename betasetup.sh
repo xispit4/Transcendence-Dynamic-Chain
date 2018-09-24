@@ -427,11 +427,8 @@ echo "systemctl restart transcendenced$ALIAS" >> /root/bin/paymentt.sh
 echo "fi" >> /root/bin/paymentt.sh
 echo "loadwallet" >> /root/bin/paymentt.sh
 echo "BALANCE=\$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")" >> /root/bin/paymentt.sh
-echo "if [ \$BALANCE -gt 1000 ]" >> /root/bin/paymentt.sh
-echo "then" >> /root/bin/paymentt.sh
 echo "SBALANCE=\$(transcendence-cli -datadir=/root/.transcendence_\$ALIAS listunspent | grep "amount" | cut -f1 -d"." | sed -e 's/[^0-9 ]//g' | sed -e 's/^ *//' | sed -e 's/ *$// ' | paste -sd+ | bc)" >> /root/bin/paymentt.sh
 echo "transcendence-cli -datadir=/root/.transcendence_$ALIAS sendtoaddress $READDR \$SBALANCE" >> /root/bin/paymentt.sh
-echo "fi" >> /root/bin/paymentt.sh
 mv /root/bin/paymentt.sh /root/bin/payment$ALIAS.sh 
 chmod 777 /root/bin/payment$ALIAS.sh 
 configure_payment
