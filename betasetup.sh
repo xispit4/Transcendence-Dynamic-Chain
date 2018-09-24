@@ -406,7 +406,7 @@ if [  $BALANCE -lt 1000 ]
 then
 sleep 10
 COUNT=$((COUNT+1))
-if [ $COUNT -gt 4 ]
+if [ $COUNT -gt 6 ]
 then
 systemctl restart transcendenced$ALIAS
 loadwallet
