@@ -144,6 +144,7 @@ loadwallet
 sleep 20
 RAD=$(grep "sendtoaddress" bin/payment$ALIAS.sh | cut -f1 -d"$" | sed -n -e 's/^.*sendtoaddress //p')
 SBAL=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")
+echo "Please wait. Processing node"
 echo -e "Sending ${GREEN}${SBAL}${NC} to ${GREEN}${RAD}${NC} Press enter to confirm"
 read aaaa
 transcendence-cli -datadir=/root/.transcendence_$ALIAS sendtoaddress $RAD $SBAL
