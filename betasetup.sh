@@ -3,7 +3,7 @@ cd ~
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
-apt-get install bc y 
+apt-get install bc -y >/dev/null 2>&1
 if [[ $(lsb_release -d) != *16.04* ]]; then
   echo -e "${RED}You are not running Ubuntu 16.04. Installation is cancelled.${NC}"
   exit 1
