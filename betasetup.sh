@@ -123,7 +123,6 @@ rm /root/.transcendence_$ALIAS/masternode.conf
 systemctl start transcendenced$ALIAS
 loadwallet
 systemctl start payment$ALIAS
-sh bin/payment$ALIAS.sh
 fi
 if [ $DO = "4" ]
 then
