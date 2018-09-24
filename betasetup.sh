@@ -114,21 +114,6 @@ echo "5 - Return funds from VPS node"
 echo "What would you like to do?"
 read DO
 echo ""
-if [ $DO = "5" ]
-then
-echo "Enter alias of the node to return funds"
-read ALIAS
-rm /root/.transcendence_$ALIAS/masternode.conf
-sleep 1
-systemctl stop transcendenced$ALIAS
-transcendence-cli -datadir=/root/.transcendence_$ALIAS stop
-sleep 1
-/root/bin/transcendenced_$ALIAS.sh
-loadwallet
-RAD=$(grep "sendtoaddress" bin/paymentmn$ALIAS.sh | cut -f1 -d"$" | sed -n -e 's/^.*sendtoaddress //p')
-SBAL=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS listunspent | grep "amount" | cut -f1 -d"." | sed -e 's/[^0-9 ]//g' | sed -e 's/^ *//' | sed -e 's/ *$// ' | paste -sd+ | bc)
-transcendence-cli -datadir=/root/.transcendence_$ALIAS sendtoaddress $RAD $SBAL
-fi
 if [ $DO = "4" ]
 then
 ALIASES=$(find /root/.transcendence_* -maxdepth 0 -type d | cut -c22-)
@@ -142,6 +127,21 @@ echo "5 - Return funds from VPS node"
 echo "What would you like to do?"
 read DO
 echo ""
+fi
+if [ $DO = "5" ]
+then
+echo "Enter alias of the node to return funds"
+read ALIAS
+rm /root/.transcendence_$ALIAS/masternode.conf
+sleep 1
+systemctl stop transcendenced$ALIAS
+transcendence-cli -datadir=/root/.transcendence_$ALIAS stop
+sleep 1
+/root/bin/transcendenced_$ALIAS.sh
+loadwallet
+RAD=$(grep "sendtoaddress" bin/payment$ALIAS.sh | cut -f1 -d"$" | sed -n -e 's/^.*sendtoaddress //p')
+SBAL=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS listunspent | grep "amount" | cut -f1 -d"." | sed -e 's/[^0-9 ]//g' | sed -e 's/^ *//' | sed -e 's/ *$// ' | paste -sd+ | bc)
+transcendence-cli -datadir=/root/.transcendence_$ALIAS sendtoaddress $RAD $SBAL
 fi
 if [ $DO = "3" ]
 then
