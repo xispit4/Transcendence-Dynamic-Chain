@@ -27,6 +27,7 @@ fi
 if [  $CDS -gt 3 ]
 then
 systemctl restart transcendenced$ALIAS
+CDS=0
 loadwallet
 fi
 }
@@ -410,6 +411,7 @@ if [ $COUNT -gt 6 ]
 then
 systemctl restart transcendenced$ALIAS
 loadwallet
+COUNT=0
 fi
 BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")
 fi
