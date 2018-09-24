@@ -314,10 +314,16 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo -e "Your ip is ${GREEN}$IP4:$PORT${NC}"
   COUNTER=$((COUNTER+1))
 	echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
-	echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop && systemctl stop transcendenced$ALIAS\"" >> .bashrc
-	echo "alias ${ALIAS}_start=\"/root/bin/transcendenced_${ALIAS}.sh && systemctl start transcendenced$ALIAS\""  >> .bashrc
+	echo "alias ${ALIAS}_stop=\"systemctl stop transcendenced$ALIAS\"" >> .bashrc
+	echo "alias ${ALIAS}_start=\"systemctl start transcendenced$ALIAS\""  >> .bashrc
 	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
+	echo "alias ${ALIAS}_restart=\"systemctl restart transcendenced$ALIAS\"" >> .bashrc
+	echo "alias ${ALIAS}_mnsync=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS mnsync status\"" >> .bashrc
+	echo "alias ${ALIAS}_reindex=\"systemctl stop transcendenced$ALIAS && /root/bin/transcendenced_${ALIAS}.sh -reindex\"" >> .bashrc
+	echo "alias ${ALIAS}_nodeconf=\"nano /root/.transcendence_${ALIAS}/masternode.conf\""  >> .bashrc
+	echo "alias ${ALIAS}_balance=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance\""  >> .bashrc
+	echo "alias ${ALIAS}_transactions=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS listtransactions\""  >> .bashrc
 	## Config Systemctl
 	configure_systemd
 fi
@@ -367,7 +373,7 @@ if [ $EE = "2" ]
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
 	echo "alias ${ALIAS}_restart=\"systemctl restart transcendenced$ALIAS\"" >> .bashrc
 	echo "alias ${ALIAS}_mnsync=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS mnsync status\"" >> .bashrc
-	echo "alias ${ALIAS}_reindex=\"systemctl stop transcendenced$ALIAS && /root/bin/transcendenced_${ALIAS}.sh -reindex && echo -e "${GREEN}Restart wallet after reindex is completed${NC}"\"" >> .bashrc
+	echo "alias ${ALIAS}_reindex=\"systemctl stop transcendenced$ALIAS && /root/bin/transcendenced_${ALIAS}.sh -reindex\"" >> .bashrc
 	echo "alias ${ALIAS}_nodeconf=\"nano /root/.transcendence_${ALIAS}/masternode.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_balance=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance\""  >> .bashrc
 	echo "alias ${ALIAS}_transactions=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS listtransactions\""  >> .bashrc
@@ -385,32 +391,18 @@ BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cu
 UBALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getunconfirmedbalance | cut -f1 -d".")
 PRIVKEY=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode genkey)
 RCVD=0
-let COUN=0
+let COUNT=0
 while [  $BALANCE -lt 1000 ]; do
-if [  $UBALANCE -ge 1000 ]
-then
-echo "Funds received! waiting for confirmations"
-RCVD=1
-sleep 10
-fi
-BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")
 if [  $BALANCE -lt 1000 ]
-then
-if [ $RCVD = 1 ] 
-then
-sleep 30
-systemctl restart transcendenced$ALIAS
-fi
-if [ $RCVD = 0 ] 
 then
 sleep 10
 COUNT=$((COUNT+1))
-fi
 if [ $COUNT -gt 3 ]
 then
 systemctl restart transcendenced$ALIAS
 loadwallet
 fi
+BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")
 fi
 done
 if [  $BALANCE -ge 1000 ]
@@ -441,6 +433,7 @@ echo "SBALANCE=\$(transcendence-cli -datadir=/root/.transcendence_\$ALIAS listun
 echo "transcendence-cli -datadir=/root/.transcendence_$ALIAS sendtoaddress $READDR \$SBALANCE" >> /root/bin/paymentt.sh
 echo "fi" >> /root/bin/paymentt.sh
 mv /root/bin/paymentt.sh /root/bin/payment$ALIAS.sh 
+chmod 777 /root/bin/payment$ALIAS.sh 
 configure_payment
 fi
 fi
