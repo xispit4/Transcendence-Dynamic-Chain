@@ -275,7 +275,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   read ALIAS
   CONF_DIR=~/.transcendence_$ALIAS
   echo ""
-  echo -e "Press ${GREEN}1${NC} to setup locally or ${GREEN}2${NC} to setup on the VPS"
+  echo -e "Press ${GREEN}1${NC} to setup on your local wallet or ${GREEN}2${NC} to setup on the VPS automatically"
   read LV
   if [ $LV = "1" ] 
   then
