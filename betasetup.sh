@@ -19,16 +19,16 @@ while [  $CF -lt 1 ]; do
 sleep 5
 CF=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "$TXM" | tail -n 1 | wc -l)
 CDS=$((CDS+1))
-done
-if [  $CF -gt 0 ]
-then
-OP=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "$TXM" | tail -n 1 -c 3)
-fi
 if [  $CDS -gt 3 ]
 then
 systemctl restart transcendenced$ALIAS
 CDS=0
 loadwallet
+fi
+done
+if [  $CF -gt 0 ]
+then
+OP=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode outputs | grep -A1 "$TXM" | tail -n 1 -c 3)
 fi
 }
 function loadwallet() {
