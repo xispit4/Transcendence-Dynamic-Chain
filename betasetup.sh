@@ -395,7 +395,7 @@ loadwallet
 if [  $OPN -gt 1 ]
 then
 VADDR=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getnewaddress Receiving)
-echo -e "Please send 1001 telos to ${GREEN}${VADDR}${NC} (1 for redundancy)"
+echo -e "Please send 1001 telos to ${GREEN}${VADDR}${NC} (1 for redundancy, wallet will restart every 30s to make sure everything is working)"
 BALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")
 UBALANCE=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getunconfirmedbalance | cut -f1 -d".")
 PRIVKEY=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode genkey)
