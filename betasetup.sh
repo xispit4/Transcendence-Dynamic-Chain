@@ -3,6 +3,7 @@ cd ~
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
+apt-get install bc y 
 if [[ $(lsb_release -d) != *16.04* ]]; then
   echo -e "${RED}You are not running Ubuntu 16.04. Installation is cancelled.${NC}"
   exit 1
@@ -118,9 +119,12 @@ then
 echo "Enter alias of the node to return funds"
 read ALIAS
 rm /root/.transcendence_$ALIAS/masternode.conf
+sleep 1
 systemctl restart transcendenced$ALIAS
 loadwallet
-sh bin/payment$ALIAS.sh
+RAD=$(grep "sendtoaddress" bin/paymentmn$alias.sh | cut -f1 -d"$" | sed -n -e 's/^.*sendtoaddress //p')
+SBAL=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS listunspent | grep "amount" | cut -f1 -d"." | sed -e 's/[^0-9 ]//g' | sed -e 's/^ *//' | sed -e 's/ *$// ' | paste -sd+ | bc)
+transcendence-cli -datadir=/root/.transcendence_$ALIAS sendtoaddress $RAD $SBAL
 fi
 if [ $DO = "4" ]
 then
