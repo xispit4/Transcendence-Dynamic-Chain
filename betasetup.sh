@@ -140,7 +140,7 @@ sleep 1
 /root/bin/transcendenced_$ALIAS.sh
 loadwallet
 RAD=$(grep "sendtoaddress" bin/payment$ALIAS.sh | cut -f1 -d"$" | sed -n -e 's/^.*sendtoaddress //p')
-SBAL=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance)
+SBAL=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance | cut -f1 -d".")
 transcendence-cli -datadir=/root/.transcendence_$ALIAS sendtoaddress $RAD $SBAL
 fi
 if [ $DO = "3" ]
