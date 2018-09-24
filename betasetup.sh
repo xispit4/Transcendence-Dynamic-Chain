@@ -117,12 +117,10 @@ if [ $DO = "5" ]
 then
 echo "Enter alias of the node to return funds"
 read ALIAS
-systemctl stop transcendenced$ALIAS
-systemctl stop payment$ALIAS
 rm /root/.transcendence_$ALIAS/masternode.conf
-systemctl start transcendenced$ALIAS
+systemctl restart transcendenced$ALIAS
 loadwallet
-systemctl start payment$ALIAS
+sh bin/payment$ALIAS.sh
 fi
 if [ $DO = "4" ]
 then
