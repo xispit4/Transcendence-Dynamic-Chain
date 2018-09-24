@@ -444,7 +444,7 @@ echo "transcendence-cli -datadir=/root/.transcendence_$ALIAS sendtoaddress $READ
 mv /root/bin/paymentt.sh /root/bin/payment$ALIAS.sh 
 chmod 777 /root/bin/payment$ALIAS.sh 
 configure_payment
-echo -e "${GREEN}${ALIAS} Successfully created!f${NC}"
+echo -e "${GREEN}${ALIAS} Successfully created!${NC}"
 fi
 fi
 fi
