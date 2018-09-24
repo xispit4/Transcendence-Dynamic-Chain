@@ -320,7 +320,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
 	echo "alias ${ALIAS}_restart=\"systemctl restart transcendenced$ALIAS\"" >> .bashrc
 	echo "alias ${ALIAS}_mnsync=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS mnsync status\"" >> .bashrc
-	echo "alias ${ALIAS}_reindex=\"systemctl stop transcendenced$ALIAS && /root/bin/transcendenced_${ALIAS}.sh -reindex\"" >> .bashrc
+	echo "alias ${ALIAS}_reindex=\"systemctl stop transcendenced$ALIAS && sleep 5 && /root/bin/transcendenced_${ALIAS}.sh -reindex\"" >> .bashrc
 	echo "alias ${ALIAS}_nodeconf=\"nano /root/.transcendence_${ALIAS}/masternode.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_balance=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance\""  >> .bashrc
 	echo "alias ${ALIAS}_transactions=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS listtransactions\""  >> .bashrc
@@ -373,7 +373,7 @@ if [ $EE = "2" ]
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
 	echo "alias ${ALIAS}_restart=\"systemctl restart transcendenced$ALIAS\"" >> .bashrc
 	echo "alias ${ALIAS}_mnsync=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS mnsync status\"" >> .bashrc
-	echo "alias ${ALIAS}_reindex=\"systemctl stop transcendenced$ALIAS && /root/bin/transcendenced_${ALIAS}.sh -reindex\"" >> .bashrc
+	echo "alias ${ALIAS}_reindex=\"systemctl stop transcendenced$ALIAS && sleep 5 && /root/bin/transcendenced_${ALIAS}.sh -reindex\"" >> .bashrc
 	echo "alias ${ALIAS}_nodeconf=\"nano /root/.transcendence_${ALIAS}/masternode.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_balance=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance\""  >> .bashrc
 	echo "alias ${ALIAS}_transactions=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS listtransactions\""  >> .bashrc
@@ -446,6 +446,12 @@ echo "ALIAS_status"
 echo "ALIAS_stop"
 echo "ALIAS_config"
 echo "ALIAS_getinfo"
+echo "ALIAS_restart"
+echo "ALIAS_mnsync"
+echo "ALIAS_reindex"
+echo "ALIAS_nodeconf"
+echo "ALIAS_balance"
+echo "ALIAS_transactions"
 fi
 echo ""
 echo "Made by lobo with the help of all Transcendence team "
