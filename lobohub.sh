@@ -220,6 +220,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "dbcache=50" >> transcendence.conf_TEMP
   echo "maxorphantx=10" >> transcendence.conf_TEMP
   echo "maxmempool=100" >> transcendence.conf_TEMP
+  echo "banscore=10" >> transcendence.conf_TEMP
   echo "" >> transcendence.conf_TEMP
   echo "" >> transcendence.conf_TEMP
   echo "port=$PORTD" >> transcendence.conf_TEMP
