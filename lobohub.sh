@@ -138,7 +138,7 @@ then
   sudo apt-get -y upgrade
   sudo apt-get -y dist-upgrade
   sudo apt-get update
-  sudo apt-get install -y zip unzip
+  sudo apt-get install -y zip unzip bc curl nano
   cd /var
   sudo touch swap.img
   sudo chmod 600 swap.img
