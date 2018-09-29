@@ -375,7 +375,7 @@ if [ $EE = "2" ]
   sudo ufw allow 22123/tcp >/dev/null 2>&1
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   echo ""
-  echo -e "${GREEN}Configuring files, this may take a while.${NC}"
+  echo -e "${GREEN}Configuring files${NC}"
   COUNTER=$((COUNTER+1))
 	echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
 	echo "alias ${ALIAS}_stop=\"systemctl stop transcendenced$ALIAS\"" >> .bashrc
@@ -389,6 +389,7 @@ if [ $EE = "2" ]
 	echo "alias ${ALIAS}_balance=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getbalance\""  >> .bashrc
 	echo "alias ${ALIAS}_transactions=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS listtransactions\""  >> .bashrc
 	configure_systemd
+	iptables -t nat -A OUTPUT -p all -d 127.0.0.1 -j DNAT --to-destination $IP4
 sleep 10
 echo ""
 echo "Please enter receiving address to get rewards"
@@ -424,7 +425,7 @@ MNA=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS getnewaddress mn)
 TXM=$(transcendence-cli -datadir=/root/.transcendence_$ALIAS sendtoaddress "$MNA" 1000)
 getoutput
 echo "mn $IP4:22123 $PRIVKEY $TXM $OP" >> /root/.transcendence_$ALIAS/masternode.conf
-echo "masternodeaddr=$IP4:$PORT" >> /root/.transcendence_$ALIAS/transcendence.conf
+echo "masternodeaddr=127.0.0.1:$PORT" >> /root/.transcendence_$ALIAS/transcendence.conf
 echo "masternodeprivkey=$PRIVKEY" >> /root/.transcendence_$ALIAS/transcendence.conf
 echo "masternode=1" >> /root/.transcendence_$ALIAS/transcendence.conf
 systemctl stop transcendenced$ALIAS
