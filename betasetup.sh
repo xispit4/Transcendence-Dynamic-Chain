@@ -3,7 +3,6 @@ cd ~
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
-apt-get install bc -y >/dev/null 2>&1
 if [[ $(lsb_release -d) != *16.04* ]]; then
   echo -e "${RED}You are not running Ubuntu 16.04. Installation is cancelled.${NC}"
   exit 1
@@ -267,6 +266,9 @@ read MNCOUNT
 let COUNTER=0
 let MNCOUNT=MNCOUNT+IP4COUNT
 let COUNTER=COUNTER+IP4COUNT
+echo ""
+echo -e "Press ${GREEN}1${NC} to setup on your local wallet or ${GREEN}2${NC} to setup on the VPS automatically"
+read LV
 while [  $COUNTER -lt $MNCOUNT ]; do
  PORT=22123
  PORTD=$((22123+$COUNTER))
@@ -276,9 +278,6 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "Enter alias for new node"
   read ALIAS
   CONF_DIR=~/.transcendence_$ALIAS
-  echo ""
-  echo -e "Press ${GREEN}1${NC} to setup on your local wallet or ${GREEN}2${NC} to setup on the VPS automatically"
-  read LV
   if [ $LV = "1" ] 
   then
   echo ""
