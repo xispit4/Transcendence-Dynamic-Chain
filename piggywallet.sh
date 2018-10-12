@@ -8,19 +8,19 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 function configure_systemd() {
-  cat << EOF > /etc/systemd/system/transcendenced$ALIAS.service
+  cat << EOF > /etc/systemd/system/transcendence.service
 [Unit]
-Description=transcendenced$ALIAS service
+Description=transcendence service
 After=network.target
 [Service]
 User=root
 Group=root
 Type=forking
 Environment="DISPLAY=:0"
-Environment="XAUTHORITY=~/.Xauthority"
-#PIDFile=/root/.transcendence_$ALIAS/transcendenced.pid
-ExecStart=/usr/bin/screen -d -m transcendence-qt_$ALIAS.sh
-ExecStop=/root/bin/transcendence-cli_$ALIAS.sh stop
+Environment="XAUTHORITY=/root/.Xauthority"
+#PIDFile=/root/.transcendence/transcendenced.pid
+ExecStart=/usr/bin/screen -d -m /root/bin/transcendence-qt.sh
+ExecStop=/root/bin/transcendence-cli.sh stop
 Restart=always
 PrivateTmp=true
 TimeoutStopSec=60s
@@ -28,106 +28,65 @@ TimeoutStartSec=10s
 StartLimitInterval=120s
 StartLimitBurst=5
 [Install]
-WantedBy=multi-user.target
+WantedBy=graphical.target
 EOF
   systemctl daemon-reload
   sleep 6
-  crontab -l > cron$ALIAS
-  echo "@reboot systemctl start transcendenced$ALIAS" >> cron$ALIAS
-  crontab cron$ALIAS
-  rm cron$ALIAS
-  systemctl start transcendenced$ALIAS.service
+  crontab -l > cron
+  echo "@reboot systemctl start transcendence" >> cron
+  crontab cron
+  rm cron
+  systemctl start transcendence.service
 }
-IP4=$(curl -s4 api.ipify.org)
-perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
 if [ ! -d "/root/bin" ]; then
  DOSETUP="y"
 else
  DOSETUP="n"
 fi
 clear
-echo "1 - Create new nodes"
-echo "2 - Remove an existing node"
-echo "3 - Upgrade an existing node"
-echo "4 - List aliases"
+echo "1 - Create wallet"
+echo "2 - Delete wallet"
 echo "What would you like to do?"
 read DO
 echo ""
-if [ $DO = "4" ]
-then
-ALIASES=$(find /root/.transcendence_* -maxdepth 0 -type d | cut -c22-)
-echo -e "${GREEN}${ALIASES}${NC}"
-echo ""
-echo "1 - Create new nodes"
-echo "2 - Remove an existing node"
-echo "3 - Upgrade an existing node"
-echo "4 - List aliases"
-echo "What would you like to do?"
-read DO
-echo ""
-fi
-if [ $DO = "3" ]
-then
-perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc >/dev/null 2>&1
-echo "Enter the alias of the node you want to upgrade"
-read ALIAS
-  echo -e "Upgrading ${GREEN}${ALIAS}${NC}. Please wait."
-  sed -i '/$ALIAS/d' .bashrc
-  sleep 1
-  ## Config Alias
-  echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
-  echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop && systemctl stop transcendenced$ALIAS\"" >> .bashrc
-  echo "alias ${ALIAS}_start=\"/root/bin/transcendenced_${ALIAS}.sh && systemctl start transcendenced$ALIAS\""  >> .bashrc
-  echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
-  echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
-  configure_systemd
-  sleep 1
-  source .bashrc
-  echo -e "${GREEN}${ALIAS}${NC} Successfully upgraded."
-fi
 if [ $DO = "2" ]
 then
-perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc >/dev/null 2>&1
-echo "Input the alias of the node that you want to delete"
-read ALIASD
-echo ""
-echo -e "${GREEN}Deleting ${ALIASD}${NC}. Please wait."
+echo -e "${GREEN}Deleting wallet${NC}. Please wait."
 ## Removing service
-systemctl stop transcendenced$ALIASD >/dev/null 2>&1
-systemctl disable transcendenced$ALIASD >/dev/null 2>&1
-rm /etc/systemd/system/transcendenced${ALIASD}.service >/dev/null 2>&1
+systemctl stop transcendence >/dev/null 2>&1
+systemctl disable transcendence >/dev/null 2>&1
+rm /etc/systemd/system/transcendence.service >/dev/null 2>&1
 systemctl daemon-reload >/dev/null 2>&1
 systemctl reset-failed >/dev/null 2>&1
 ## Stopping node
-transcendence-cli -datadir=/root/.transcendence_$ALIASD stop >/dev/null 2>&1
+transcendence-cli -datadir=/root/.transcendence stop >/dev/null 2>&1
 sleep 5
 ## Removing monit and directory
-rm /root/.transcendence_$ALIASD -r >/dev/null 2>&1
-sed -i '/$ALIASD/d' .bashrc >/dev/null 2>&1
-sleep 1
-sed -i '/$ALIASD/d' /etc/monit/monitrc >/dev/null 2>&1
-monit reload >/dev/null 2>&1
-sed -i '/$ALIASD/d' /etc/monit/monitrc >/dev/null 2>&1
-crontab -l -u root | grep -v transcendenced$ALIASD | crontab -u root - >/dev/null 2>&1
+rm /root/.transcendence -r >/dev/null 2>&1
+crontab -l -u root | grep -v transcendence | crontab -u root - >/dev/null 2>&1
 source .bashrc
-echo -e "${ALIASD} Successfully deleted."
+echo -e "Wallet Successfully deleted."
 fi
 if [ $DO = "1" ]
 then
 echo "1 - Easy mode"
-echo "2 - Expert mode (Change port and Max Connections(Default 32))"
+echo "2 - Expert mode (Change port, Swap and Max Connections(Default 32))"
 echo "Please select a option:"
 read EE
 echo ""
 if [ $EE = "1" ] 
 then
 MAXC="32"
+SWP="2000"
 fi
 if [ $EE = "2" ] 
 then
 echo ""
 echo "Enter max connections value"
 read MAXC
+echo ""
+echo "Enter swap size in mb"
+read SWP
 fi
 if [ $DOSETUP = "y" ]
 then
@@ -140,7 +99,7 @@ then
   cd /var
   sudo touch swap.img
   sudo chmod 600 swap.img
-  sudo dd if=/dev/zero of=/var/swap.img bs=1024k count=2000
+  sudo dd if=/dev/zero of=/var/swap.img bs=1024k count=$SWP
   sudo mkswap /var/swap.img 
   sudo swapon /var/swap.img 
   sudo free 
@@ -168,43 +127,25 @@ if [ ! -f DynamicChain.zip ]
 then
 wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
 fi
-IP4COUNT=$(find /root/.transcendence_* -maxdepth 0 -type d | wc -l)
-
-echo -e "Telos nodes currently installed: ${GREEN}${IP4COUNT}${NC}"
-echo ""
-echo "How many nodes do you want to install on this server?"
-read MNCOUNT
-let COUNTER=0
-let MNCOUNT=MNCOUNT+IP4COUNT
-let COUNTER=COUNTER+IP4COUNT
-while [  $COUNTER -lt $MNCOUNT ]; do
  PORT=22123
- PORTD=$((22123+$COUNTER))
- RPCPORTT=$(($PORT*10))
- RPCPORT=$(($RPCPORTT+$COUNTER))
-  echo ""
-  echo "Enter alias for new node"
-  read ALIAS
-  CONF_DIR=~/.transcendence_$ALIAS
-  echo ""
-  echo "Enter masternode private key for node $ALIAS"
-  read PRIVKEY
+ RPCPORT=$(($PORT*10))
+  CONF_DIR=~/.transcendence
   if [ $EE = "2" ] 
 	then
 	echo ""
-	echo "Enter port for $ALIAS"
+	echo "Enter port for wallet"
 	read PORTD
   fi
-  mkdir ~/.transcendence_$ALIAS
-  unzip DynamicChain.zip -d ~/.transcendence_$ALIAS >/dev/null 2>&1
-  echo '#!/bin/bash' > ~/bin/transcendenced_$ALIAS.sh
-  echo "transcendenced -daemon -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendenced_$ALIAS.sh
-  echo '#!/bin/bash' > ~/bin/transcendence-cli_$ALIAS.sh
-  echo "transcendence-cli -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendence-cli_$ALIAS.sh
-  echo '#!/bin/bash' > ~/bin/transcendence-tx_$ALIAS.sh
-  echo "transcendence-tx -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendence-tx_$ALIAS.sh
-  echo '#!/bin/bash' > ~/bin/transcendence-qt_$ALIAS.sh
-  echo "transcendence-qt -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendence-qt_$ALIAS.sh
+  mkdir ~/.transcendence
+  unzip DynamicChain.zip -d ~/.transcendence >/dev/null 2>&1
+  echo '#!/bin/bash' > ~/bin/transcendenced.sh
+  echo "transcendenced -daemon -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendenced.sh
+  echo '#!/bin/bash' > ~/bin/transcendence-cli.sh
+  echo "transcendence-cli -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendence-cli.sh
+  echo '#!/bin/bash' > ~/bin/transcendence-tx.sh
+  echo "transcendence-tx -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendence-tx.sh
+  echo '#!/bin/bash' > ~/bin/transcendence-qt.sh
+  echo "transcendence-qt -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendence-qt.sh
   chmod 755 ~/bin/transcendence*.sh
   mkdir -p $CONF_DIR
   echo "rpcuser=user"`shuf -i 100000-10000000 -n 1` >> transcendence.conf_TEMP
@@ -222,25 +163,24 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "banscore=10" >> transcendence.conf_TEMP
   echo "" >> transcendence.conf_TEMP
   echo "" >> transcendence.conf_TEMP
-  echo "port=$PORTD" >> transcendence.conf_TEMP
+  echo "port=$PORT" >> transcendence.conf_TEMP
   sudo ufw allow 22123/tcp
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   echo ""
   echo -e "Your ip is ${GREEN}$IP4:$PORT${NC}"
   COUNTER=$((COUNTER+1))
-	echo "alias ${ALIAS}_stop=\"systemctl stop transcendenced$ALIAS\"" >> .bashrc
-	echo "alias ${ALIAS}_start=\"systemctl start transcendenced$ALIAS\""  >> .bashrc
-	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
-	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
+	echo "alias telos_stop=\"systemctl stop transcendence\"" >> .bashrc
+	echo "alias telos_start=\"systemctl start transcendence\""  >> .bashrc
+	echo "alias telos_config=\"nano /root/.transcendence/transcendence.conf\""  >> .bashrc
+	echo "alias telos_getinfo=\"transcendence-cli -datadir=/root/.transcendence getinfo\"" >> .bashrc
 	## Config Systemctl
 	configure_systemd
-done
 echo ""
 echo "Commands:"
-echo "ALIAS_start"
-echo "ALIAS_stop"
-echo "ALIAS_config"
-echo "ALIAS_getinfo"
+echo "telos_start"
+echo "telos_stop"
+echo "telos_config"
+echo "telos_getinfo"
 fi
 echo ""
 echo "Made by lobo with the help of all Transcendence team "
