@@ -167,7 +167,6 @@ fi
   sudo ufw allow 22123/tcp
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   echo ""
-  echo -e "Your ip is ${GREEN}$IP4:$PORT${NC}"
   COUNTER=$((COUNTER+1))
 	echo "alias telos_stop=\"systemctl stop transcendence\"" >> .bashrc
 	echo "alias telos_start=\"systemctl start transcendence\""  >> .bashrc
