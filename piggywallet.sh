@@ -162,8 +162,8 @@ fi
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   echo ""
   COUNTER=$((COUNTER+1))
-	echo "alias telos_stop=\"systemctl stop transcendence\"" >> .bashrc
-	echo "alias telos_start=\"systemctl start transcendence\""  >> .bashrc
+	echo "alias telos_stop=\"sudo systemctl stop transcendence\"" >> .bashrc
+	echo "alias telos_start=\"sudo systemctl start transcendence\""  >> .bashrc
 	echo "alias telos_config=\"nano /home/orangepi/.transcendence/transcendence.conf\""  >> .bashrc
 	echo "alias telos_getinfo=\"transcendence-cli -datadir=/home/orangepi/.transcendence getinfo\"" >> .bashrc
 	## Config Systemctl
