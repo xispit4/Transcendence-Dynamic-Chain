@@ -3,12 +3,8 @@ cd ~
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
-if [[ $EUID -ne 0 ]]; then
-   echo -e "${RED}$0 must be run as root.${NC}"
-   exit 1
-fi
 function configure_systemd() {
-  cat << EOF > /etc/systemd/system/transcendence.service
+ sudo bash -c 'cat << EOF > /etc/systemd/system/transcendence.service
 [Unit]
 Description=transcendence service
 After=network.target
@@ -29,14 +25,14 @@ StartLimitInterval=120s
 StartLimitBurst=5
 [Install]
 WantedBy=graphical.target
-EOF
-  systemctl daemon-reload
+EOF'
+  sudo systemctl daemon-reload
   sleep 6
-  crontab -l > cron
-  echo "@reboot systemctl start transcendence" >> cron
-  crontab cron
-  rm cron
-  systemctl start transcendence.service
+  sudo crontab -l > cron
+  sudo echo "@reboot systemctl start transcendence" >> cron
+  sudo crontab cron
+  sudo rm cron
+  sudo systemctl start transcendence.service
 }
 if [ ! -d "/home/orangepi/bin" ]; then
  DOSETUP="y"
@@ -52,16 +48,16 @@ echo ""
 if [ $DO = "2" ]
 then
 echo -e "${GREEN}Deleting wallet${NC}. Please wait."
-systemctl stop transcendence >/dev/null 2>&1
-systemctl disable transcendence >/dev/null 2>&1
-rm /etc/systemd/system/transcendence.service >/dev/null 2>&1
-systemctl daemon-reload >/dev/null 2>&1
-systemctl reset-failed >/dev/null 2>&1
+sudo systemctl stop transcendence >/dev/null 2>&1
+sudo systemctl disable transcendence >/dev/null 2>&1
+sudo rm /etc/systemd/system/transcendence.service >/dev/null 2>&1
+sudo systemctl daemon-reload >/dev/null 2>&1
+sudo systemctl reset-failed >/dev/null 2>&1
 transcendence-cli -datadir=/home/orangepi/.transcendence stop >/dev/null 2>&1
 sleep 5
-rm /home/orangepi/.transcendence -r >/dev/null 2>&1
-rm /home/orangepi/bin/* >/dev/null 2>&1
-crontab -l -u orangepi | grep -v transcendence | crontab -u orangepi - >/dev/null 2>&1
+sudo rm /home/orangepi/.transcendence -r >/dev/null 2>&1
+sudo rm /home/orangepi/bin/* >/dev/null 2>&1
+sudo crontab -l -u orangepi | grep -v transcendence | crontab -u orangepi - >/dev/null 2>&1
 source .bashrc
 echo -e "Wallet Successfully deleted."
 fi
