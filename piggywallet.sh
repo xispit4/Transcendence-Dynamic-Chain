@@ -52,17 +52,15 @@ echo ""
 if [ $DO = "2" ]
 then
 echo -e "${GREEN}Deleting wallet${NC}. Please wait."
-## Removing service
 systemctl stop transcendence >/dev/null 2>&1
 systemctl disable transcendence >/dev/null 2>&1
 rm /etc/systemd/system/transcendence.service >/dev/null 2>&1
 systemctl daemon-reload >/dev/null 2>&1
 systemctl reset-failed >/dev/null 2>&1
-## Stopping node
 transcendence-cli -datadir=/root/.transcendence stop >/dev/null 2>&1
 sleep 5
-## Removing monit and directory
 rm /root/.transcendence -r >/dev/null 2>&1
+rm /root/bin/* >/dev/null 2>&1
 crontab -l -u root | grep -v transcendence | crontab -u root - >/dev/null 2>&1
 source .bashrc
 echo -e "Wallet Successfully deleted."
