@@ -17,7 +17,7 @@ User=root
 Group=root
 Type=forking
 Environment="DISPLAY=:0"
-Environment="XAUTHORITY=/root/.Xauthority"
+Environment="XAUTHORITY=/home/orangepi/.Xauthority"
 #PIDFile=/root/.transcendence/transcendenced.pid
 ExecStart=/usr/bin/screen -d -m /root/bin/transcendence-qt.sh
 ExecStop=/root/bin/transcendence-cli.sh stop
