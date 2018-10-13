@@ -140,7 +140,7 @@ fi
   echo "transcendence-tx -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendence-tx.sh
   echo '#!/bin/bash' > ~/bin/transcendence-qt.sh
   echo "screen -d -m transcendence-qt -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendence-qt.sh
-  chmod 755 ~/bin/transcendence*.sh
+  sudo chmod 755 ~/bin/transcendence*.sh
   sudo rm ~/.transcendence/transcendence.conf
   echo "rpcuser=user"`shuf -i 100000-10000000 -n 1` >> transcendence.conf_TEMP
   echo "rpcpassword=pass"`shuf -i 100000-10000000 -n 1` >> transcendence.conf_TEMP
