@@ -15,7 +15,7 @@ Type=forking
 Environment="DISPLAY=:0"
 Environment="XAUTHORITY=/home/orangepi/.Xauthority"
 #PIDFile=/home/orangepi/.transcendence/transcendenced.pid
-ExecStart=/usr/bin/screen -d -m /home/orangepi/bin/transcendence-qt.sh
+ExecStart=/home/orangepi/bin/transcendence-qt.sh
 ExecStop=/home/orangepi/bin/transcendence-cli.sh stop
 Restart=always
 PrivateTmp=true
@@ -89,7 +89,7 @@ then
   sudo apt-get -y upgrade
   sudo apt-get -y dist-upgrade
   sudo apt-get update
-  sudo apt-get install -y zip unzip curl nano
+  sudo apt-get install -y zip unzip curl nano screen
   cd /var
   sudo touch swap.img
   sudo chmod 600 swap.img
@@ -139,7 +139,7 @@ fi
   echo '#!/bin/bash' > ~/bin/transcendence-tx.sh
   echo "transcendence-tx -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendence-tx.sh
   echo '#!/bin/bash' > ~/bin/transcendence-qt.sh
-  echo "transcendence-qt -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendence-qt.sh
+  echo "screen -d -m transcendence-qt -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendence-qt.sh
   chmod 755 ~/bin/transcendence*.sh
   mkdir -p $CONF_DIR
   echo "rpcuser=user"`shuf -i 100000-10000000 -n 1` >> transcendence.conf_TEMP
