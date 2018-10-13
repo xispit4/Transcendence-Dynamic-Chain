@@ -99,16 +99,16 @@ then
   sudo free 
   sudo echo "/var/swap.img none swap sw 0 0" >> /etc/fstab
   cd
- if [ ! -f Linux.zip ]
+ if [ ! -f /usr/local/bin/transcendence-qt ]
   then
   https://github.com/phoenixkonsole/transcendence/releases/download/v1.1.0.0/1533585445_Transcendence_ARMhf.zip 
- fi
   mkdir Linux
   mkdir Linux/bin
   unzip 1533585445_Transcendence_ARMhf.zip -d Linux/bin
   chmod +x Linux/bin/* 
   sudo mv  Linux/bin/* /usr/local/bin
   rm -rf Linux.zip Windows Linux Mac
+ fi
   sudo apt-get install -y ufw 
   sudo ufw allow ssh/tcp 
   sudo ufw limit ssh/tcp 
@@ -132,8 +132,6 @@ fi
 	echo "Enter port for wallet"
 	read PORTD
   fi
-  mkdir ~/.transcendence
-  unzip DynamicChain.zip -d ~/.transcendence >/dev/null 2>&1
   echo '#!/bin/bash' > ~/bin/transcendenced.sh
   echo "transcendenced -daemon -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendenced.sh
   echo '#!/bin/bash' > ~/bin/transcendence-cli.sh
@@ -143,7 +141,7 @@ fi
   echo '#!/bin/bash' > ~/bin/transcendence-qt.sh
   echo "screen -d -m transcendence-qt -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendence-qt.sh
   chmod 755 ~/bin/transcendence*.sh
-  mkdir -p $CONF_DIR
+  sudo rm ~/.transcendence/transcendence.conf
   echo "rpcuser=user"`shuf -i 100000-10000000 -n 1` >> transcendence.conf_TEMP
   echo "rpcpassword=pass"`shuf -i 100000-10000000 -n 1` >> transcendence.conf_TEMP
   echo "rpcallowip=127.0.0.1" >> transcendence.conf_TEMP
