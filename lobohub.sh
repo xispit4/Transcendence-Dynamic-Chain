@@ -232,10 +232,12 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo -e "Your ip is ${GREEN}$IP4:$PORT${NC}"
   COUNTER=$((COUNTER+1))
 	echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
-	echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop && systemctl stop transcendenced$ALIAS\"" >> .bashrc
-	echo "alias ${ALIAS}_start=\"/root/bin/transcendenced_${ALIAS}.sh && systemctl start transcendenced$ALIAS\""  >> .bashrc
+	echo "alias ${ALIAS}_stop=\"systemctl stop transcendenced$ALIAS\"" >> .bashrc
+	echo "alias ${ALIAS}_start=\"systemctl start transcendenced$ALIAS\""  >> .bashrc
 	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
+	echo "alias ${ALIAS}_resync=\"/root/bin/transcendenced_$ALIAS -resync\"" >> .bashrc
+	echo "alias ${ALIAS}_reindex=\"/root/bin/transcendenced_$ALIAS -reindex\"" >> .bashrc
 	## Config Systemctl
 	configure_systemd
 done
@@ -246,6 +248,8 @@ echo "ALIAS_status"
 echo "ALIAS_stop"
 echo "ALIAS_config"
 echo "ALIAS_getinfo"
+echo "ALIAS_resync"
+echo "ALIAS_reindex"
 fi
 echo ""
 echo "Made by lobo with the help of all Transcendence team "
