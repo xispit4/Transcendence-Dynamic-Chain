@@ -1,6 +1,6 @@
 #/bin/bash
 if [[ $EUID -ne 0 ]]; then
-   echo -e "${RED}$0 must be run as root.${NC}"
+   echo -e "$0 must be run as root."
    exit 1
 fi
 echo "Enter number of threads to compile (~1.5gb ram usage per thread)"
