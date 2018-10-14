@@ -4,7 +4,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 user=$(whoami)
-if [[ $user = "root" ]]; then
+if [ $user = "root" ]; then
    echo -e "${RED}$0 can't be run as root.${NC}"
    exit 1
 fi
@@ -179,7 +179,7 @@ echo "telos_config"
 echo "telos_getinfo"
 fi
 echo ""
-echo "Made by lobo with the help of all Transcendence team "
+echo "Made by lobo with the help of all Transcendence team"
 echo "Transcendence Address for donations: GWe4v6A6tLg9pHYEN5MoAsYLTadtefd9o6"
 echo "Bitcoin Address for donations: 1NqYjVMA5DhuLytt33HYgP5qBajeHLYn4d"
 exec bash
