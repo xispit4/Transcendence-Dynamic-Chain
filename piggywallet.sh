@@ -3,20 +3,21 @@ cd ~
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
+user=$(whoami)
 function configure_systemd() {
  sudo bash -c 'cat << EOF > /etc/systemd/system/transcendence.service
 [Unit]
 Description=transcendence service
 After=network.target
 [Service]
-User=orangepi
-Group=orangepi
+User=$user
+Group=$user
 Type=forking
 Environment="DISPLAY=:0"
-Environment="XAUTHORITY=/home/orangepi/.Xauthority"
-#PIDFile=/home/orangepi/.transcendence/transcendenced.pid
-ExecStart=/home/orangepi/bin/transcendence-qt.sh
-ExecStop=/home/orangepi/bin/transcendence-cli.sh stop
+Environment="XAUTHORITY=/home/$user/.Xauthority"
+#PIDFile=/home/$user/.transcendence/transcendenced.pid
+ExecStart=/home/$user/bin/transcendence-qt.sh
+ExecStop=/home/$user/bin/transcendence-cli.sh stop
 Restart=always
 PrivateTmp=true
 TimeoutStopSec=60s
@@ -34,7 +35,7 @@ EOF'
   sudo rm cron
   sudo systemctl start transcendence.service
 }
-if [ ! -d "/home/orangepi/bin" ]; then
+if [ ! -d "/home/$user/bin" ]; then
  DOSETUP="y"
 else
  DOSETUP="n"
@@ -53,11 +54,11 @@ sudo systemctl disable transcendence >/dev/null 2>&1
 sudo rm /etc/systemd/system/transcendence.service >/dev/null 2>&1
 sudo systemctl daemon-reload >/dev/null 2>&1
 sudo systemctl reset-failed >/dev/null 2>&1
-transcendence-cli -datadir=/home/orangepi/.transcendence stop >/dev/null 2>&1
+transcendence-cli -datadir=/home/$user/.transcendence stop >/dev/null 2>&1
 sleep 5
-sudo rm /home/orangepi/.transcendence -r >/dev/null 2>&1
-sudo rm /home/orangepi/bin/* >/dev/null 2>&1
-sudo crontab -l -u orangepi | grep -v transcendence | crontab -u orangepi - >/dev/null 2>&1
+sudo rm /home/$user/.transcendence -r >/dev/null 2>&1
+sudo rm /home/$user/bin/* >/dev/null 2>&1
+sudo crontab -l -u $user | grep -v transcendence | crontab -u $user - >/dev/null 2>&1
 source .bashrc
 echo -e "Wallet Successfully deleted."
 fi
@@ -164,8 +165,8 @@ fi
   COUNTER=$((COUNTER+1))
 	echo "alias telos_stop=\"sudo systemctl stop transcendence\"" >> .bashrc
 	echo "alias telos_start=\"sudo systemctl start transcendence\""  >> .bashrc
-	echo "alias telos_config=\"nano /home/orangepi/.transcendence/transcendence.conf\""  >> .bashrc
-	echo "alias telos_getinfo=\"transcendence-cli -datadir=/home/orangepi/.transcendence getinfo\"" >> .bashrc
+	echo "alias telos_config=\"nano /home/$user/.transcendence/transcendence.conf\""  >> .bashrc
+	echo "alias telos_getinfo=\"transcendence-cli -datadir=/home/$user/.transcendence getinfo\"" >> .bashrc
 	## Config Systemctl
 	configure_systemd
 echo ""
