@@ -75,7 +75,7 @@ read EE
 echo ""
 if [ $EE = "1" ] 
 then
-MAXC="96
+MAXC="96"
 SWP="2000"
 fi
 if [ $EE = "2" ] 
