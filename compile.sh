@@ -6,7 +6,7 @@ fi
 echo "Enter number of threads to compile (~1.5gb ram usage per thread)"
 read thr
 apt-get update
-apt-get install -y git build-essential libtool autotools-dev autoconf pkg-config libssl-dev libcrypto++-dev libevent-dev libminiupnpc-dev libgmp-dev libboost-all-dev devscripts libdb++-dev libsodium-dev libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler libcrypto++-dev libminiupnpc-dev qt5-default
+apt-get install -y git zip unzip build-essential libtool autotools-dev autoconf pkg-config libssl-dev libcrypto++-dev libevent-dev libminiupnpc-dev libgmp-dev libboost-all-dev devscripts libdb++-dev libsodium-dev libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler libcrypto++-dev libminiupnpc-dev qt5-default
 add-apt-repository ppa:bitcoin/bitcoin -y
 apt-get update
 apt-get install libdb4.8-dev libdb4.8++-dev gcc-5 g++-5 libssl1.0-dev libzmq3-dev -y --auto-remove
