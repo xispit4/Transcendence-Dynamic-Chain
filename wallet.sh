@@ -69,13 +69,13 @@ fi
 if [ $DO = "1" ]
 then
 echo "1 - Easy mode"
-echo "2 - Expert mode (Change port, Swap and Max Connections(Default 32))"
+echo "2 - Expert mode (Change port, Swap and Max Connections(Default 96))"
 echo "Please select a option:"
 read EE
 echo ""
 if [ $EE = "1" ] 
 then
-MAXC="32"
+MAXC="96
 SWP="2000"
 fi
 if [ $EE = "2" ] 
