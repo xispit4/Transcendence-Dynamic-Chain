@@ -4,6 +4,10 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 user=$(whoami)
+if [[ $user = "root" ]]; then
+   echo -e "${RED}$0 can't be run as root.${NC}"
+   exit 1
+fi
 function configure_systemd() {
  sudo bash -c 'cat << EOF > /etc/systemd/system/transcendence.service
 [Unit]
