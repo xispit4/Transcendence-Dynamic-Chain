@@ -106,10 +106,8 @@ then
   cd
  if [ ! -f /usr/local/bin/transcendence-qt ]
   then
-  https://github.com/phoenixkonsole/transcendence/releases/download/v1.1.0.0/1533585445_Transcendence_ARMhf.zip 
-  mkdir Linux
-  mkdir Linux/bin
-  unzip 1533585445_Transcendence_ARMhf.zip -d Linux/bin
+  https://github.com/phoenixkonsole/transcendence/releases/download/v1.1.0.0/Linux.zip
+  unzip Linux.zip
   chmod +x Linux/bin/* 
   sudo mv  Linux/bin/* /usr/local/bin
   rm -rf Linux.zip Windows Linux Mac
