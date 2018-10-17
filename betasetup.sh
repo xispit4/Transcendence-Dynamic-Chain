@@ -322,7 +322,6 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "banscore=10" >> transcendence.conf_TEMP
   echo "" >> transcendence.conf_TEMP
   echo "" >> transcendence.conf_TEMP
-  echo "bind=[${gateway}$COUNTER]" >> transcendence.conf_TEMP
   echo "masternodeaddr=[${gateway}$COUNTER]:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
   sudo ufw allow 22123/tcp
@@ -337,7 +336,6 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 	echo "alias ${ALIAS}_resync=\"/root/bin/transcendenced_$ALIAS -resync\"" >> .bashrc
 	echo "alias ${ALIAS}_reindex=\"/root/bin/transcendenced_$ALIAS -reindex\"" >> .bashrc
 	## Config Systemctl
-	echo "/sbin/route -A inet6 add default gw ${gateway}$COUNTER #$ALIAS" >> /etc/network/interfaces
 	configure_systemd
 done
 fi
