@@ -328,7 +328,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   sudo ufw allow 22123/tcp
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   echo ""
-  echo -e "Your ip is ${GREEN}$IP4:$PORT${NC}"
+  echo -e "Your ip is ${GREEN}[${gateway}$COUNTER]:${PORT}${NC}"
 	echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
 	echo "alias ${ALIAS}_stop=\"systemctl stop transcendenced$ALIAS\"" >> .bashrc
 	echo "alias ${ALIAS}_start=\"systemctl start transcendenced$ALIAS\""  >> .bashrc
@@ -336,6 +336,8 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
 	echo "alias ${ALIAS}_resync=\"/root/bin/transcendenced_$ALIAS -resync\"" >> .bashrc
 	echo "alias ${ALIAS}_reindex=\"/root/bin/transcendenced_$ALIAS -reindex\"" >> .bashrc
+	echo "alias ${ALIAS}_restart=\"systemctl restart transcendenced$ALIAS\""  >> .bashrc
+
 	## Config Systemctl
 	configure_systemd
 done
@@ -343,8 +345,9 @@ fi
 echo ""
 echo "Commands:"
 echo "ALIAS_start"
-echo "ALIAS_status"
 echo "ALIAS_stop"
+echo "ALIAS_restart"
+echo "ALIAS_status"
 echo "ALIAS_config"
 echo "ALIAS_getinfo"
 echo "ALIAS_resync"
