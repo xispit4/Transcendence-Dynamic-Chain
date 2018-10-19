@@ -11,6 +11,30 @@ if [[ $EUID -ne 0 ]]; then
    echo -e "${RED}$0 must be run as root.${NC}"
    exit 1
 fi
+if grep -qF "inet6 static" /etc/network/interfaces
+then
+   IP6SET="y"
+else
+   IP6SET="n"
+fi
+if [ $IP6SET = "n" ]
+then
+  face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
+  echo "iface $face inet6 static" >> /etc/network/interfaces
+  echo "address $IP6" >> /etc/network/interfaces
+  echo "netmask 64" >> /etc/network/interfaces
+fi
+face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
+gateway1=$(/sbin/route -A inet6 | grep -w "$face")
+gateway2=${gateway1:0:26}
+gateway3="$(echo -e "${gateway2}" | tr -d '[:space:]')"
+if [[ $gateway3 = *"128"* ]]; then
+  gateway=${gateway3::-5}
+fi
+if [[ $gateway3 = *"64"* ]]; then
+  gateway=${gateway3::-3}
+fi
+IP4COUNT=$(find /root/.transcendence_* -maxdepth 0 -type d | wc -l)
 function configure_systemd() {
   cat << EOF > /etc/systemd/system/transcendenced$ALIAS.service
 [Unit]
@@ -108,6 +132,7 @@ rm /root/.transcendence_$ALIASD -r >/dev/null 2>&1
 sed -i '/$ALIASD/d' .bashrc >/dev/null 2>&1
 sleep 1
 sed -i '/$ALIASD/d' /etc/monit/monitrc >/dev/null 2>&1
+sed -i '/#$ALIASD/d' /etc/network/interfaces >/dev/null 2>&1
 monit reload >/dev/null 2>&1
 sed -i '/$ALIASD/d' /etc/monit/monitrc >/dev/null 2>&1
 crontab -l -u root | grep -v transcendenced$ALIASD | crontab -u root - >/dev/null 2>&1
@@ -138,7 +163,7 @@ then
   sudo apt-get -y upgrade
   sudo apt-get -y dist-upgrade
   sudo apt-get update
-  sudo apt-get install -y zip unzip bc curl nano
+  sudo apt-get install -y zip unzip bc curl nano lshw
   cd /var
   sudo touch swap.img
   sudo chmod 600 swap.img
@@ -170,20 +195,24 @@ if [ ! -f DynamicChain.zip ]
 then
 wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
 fi
-IP4COUNT=$(find /root/.transcendence_* -maxdepth 0 -type d | wc -l)
-
 echo -e "Telos nodes currently installed: ${GREEN}${IP4COUNT}${NC}"
-echo ""
-echo "How many nodes do you want to install on this server?"
-read MNCOUNT
-let COUNTER=0
-let MNCOUNT=MNCOUNT+IP4COUNT
-let COUNTER=COUNTER+IP4COUNT
-while [  $COUNTER -lt $MNCOUNT ]; do
+if [ $IP4COUNT = "0" ]
+then
+ echo ""
+ echo "1 - ipv4"
+ echo "2 - ipv6"
+ echo "What interface would you like to use? (ipv4 only supports one node)"
+ read INTR
+fi
+if [ $IP4COUNT != "0" ]
+then
+ INTR=2
+fi
+if [ $INTR = "1" ]
+then
  PORT=22123
- PORTD=$((22123+$COUNTER))
- RPCPORTT=$(($PORT*10))
- RPCPORT=$(($RPCPORTT+$COUNTER))
+ PORTD=22123
+ RPCPORT=221230
   echo ""
   echo "Enter alias for new node"
   read ALIAS
@@ -230,7 +259,6 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   echo ""
   echo -e "Your ip is ${GREEN}$IP4:$PORT${NC}"
-  COUNTER=$((COUNTER+1))
 	echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
 	echo "alias ${ALIAS}_stop=\"systemctl stop transcendenced$ALIAS\"" >> .bashrc
 	echo "alias ${ALIAS}_start=\"systemctl start transcendenced$ALIAS\""  >> .bashrc
@@ -238,14 +266,89 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
 	echo "alias ${ALIAS}_resync=\"/root/bin/transcendenced_$ALIAS -resync\"" >> .bashrc
 	echo "alias ${ALIAS}_reindex=\"/root/bin/transcendenced_$ALIAS -reindex\"" >> .bashrc
+	echo "alias ${ALIAS}_restart=\"systemctl restart transcendenced$ALIAS\""  >> .bashrc
+
+	## Config Systemctl
+	configure_systemd
+fi
+if [ $INTR = "2" ]
+then
+echo ""
+echo "How many nodes do you want to install on this server?"
+read MNCOUNT
+let COUNTER=0
+let MNCOUNT=MNCOUNT+IP4COUNT
+let COUNTER=COUNTER+IP4COUNT
+while [  $COUNTER -lt $MNCOUNT ]; do
+ PORT=22123
+ PORTD=$((22123+$COUNTER))
+ RPCPORTT=$(($PORT*10))
+ RPCPORT=$(($RPCPORTT+$COUNTER))
+ COUNTER=$((COUNTER+1))
+  echo ""
+  echo "Enter alias for new node"
+  read ALIAS
+  CONF_DIR=~/.transcendence_$ALIAS
+  echo ""
+  echo "Enter masternode private key for node $ALIAS"
+  read PRIVKEY
+  if [ $EE = "2" ] 
+	then
+	echo ""
+	echo "Enter port for $ALIAS"
+	read PORTD
+  fi
+  mkdir ~/.transcendence_$ALIAS
+  unzip DynamicChain.zip -d ~/.transcendence_$ALIAS >/dev/null 2>&1
+  echo '#!/bin/bash' > ~/bin/transcendenced_$ALIAS.sh
+  echo "transcendenced -daemon -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendenced_$ALIAS.sh
+  echo '#!/bin/bash' > ~/bin/transcendence-cli_$ALIAS.sh
+  echo "transcendence-cli -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendence-cli_$ALIAS.sh
+  echo '#!/bin/bash' > ~/bin/transcendence-tx_$ALIAS.sh
+  echo "transcendence-tx -conf=$CONF_DIR/transcendence.conf -datadir=$CONF_DIR "'$*' >> ~/bin/transcendence-tx_$ALIAS.sh
+  chmod 755 ~/bin/transcendence*.sh
+  mkdir -p $CONF_DIR
+  echo "rpcuser=user"`shuf -i 100000-10000000 -n 1` >> transcendence.conf_TEMP
+  echo "rpcpassword=pass"`shuf -i 100000-10000000 -n 1` >> transcendence.conf_TEMP
+  echo "rpcallowip=127.0.0.1" >> transcendence.conf_TEMP
+  echo "rpcport=$RPCPORT" >> transcendence.conf_TEMP
+  echo "listen=1" >> transcendence.conf_TEMP
+  echo "server=1" >> transcendence.conf_TEMP
+  echo "daemon=1" >> transcendence.conf_TEMP
+  echo "logtimestamps=1" >> transcendence.conf_TEMP
+  echo "maxconnections=$MAXC" >> transcendence.conf_TEMP
+  echo "masternode=1" >> transcendence.conf_TEMP
+  echo "dbcache=50" >> transcendence.conf_TEMP
+  echo "maxorphantx=10" >> transcendence.conf_TEMP
+  echo "maxmempool=100" >> transcendence.conf_TEMP
+  echo "banscore=10" >> transcendence.conf_TEMP
+  echo "" >> transcendence.conf_TEMP
+  echo "" >> transcendence.conf_TEMP
+  echo "port=$PORTD" >> transcendence.conf_TEMP
+  echo "masternodeaddr=[${gateway}$COUNTER]:$PORT" >> transcendence.conf_TEMP
+  echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
+  sudo ufw allow 22123/tcp
+  mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
+  echo ""
+  echo -e "Your ip is ${GREEN}[${gateway}$COUNTER]:${PORT}${NC}"
+	echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
+	echo "alias ${ALIAS}_stop=\"systemctl stop transcendenced$ALIAS\"" >> .bashrc
+	echo "alias ${ALIAS}_start=\"systemctl start transcendenced$ALIAS\""  >> .bashrc
+	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
+	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
+	echo "alias ${ALIAS}_resync=\"/root/bin/transcendenced_$ALIAS -resync\"" >> .bashrc
+	echo "alias ${ALIAS}_reindex=\"/root/bin/transcendenced_$ALIAS -reindex\"" >> .bashrc
+	echo "alias ${ALIAS}_restart=\"systemctl restart transcendenced$ALIAS\""  >> .bashrc
 	## Config Systemctl
 	configure_systemd
 done
+fi
 echo ""
 echo "Commands:"
 echo "ALIAS_start"
-echo "ALIAS_status"
 echo "ALIAS_stop"
+echo "ALIAS_restart"
+echo "ALIAS_status"
 echo "ALIAS_config"
 echo "ALIAS_getinfo"
 echo "ALIAS_resync"
