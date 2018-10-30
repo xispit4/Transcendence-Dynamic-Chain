@@ -201,7 +201,7 @@ then
  echo ""
  echo "1 - ipv4"
  echo "2 - ipv6"
- echo "What interface would you like to use? (ipv4 only supports one node)"
+ echo "What interface would you like to use?"
  read INTR
 fi
 if [ $IP4COUNT != "0" ]
@@ -210,9 +210,18 @@ then
 fi
 if [ $INTR = "1" ]
 then
+echo ""
+echo "How many nodes do you want to install on this server?"
+read MNCOUNT
+let COUNTER=0
+let MNCOUNT=MNCOUNT+IP4COUNT
+let COUNTER=COUNTER+IP4COUNT
+while [  $COUNTER -lt $MNCOUNT ]; do
  PORT=22123
- PORTD=22123
- RPCPORT=221230
+ PORTD=$((22123+$COUNTER))
+ RPCPORTT=$(($PORT*10))
+ RPCPORT=$(($RPCPORTT+$COUNTER))
+ COUNTER=$((COUNTER+1))
   echo ""
   echo "Enter alias for new node"
   read ALIAS
@@ -246,7 +255,7 @@ then
   echo "logtimestamps=1" >> transcendence.conf_TEMP
   echo "maxconnections=$MAXC" >> transcendence.conf_TEMP
   echo "masternode=1" >> transcendence.conf_TEMP
-  echo "dbcache=50" >> transcendence.conf_TEMP
+  echo "dbcache=20" >> transcendence.conf_TEMP
   echo "maxorphantx=10" >> transcendence.conf_TEMP
   echo "maxmempool=100" >> transcendence.conf_TEMP
   echo "banscore=10" >> transcendence.conf_TEMP
@@ -264,10 +273,13 @@ then
 	echo "alias ${ALIAS}_start=\"systemctl start transcendenced$ALIAS\""  >> .bashrc
 	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
-	echo "alias ${ALIAS}_resync=\"/root/bin/transcendenced_$ALIAS -resync\"" >> .bashrc
-	echo "alias ${ALIAS}_reindex=\"/root/bin/transcendenced_$ALIAS -reindex\"" >> .bashrc
+	echo "alias ${ALIAS}_resync=\"/root/bin/transcendenced_$ALIAS.sh -resync\"" >> .bashrc
+	echo "alias ${ALIAS}_reindex=\"/root/bin/transcendenced_$ALIAS.sh -reindex\"" >> .bashrc
+	echo "alias ${ALIAS}_restart=\"systemctl restart transcendenced$ALIAS\""  >> .bashrc
+
 	## Config Systemctl
 	configure_systemd
+done
 fi
 if [ $INTR = "2" ]
 then
@@ -316,7 +328,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "logtimestamps=1" >> transcendence.conf_TEMP
   echo "maxconnections=$MAXC" >> transcendence.conf_TEMP
   echo "masternode=1" >> transcendence.conf_TEMP
-  echo "dbcache=50" >> transcendence.conf_TEMP
+  echo "dbcache=20" >> transcendence.conf_TEMP
   echo "maxorphantx=10" >> transcendence.conf_TEMP
   echo "maxmempool=100" >> transcendence.conf_TEMP
   echo "banscore=10" >> transcendence.conf_TEMP
@@ -334,10 +346,9 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 	echo "alias ${ALIAS}_start=\"systemctl start transcendenced$ALIAS\""  >> .bashrc
 	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
-	echo "alias ${ALIAS}_resync=\"/root/bin/transcendenced_$ALIAS -resync\"" >> .bashrc
-	echo "alias ${ALIAS}_reindex=\"/root/bin/transcendenced_$ALIAS -reindex\"" >> .bashrc
+	echo "alias ${ALIAS}_resync=\"/root/bin/transcendenced_$ALIAS.sh -resync\"" >> .bashrc
+	echo "alias ${ALIAS}_reindex=\"/root/bin/transcendenced_$ALIAS.sh -reindex\"" >> .bashrc
 	echo "alias ${ALIAS}_restart=\"systemctl restart transcendenced$ALIAS\""  >> .bashrc
-
 	## Config Systemctl
 	configure_systemd
 done
