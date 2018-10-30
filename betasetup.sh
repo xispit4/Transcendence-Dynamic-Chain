@@ -173,14 +173,45 @@ then
   sudo free 
   sudo echo "/var/swap.img none swap sw 0 0" >> /etc/fstab
   cd
- if [ ! -f Linux.zip ]
+ if [ ! -f /usr/local/bin/transcendenced ]
   then
+  echo ""
+  echo "Do you want to compile your wallet? (Minimum 2gb of RAM, may take some time) [y/n]
+  read COMPILE
+  if [ $COMPILE = "y" ]
+then
+echo ""
+echo "Enter number of threads to compile (~1.5gb ram usage per thread)"
+read thr
+sudo add-apt-repository universe -y
+apt-get update
+apt-get install -y git zip software-properties-common unzip build-essential libtool autotools-dev autoconf pkg-config libssl-dev libcrypto++-dev libevent-dev libminiupnpc-dev libgmp-dev libboost-all-dev devscripts libdb++-dev libsodium-dev libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler libcrypto++-dev libminiupnpc-dev qt5-default
+add-apt-repository ppa:bitcoin/bitcoin -y
+apt-get update
+apt-get install libdb4.8-dev libdb4.8++-dev gcc-5 g++-5 -y --auto-remove
+apt-get install libssl1.0-dev libzmq3-dev -y --auto-remove
+git clone https://github.com/phoenixkonsole/transcendence.git
+cd transcendence
+update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 100
+update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 100
+./autogen
+./configure
+make -j $thr
+rm /usr/local/bin/transcendence-qt >/dev/null 2>&1
+rm /usr/local/bin/transcendence-cli >/dev/null 2>&1
+rm /usr/local/bin/transcendenced >/dev/null 2>&1
+cp src/qt/transcendence-qt /usr/local/bin/
+cp src/transcendenced /usr/local/bin/
+cp src/transcendence-cli /usr/local/bin/
+else
   wget https://github.com/phoenixkonsole/transcendence/releases/download/v1.1.0.0/Linux.zip  
- fi
   unzip Linux.zip 
   chmod +x Linux/bin/* 
   sudo mv  Linux/bin/* /usr/local/bin
   rm -rf Linux.zip Windows Linux Mac
+  fi
+ fi
+  
   sudo apt-get install -y ufw 
   sudo ufw allow ssh/tcp 
   sudo ufw limit ssh/tcp 
