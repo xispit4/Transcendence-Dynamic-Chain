@@ -18,6 +18,7 @@ update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 100
 update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 100
 export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
+systemctl stop transcendenced*
 ./autogen.sh
 ./configure
 make -j $thr
@@ -27,3 +28,4 @@ rm /usr/local/bin/transcendenced
 cp src/qt/transcendence-qt /usr/local/bin/
 cp src/transcendenced /usr/local/bin/
 cp src/transcendence-cli /usr/local/bin/
+systemctl start transcendenced*
