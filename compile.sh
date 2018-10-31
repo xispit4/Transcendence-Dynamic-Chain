@@ -16,7 +16,7 @@ git clone https://github.com/phoenixkonsole/transcendence.git
 cd transcendence
 update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 100
 update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 100
-./autogen
+./autogen.sh
 ./configure
 make -j $thr
 rm /usr/local/bin/transcendence-qt
