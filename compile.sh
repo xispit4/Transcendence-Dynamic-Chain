@@ -16,6 +16,8 @@ git clone https://github.com/phoenixkonsole/transcendence.git
 cd transcendence
 update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 100
 update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 100
+export LC_CTYPE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 ./autogen.sh
 ./configure
 make -j $thr
