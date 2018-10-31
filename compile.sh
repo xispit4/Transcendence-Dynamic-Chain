@@ -7,6 +7,8 @@ echo "Enter number of threads to compile (~1.5gb ram usage per thread)"
 read thr
 export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
+echo ""
+echo "Please wait. Stopping nodes."
 systemctl stop transcendenced*
 sudo add-apt-repository universe -y
 apt-get update
