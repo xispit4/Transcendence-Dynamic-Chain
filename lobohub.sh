@@ -3,6 +3,7 @@ cd ~
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
+IP6=(curl -s4 v6.ipv6-test.com/api/myip.php)
 if [[ $(lsb_release -d) != *16.04* ]]; then
   echo -e "${RED}You are not running Ubuntu 16.04. Installation is cancelled.${NC}"
   exit 1
@@ -11,7 +12,7 @@ if [[ $EUID -ne 0 ]]; then
    echo -e "${RED}$0 must be run as root.${NC}"
    exit 1
 fi
-if grep -qF "inet6 static" /etc/network/interfaces
+if grep -qF "inet6" /etc/network/interfaces
 then
    IP6SET="y"
 else
@@ -329,7 +330,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "port=$PORTD" >> transcendence.conf_TEMP
   echo "masternodeaddr=[${gateway}$COUNTER]:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
-  sudo ufw allow 22123/tcp
+  sudo ufw allow 22123/tcp >/dev/null 2>&1
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   echo ""
   echo -e "Your ip is ${GREEN}[${gateway}$COUNTER]:${PORT}${NC}"
