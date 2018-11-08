@@ -209,7 +209,7 @@ else
   chmod +x Linux/bin/* 
   sudo mv  Linux/bin/* /usr/local/bin
   rm -rf Linux.zip Windows Linux Mac
-  fi
+ fi
  fi
   
   sudo apt-get install -y ufw 
