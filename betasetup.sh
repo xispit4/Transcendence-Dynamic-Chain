@@ -176,7 +176,7 @@ then
  if [ ! -f /usr/local/bin/transcendenced ]
   then
   echo ""
-  echo "Do you want to compile your wallet? (Minimum 2gb of RAM, may take some time) [y/n]
+  echo "Do you want to compile your wallet? (Minimum 2gb of RAM, may take some time) [y/n]"
   read COMPILE
   if [ $COMPILE = "y" ]
 then
