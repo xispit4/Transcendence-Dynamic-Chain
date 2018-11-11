@@ -156,7 +156,9 @@ then
   sudo free 
   sudo echo "/var/swap.img none swap sw 0 0" >> /etc/fstab
   cd
- if [ ! -f /usr/local/bin/transcendenced ]
+fi
+
+if [ ! -f /usr/local/bin/transcendenced ]
   then
   echo ""
   echo "Do you want to compile your wallet? (Minimum 2gb of RAM, may take some time) [y/n]"
@@ -196,11 +198,12 @@ then
   rm -rf Linux.zip Windows Linux Mac
   fi
 fi
-fi
+
 if [ ! -f DynamicChain.zip ]
 then
 wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
 fi
+
 echo -e "Telos nodes currently installed: ${GREEN}${IP4COUNT}${NC}"
 if [ $IP4COUNT = "0" ]
 then
