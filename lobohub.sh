@@ -4,6 +4,10 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 IP6=$(curl -s4 v6.ipv6-test.com/api/myip.php)
+ if [ ! -f ~/bin ]
+  then
+  mkdir ~/bin
+  fi
 if [[ $(lsb_release -d) != *16.04* ]]; then
   echo -e "${RED}You are not running Ubuntu 16.04. Installation is cancelled.${NC}"
   exit 1
