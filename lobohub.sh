@@ -243,7 +243,6 @@ then
   echo "server=1" >> transcendence.conf_TEMP
   echo "daemon=1" >> transcendence.conf_TEMP
   echo "logtimestamps=1" >> transcendence.conf_TEMP
-  echo "maxconnections=$MAXC" >> transcendence.conf_TEMP
   echo "masternode=1" >> transcendence.conf_TEMP
   echo "dbcache=20" >> transcendence.conf_TEMP
   echo "maxorphantx=10" >> transcendence.conf_TEMP
