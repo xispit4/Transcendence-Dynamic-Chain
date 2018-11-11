@@ -75,42 +75,20 @@ fi
 clear
 echo "1 - Create new nodes"
 echo "2 - Remove an existing node"
-echo "3 - Upgrade an existing node"
-echo "4 - List aliases"
+echo "3 - List aliases"
 echo "What would you like to do?"
 read DO
 echo ""
-if [ $DO = "4" ]
+if [ $DO = "3" ]
 then
 ALIASES=$(find /root/.transcendence_* -maxdepth 0 -type d | cut -c22-)
 echo -e "${GREEN}${ALIASES}${NC}"
 echo ""
 echo "1 - Create new nodes"
 echo "2 - Remove an existing node"
-echo "3 - Upgrade an existing node"
-echo "4 - List aliases"
 echo "What would you like to do?"
 read DO
 echo ""
-fi
-if [ $DO = "3" ]
-then
-perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc >/dev/null 2>&1
-echo "Enter the alias of the node you want to upgrade"
-read ALIAS
-  echo -e "Upgrading ${GREEN}${ALIAS}${NC}. Please wait."
-  sed -i '/$ALIAS/d' .bashrc
-  sleep 1
-  ## Config Alias
-  echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
-  echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop && systemctl stop transcendenced$ALIAS\"" >> .bashrc
-  echo "alias ${ALIAS}_start=\"/root/bin/transcendenced_${ALIAS}.sh && systemctl start transcendenced$ALIAS\""  >> .bashrc
-  echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
-  echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
-  configure_systemd
-  sleep 1
-  source .bashrc
-  echo -e "${GREEN}${ALIAS}${NC} Successfully upgraded."
 fi
 if [ $DO = "2" ]
 then
