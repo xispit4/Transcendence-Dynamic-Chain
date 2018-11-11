@@ -186,13 +186,15 @@ rm /usr/local/bin/transcendenced >/dev/null 2>&1
 cp src/qt/transcendence-qt /usr/local/bin/
 cp src/transcendenced /usr/local/bin/
 cp src/transcendence-cli /usr/local/bin/
-else
+fi
+if [ $COMPILE = "n" ]
+then
   wget https://github.com/phoenixkonsole/transcendence/releases/download/v1.1.0.0/Linux.zip  
   unzip Linux.zip 
   chmod +x Linux/bin/* 
   sudo mv  Linux/bin/* /usr/local/bin
   rm -rf Linux.zip Windows Linux Mac
-fi
+  fi
 fi
 fi
 if [ ! -f DynamicChain.zip ]
