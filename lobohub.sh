@@ -156,10 +156,6 @@ then
   sudo free 
   sudo echo "/var/swap.img none swap sw 0 0" >> /etc/fstab
   cd
-fi
-
-if [ ! -f /usr/local/bin/transcendenced ]
-  then
   echo ""
   echo "Do you want to compile your wallet? (Minimum 2gb of RAM, may take some time) [y/n]"
   read COMPILE
@@ -198,6 +194,7 @@ then
   rm -rf Linux.zip Windows Linux Mac
   fi
 fi
+
 
 if [ ! -f DynamicChain.zip ]
 then
