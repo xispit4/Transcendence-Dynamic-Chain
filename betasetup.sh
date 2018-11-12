@@ -285,6 +285,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 
 	## Config Systemctl
 	configure_systemd
+	done
 fi
 if [ $INTR = "2" ]
 then
