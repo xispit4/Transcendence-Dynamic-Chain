@@ -142,6 +142,14 @@ fi
 if [ $DOSETUP = "y" ]
 then
   echo -e "Installing ${GREEN}Transcendence dependencies${NC}. Please wait."
+  echo ""
+  echo "Do you want to use ufw [y/n] (default: n)"
+  read ufw
+  if [ $ufw = "y" ]
+then
+  sudo apt-get install ufw
+  sudo ufw allow 22123/tcp
+fi
   sudo apt-get update 
   sudo apt-get -y upgrade
   sudo apt-get -y dist-upgrade
@@ -245,7 +253,7 @@ then
   echo "rpcuser=user"`shuf -i 100000-10000000 -n 1` >> transcendence.conf_TEMP
   echo "rpcpassword=pass"`shuf -i 100000-10000000 -n 1` >> transcendence.conf_TEMP
   echo "rpcallowip=127.0.0.1" >> transcendence.conf_TEMP
-  echo "rpcport=$RPCPORT" >> transcendence.conf_TEMP
+  echo "rpcport=$RPCPORT" >> transcend  sudo ufw allow 22123/tcp >/dev/null 2>&1ence.conf_TEMP
   echo "listen=1" >> transcendence.conf_TEMP
   echo "server=1" >> transcendence.conf_TEMP
   echo "daemon=1" >> transcendence.conf_TEMP
@@ -261,7 +269,6 @@ then
   echo "port=$PORTD" >> transcendence.conf_TEMP
   echo "masternodeaddr=$IP4:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
-  sudo ufw allow 22123/tcp
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   echo ""
   echo -e "Your ip is ${GREEN}$IP4:$PORT${NC}"
@@ -334,7 +341,6 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "port=$PORTD" >> transcendence.conf_TEMP
   echo "masternodeaddr=[${gateway}$COUNTER]:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
-  sudo ufw allow 22123/tcp >/dev/null 2>&1
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   echo ""
   echo -e "Your ip is ${GREEN}[${gateway}$COUNTER]:${PORT}${NC}"
