@@ -142,11 +142,19 @@ fi
 if [ $DOSETUP = "y" ]
 then
   echo -e "Installing ${GREEN}Transcendence dependencies${NC}. Please wait."
-  sudo apt-get update 
-  sudo apt-get -y upgrade
-  sudo apt-get -y dist-upgrade
-  sudo apt-get update
-  sudo apt-get install -y zip unzip bc curl nano lshw
+  echo ""
+  echo "Do you want to use ufw [y/n] (default: n)"
+  read ufw
+  if [ $ufw = "y" ]
+then
+  sudo apt install ufw
+  sudo ufw allow 22123/tcp
+fi
+  sudo apt update 
+  sudo apt -y upgrade
+  sudo apt -y dist-upgrade
+  sudo apt update
+  sudo apt install -y zip unzip bc curl nano lshw
   cd /var
   sudo touch swap.img
   sudo chmod 600 swap.img
@@ -165,12 +173,12 @@ echo ""
 echo "Enter number of threads to compile (~1.5gb ram usage per thread)"
 read thr
 sudo add-apt-repository universe -y
-apt-get update
-apt-get install -y git zip software-properties-common unzip build-essential libtool autotools-dev autoconf pkg-config libssl-dev libcrypto++-dev libevent-dev libminiupnpc-dev libgmp-dev libboost-all-dev devscripts libdb++-dev libsodium-dev libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler libcrypto++-dev libminiupnpc-dev qt5-default
+apt update
+apt install -y git zip software-properties-common unzip build-essential libtool autotools-dev autoconf pkg-config libssl-dev libcrypto++-dev libevent-dev libminiupnpc-dev libgmp-dev libboost-all-dev devscripts libsodium-dev libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler libcrypto++-dev libminiupnpc-dev qt5-default
 add-apt-repository ppa:bitcoin/bitcoin -y
-apt-get update
-apt-get install libdb4.8-dev libdb4.8++-dev gcc-5 g++-5 -y --auto-remove
-apt-get install libssl1.0-dev libzmq3-dev -y --auto-remove
+apt update
+apt install libdb4.8-dev libdb4.8++-dev gcc-5 g++-5 -y --auto-remove
+apt install libssl1.0-dev libzmq3-dev -y --auto-remove
 git clone https://github.com/phoenixkonsole/transcendence.git
 cd transcendence
 update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 100
@@ -270,7 +278,6 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "port=$PORTD" >> transcendence.conf_TEMP
   echo "masternodeaddr=$IP4:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
-  sudo ufw allow 22123/tcp
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   echo ""
   echo -e "Your ip is ${GREEN}$IP4:$PORT${NC}"
@@ -344,7 +351,6 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "port=$PORTD" >> transcendence.conf_TEMP
   echo "masternodeaddr=[${gateway}$COUNTER]:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
-  sudo ufw allow 22123/tcp >/dev/null 2>&1
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   echo ""
   echo -e "Your ip is ${GREEN}[${gateway}$COUNTER]:${PORT}${NC}"
