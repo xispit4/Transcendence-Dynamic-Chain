@@ -201,10 +201,11 @@ then
   sudo mv  Linux/bin/* /usr/local/bin
   rm -rf Linux.zip Windows Linux Mac
   fi
+cd ~/
 fi
 
 
-if [ ! -f DynamicChain.zip ]
+if [ ! -f /root/DynamicChain.zip ]
 then
 wget https://github.com/Lagadsz/Transcendence-Dynamic-Chain/releases/download/v0.1/DynamicChain.zip
 fi
