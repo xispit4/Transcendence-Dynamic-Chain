@@ -4,6 +4,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 IP6=$(curl -s4 v6.ipv6-test.com/api/myip.php)
+face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
  if [ ! -d ~/bin ]
   then
   mkdir ~/bin
@@ -24,20 +25,9 @@ else
 fi
 if [ $IP6SET = "n" ]
 then
-  face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
   echo "iface $face inet6 static" >> /etc/network/interfaces
   echo "address $IP6" >> /etc/network/interfaces
   echo "netmask 64" >> /etc/network/interfaces
-fi
-face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
-gateway1=$(/sbin/route -A inet6 | grep -w "$face")
-gateway2=${gateway1:0:26}
-gateway3="$(echo -e "${gateway2}" | tr -d '[:space:]')"
-if [[ $gateway3 = *"128"* ]]; then
-  gateway=${gateway3::-5}
-fi
-if [[ $gateway3 = *"64"* ]]; then
-  gateway=${gateway3::-3}
 fi
 IP4COUNT=$(find /root/.transcendence_* -maxdepth 0 -type d | wc -l)
 function configure_systemd() {
@@ -287,6 +277,15 @@ then
 fi
 if [ $INTR = "2" ]
 then
+gateway1=$(/sbin/route -A inet6 | grep -w "$face")
+gateway2=${gateway1:0:26}
+gateway3="$(echo -e "${gateway2}" | tr -d '[:space:]')"
+if [[ $gateway3 = *"128"* ]]; then
+  gateway=${gateway3::-5}
+fi
+if [[ $gateway3 = *"64"* ]]; then
+  gateway=${gateway3::-3}
+fi
 echo ""
 echo "How many nodes do you want to install on this server?"
 read MNCOUNT
