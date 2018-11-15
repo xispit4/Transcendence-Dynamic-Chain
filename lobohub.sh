@@ -162,6 +162,8 @@ then
 echo ""
 echo "Enter number of threads to compile (~1.5gb ram usage per thread)"
 read thr
+export LC_CTYPE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 sudo add-apt-repository universe -y
 apt update
 apt install -y git zip software-properties-common unzip build-essential libtool autotools-dev autoconf pkg-config libssl-dev libcrypto++-dev libevent-dev libminiupnpc-dev libgmp-dev libboost-all-dev devscripts libsodium-dev libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler libcrypto++-dev libminiupnpc-dev qt5-default
