@@ -137,8 +137,12 @@ then
   read ufw
   if [ $ufw = "y" ]
 then
-  sudo apt install ufw
+  sudo apt install ufw -y
   sudo ufw allow 22123/tcp
+  sudo ufw allow ssh/tcp
+  sudo ufw limit ssh/tcp
+  sudo ufw logging on
+  echo "y" | sudo ufw enable
 fi
   sudo apt update 
   sudo apt -y upgrade
