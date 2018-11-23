@@ -148,7 +148,7 @@ fi
   sudo apt -y upgrade
   sudo apt -y dist-upgrade
   sudo apt update
-  sudo apt install -y zip unzip bc curl nano lshw
+  sudo apt install -y zip unzip bc curl nano lshw automake
   cd /var
   sudo touch swap.img
   sudo chmod 600 swap.img
