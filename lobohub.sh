@@ -209,11 +209,7 @@ fi
 echo -e "Telos nodes currently installed: ${GREEN}${IP4COUNT}${NC}"
 if [ $IP4COUNT = "0" ]
 then
- echo ""
- echo "1 - ipv4"
- echo "2 - ipv6"
- echo "What interface would you like to use? (ipv4 only supports one node)"
- read INTR
+ INTR=1
 fi
 if [ $IP4COUNT != "0" ]
 then
