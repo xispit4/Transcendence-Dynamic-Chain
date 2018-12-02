@@ -24,10 +24,5 @@ update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 100
 ./autogen.sh
 ./configure
 make -j $thr
-rm /usr/local/bin/transcendence-qt
-rm /usr/local/bin/transcendence-cli
-rm /usr/local/bin/transcendenced
-cp src/qt/transcendence-qt /usr/local/bin/
-cp src/transcendenced /usr/local/bin/
-cp src/transcendence-cli /usr/local/bin/
+make install
 systemctl start transcendenced*
