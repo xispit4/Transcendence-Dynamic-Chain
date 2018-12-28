@@ -145,6 +145,11 @@ then
   echo 'export PATH=~/bin:$PATH' > ~/.bash_aliases
   source ~/.bashrc
   echo ""
+  cd
+  sudo sysctl vm.swappiness=10
+  sudo sysctl vm.vfs_cache_pressure=200
+  echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
+  echo 'vm.vfs_cache_pressure=200' | sudo tee -a /etc/sysctl.conf
 fi
 if [ ! -f Bootstrap.zip ]
 then
@@ -161,7 +166,7 @@ if [[ $gateway3 = *"64"* ]]; then
   gateway=${gateway3::-3}
 fi
 MASK="/64"
-echo -e "Telos nodes currently installed: ${GREEN}${IP4COUNT}${NC}"
+echo -e "Telos nodes currently installed: ${GREEN}${IP4COUNT}${NC}, Telos nodes previously Deleted: ${GREEN}${DELETED}${NC}"
 echo ""
 if [ $IP4COUNT = "0" ] 
 then
@@ -230,7 +235,7 @@ RPCPORT=$(($RPCPORTT+$COUNTER))
 fi
 if [ $IP4COUNT != "0" ] 
 then
-echo "How many ipv6  do you want to install on this server?"
+echo "How many ipv6 nodes do you want to install on this server?"
 read MNCOUNT
 let MNCOUNT=MNCOUNT+1
 let MNCOUNT=MNCOUNT+IP4COUNT
