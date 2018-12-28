@@ -102,8 +102,7 @@ systemctl daemon-reload >/dev/null 2>&1
 systemctl reset-failed >/dev/null 2>&1
 ## Removing monit and directory
 rm /root/.transcendence_$ALIASD -r >/dev/null 2>&1
-sed -i '/$ALIASD/d' .bashrc >/dev/null 2>&1
-sleep 1
+sed -i "/${ALIASD}/d" .bashrc
 crontab -l -u root | grep -v transcendenced$ALIASD | crontab -u root - >/dev/null 2>&1
 source .bashrc
 echo "1" >> /root/bin/deleted
