@@ -305,6 +305,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 	COUNTER=$((COUNTER+1))
 done
 fi
+echo ""
 echo -e "${RED}Please do not set maxconnections lower than 32 or your node may not receive rewards.${NC}"
 echo ""
 echo "Commands:"
