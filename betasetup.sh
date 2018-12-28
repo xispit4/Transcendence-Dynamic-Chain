@@ -3,8 +3,10 @@ cd ~
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
+IP4COUNT=$(find /root/.transcendence_* -maxdepth 0 -type d | wc -l)
 face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
 DELETED="$(cat /root/bin/deleted | wc -l)"
+ALIASES="$(find /root/.transcendence_* -maxdepth 0 -type d | cut -c22-)"
 if [[ $(lsb_release -d) != *16.04* ]]; then
   echo -e "${RED}You are not running Ubuntu 16.04. Installation is cancelled.${NC}"
   exit 1
@@ -50,22 +52,35 @@ else
  DOSETUP="n"
 fi
 clear
-echo -e "${RED}This script is not compatbile with older versions of it by default. USe it on a fresh VPS or disable bind manually to enable backwards compatibility.${NC}"
+echo -e "${RED}This script is not compatbile with older versions of it by default. Use it on a fresh VPS or disable bind manually to enable backwards compatibility.${NC}"
 echo ""
 echo "1 - Create new nodes"
 echo "2 - Remove an existing node"
-echo "4 - List aliases"
+echo "3 - List aliases"
+echo "4 - Check for node errors"
 echo "What would you like to do?"
 read DO
 echo ""
+
 if [ $DO = "4" ]
 then
-ALIASES=$(find /root/.transcendence_* -maxdepth 0 -type d | cut -c22-)
+echo $ALIASES > temp1
+cat temp1| grep -o '[^ |]*' > temp2
+CN="$(cat temp2 | wc -l)"
+rm temp1
+let LOOP=0
+while [  $LOOP -lt $CN ]; do
+LOOP=$((LOOP+1))
+CURRENT="$(sed -n "${LOOP}p" temp2)"
+sh /root/bin/transcendence-cli_${CURRENT}.sh masternode status | grep error
+done
+fi
+if [ $DO = "3" ]
+then
 echo -e "${GREEN}${ALIASES}${NC}"
 echo ""
 echo "1 - Create new nodes"
 echo "2 - Remove an existing node"
-echo "4 - List aliases"
 echo "What would you like to do?"
 read DO
 echo ""
@@ -155,7 +170,6 @@ if [ ! -f Bootstrap.zip ]
 then
 wget https://aeros-os.org/Bootstrap.zip
 fi
-IP4COUNT=$(find /root/.transcendence_* -maxdepth 0 -type d | wc -l)
 gateway1=$(/sbin/route -A inet6 | grep -w "$face")
 gateway2=${gateway1:0:26}
 gateway3="$(echo -e "${gateway2}" | tr -d '[:space:]')"
