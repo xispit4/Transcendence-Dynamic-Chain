@@ -43,7 +43,7 @@ EOF
 }
 IP4=$(curl -s4 api.ipify.org)
 perl -i -ne 'print if ! $a{$_}++' /etc/network/interfaces
-if [ ! -d "/root/bin" ]; then
+if [ ! -f "/usr/local/bin/transcendenced" ]; then
  DOSETUP="y"
 else
  DOSETUP="n"
