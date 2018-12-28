@@ -72,7 +72,7 @@ let LOOP=0
 while [  $LOOP -lt $CN ]; do
 LOOP=$((LOOP+1))
 CURRENT="$(sed -n "${LOOP}p" temp2)"
-echo "${CURRENT}:"
+echo -e "${GREEN}${CURRENT}${NC}:"
 sh /root/bin/transcendence-cli_${CURRENT}.sh masternode status | grep error
 done
 fi
