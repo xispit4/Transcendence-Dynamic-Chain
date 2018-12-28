@@ -75,6 +75,7 @@ CURRENT="$(sed -n "${LOOP}p" temp2)"
 echo -e "${GREEN}${CURRENT}${NC}:"
 sh /root/bin/transcendence-cli_${CURRENT}.sh masternode status | grep error
 done
+rm temp2
 fi
 if [ $DO = "3" ]
 then
