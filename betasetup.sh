@@ -4,6 +4,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
+DELETED="$(cat /root/bin/deleted | wc -l)"
 if [[ $(lsb_release -d) != *16.04* ]]; then
   echo -e "${RED}You are not running Ubuntu 16.04. Installation is cancelled.${NC}"
   exit 1
@@ -82,18 +83,13 @@ systemctl disable transcendenced$ALIASD >/dev/null 2>&1
 rm /etc/systemd/system/transcendenced${ALIASD}.service >/dev/null 2>&1
 systemctl daemon-reload >/dev/null 2>&1
 systemctl reset-failed >/dev/null 2>&1
-## Stopping node
-transcendence-cli -datadir=/root/.transcendence_$ALIASD stop >/dev/null 2>&1
-sleep 5
 ## Removing monit and directory
 rm /root/.transcendence_$ALIASD -r >/dev/null 2>&1
 sed -i '/$ALIASD/d' .bashrc >/dev/null 2>&1
 sleep 1
-sed -i '/$ALIASD/d' /etc/monit/monitrc >/dev/null 2>&1
-monit reload >/dev/null 2>&1
-sed -i '/$ALIASD/d' /etc/monit/monitrc >/dev/null 2>&1
 crontab -l -u root | grep -v transcendenced$ALIASD | crontab -u root - >/dev/null 2>&1
 source .bashrc
+echo "1" >> /root/bin/deleted
 echo -e "${ALIASD} Successfully deleted."
 fi
 if [ $DO = "1" ]
@@ -234,12 +230,13 @@ RPCPORT=$(($RPCPORTT+$COUNTER))
 fi
 if [ $IP4COUNT != "0" ] 
 then
-echo "How many nodes do you want to install on this server?"
+echo "How many ipv6  do you want to install on this server?"
 read MNCOUNT
 let MNCOUNT=MNCOUNT+1
 let MNCOUNT=MNCOUNT+IP4COUNT
-let COUNTER=1
-let COUNTER=COUNTER+IP4COUNT
+let COUNTERI=1
+let COUNTERR=COUNTERI+IP4COUNT
+let COUNTER=COUNTERR+DELETED
 while [  $COUNTER -lt $MNCOUNT ]; do
  PORT=22123
  RPCPORTT=22130
