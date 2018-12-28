@@ -3,6 +3,7 @@ cd ~
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
+face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
 if [[ $(lsb_release -d) != *16.04* ]]; then
   echo -e "${RED}You are not running Ubuntu 16.04. Installation is cancelled.${NC}"
   exit 1
@@ -52,7 +53,6 @@ echo -e "${RED}This script is not compatbile with older versions of it by defaul
 echo ""
 echo "1 - Create new nodes"
 echo "2 - Remove an existing node"
-echo "3 - Upgrade an existing node"
 echo "4 - List aliases"
 echo "What would you like to do?"
 read DO
@@ -64,30 +64,10 @@ echo -e "${GREEN}${ALIASES}${NC}"
 echo ""
 echo "1 - Create new nodes"
 echo "2 - Remove an existing node"
-echo "3 - Upgrade an existing node"
 echo "4 - List aliases"
 echo "What would you like to do?"
 read DO
 echo ""
-fi
-if [ $DO = "3" ]
-then
-perl -i -ne 'print if ! $a{$_}++' /etc/monit/monitrc >/dev/null 2>&1
-echo "Enter the alias of the node you want to upgrade"
-read ALIAS
-  echo -e "Upgrading ${GREEN}${ALIAS}${NC}. Please wait."
-  sed -i '/$ALIAS/d' .bashrc
-  sleep 1
-  ## Config Alias
-  echo "alias ${ALIAS}_status=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS masternode status\"" >> .bashrc
-  echo "alias ${ALIAS}_stop=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS stop && systemctl stop transcendenced$ALIAS\"" >> .bashrc
-  echo "alias ${ALIAS}_start=\"/root/bin/transcendenced_${ALIAS}.sh && systemctl start transcendenced$ALIAS\""  >> .bashrc
-  echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
-  echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_$ALIAS getinfo\"" >> .bashrc
-  configure_systemd
-  sleep 1
-  source .bashrc
-  echo -e "${GREEN}${ALIAS}${NC} Successfully upgraded."
 fi
 if [ $DO = "2" ]
 then
@@ -175,7 +155,6 @@ then
 wget https://aeros-os.org/Bootstrap.zip
 fi
 IP4COUNT=$(find /root/.transcendence_* -maxdepth 0 -type d | wc -l)
-face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
 gateway1=$(/sbin/route -A inet6 | grep -w "$face")
 gateway2=${gateway1:0:26}
 gateway3="$(echo -e "${gateway2}" | tr -d '[:space:]')"
@@ -278,7 +257,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 	echo "Enter port for $ALIAS"
 	read PORT
   fi
-  echo "up /sbin/ip -6 addr add ${gateway}$COUNTER$MASK dev $face" >> /etc/network/interfaces
+  echo "up /sbin/ip -6 addr add ${gateway}$COUNTER$MASK dev $face # $ALIAS" >> /etc/network/interfaces
   /sbin/ip -6 addr add ${gateway}$COUNTER$MASK dev $face
   mkdir ~/.transcendence_$ALIAS
   unzip Bootstrap.zip -d ~/.transcendence_$ALIAS >/dev/null 2>&1
@@ -303,7 +282,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "dbcache=20" >> transcendence.conf_TEMP
   echo "maxorphantx=5" >> transcendence.conf_TEMP
   echo "maxmempool=100" >> transcendence.conf_TEMP
-  echo "banscore=5" >> transcendence.conf_TEMP
+  echo "banscore=2" >> transcendence.conf_TEMP
   echo "bind=[${gateway}$COUNTER]:$PORT" >> transcendence.conf_TEMP
   echo "externalip=[${gateway}$COUNTER]" >> transcendence.conf_TEMP
   echo "masternodeaddr=[${gateway}$COUNTER]:$PORT" >> transcendence.conf_TEMP
