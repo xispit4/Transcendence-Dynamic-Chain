@@ -317,8 +317,9 @@ echo "ALIAS_resync"
 echo "ALIAS_reindex"
 fi
 echo ""
-echo "Made by lobo with the help of all Transcendence team "
-echo "Transcendence Address for donations: GWe4v6A6tLg9pHYEN5MoAsYLTadtefd9o6"
+echo "Made by lobo & xispita with the help of all Transcendence team "
+echo "lobo's Transcendence Address for donations: GWe4v6A6tLg9pHYEN5MoAsYLTadtefd9o6"
+echo "xispita's Transcendence Address for donations: GRDqyK7m9oTsXjUsmiPDStoAfuX1H7eSfh" 
 echo "Bitcoin Address for donations: 1NqYjVMA5DhuLytt33HYgP5qBajeHLYn4d"
 exec bash
 exit
