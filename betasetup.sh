@@ -237,9 +237,9 @@ then
 echo "How many nodes do you want to install on this server?"
 read MNCOUNT
 let MNCOUNT=MNCOUNT+1
-let MNCOUNT=MNCOUNT+IP6COUNT
+let MNCOUNT=MNCOUNT+IP4COUNT
 let COUNTER=1
-let COUNTER=COUNTER+IP6COUNT
+let COUNTER=COUNTER+IP4COUNT
 while [  $COUNTER -lt $MNCOUNT ]; do
  PORT=22123
  RPCPORTT=22130
