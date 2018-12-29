@@ -334,6 +334,7 @@ done
 fi
 echo ""
 echo -e "${RED}Please do not set maxconnections lower than 32 or your node may not receive rewards.${NC}"
+echo -e "${RED}If you get "timeoffset" = -1 when checking for node errors, it means your maxconnections is too low.${NC}"
 echo ""
 echo "Commands:"
 echo "ALIAS_start"
