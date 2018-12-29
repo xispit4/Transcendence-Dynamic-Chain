@@ -73,7 +73,7 @@ while [  $LOOP -lt $CN ]; do
 LOOP=$((LOOP+1))
 CURRENT="$(sed -n "${LOOP}p" temp2)"
 echo -e "${GREEN}${CURRENT}${NC}:"
-sh /root/bin/transcendence-cli_${CURRENT}.sh masternode status | grep "Masternode successfully started"
+sh /root/bin/transcendence-cli_${CURRENT}.sh masternode status | grep "message"
 done
 rm temp2
 fi
