@@ -74,6 +74,13 @@ LOOP=$((LOOP+1))
 CURRENT="$(sed -n "${LOOP}p" temp2)"
 echo -e "${GREEN}${CURRENT}${NC}:"
 sh /root/bin/transcendence-cli_${CURRENT}.sh masternode status | grep "message"
+OFFSET="$(sh /root/bin/transcendence-cli_${CURRENT}.sh getinfo | grep "timeoffset")"
+OFF1=${OFFSET:(-2)}
+OFF=${OFF1:0:1}
+if [ $OFF = "1" ]
+then
+echo "$OFFSET" 
+fi
 done
 rm temp2
 fi
