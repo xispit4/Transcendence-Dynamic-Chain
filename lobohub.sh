@@ -333,7 +333,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 done
 fi
 echo ""
-echo -e "${RED}Please do not set maxconnections lower than 38 or your node may not receive rewards as .${NC}"
+echo -e "${RED}Please do not set maxconnections lower than 48 or your node may not receive rewards as often.${NC}"
 echo -e "${RED}If you get "timeoffset" = -1 when checking for node errors, it means your maxconnections is too low.${NC}"
 echo ""
 echo "Commands:"
