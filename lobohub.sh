@@ -117,7 +117,7 @@ read EE
 echo ""
 if [ $EE = "1" ] 
 then
-MAXC="64"
+MAXC="48"
 fi
 if [ $EE = "2" ] 
 then
