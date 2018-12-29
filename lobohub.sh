@@ -65,7 +65,7 @@ echo ""
 if [ $DO = "4" ]
 then
 echo $ALIASES > temp1
-cat temp1| grep -o '[^ |]*' > temp2
+cat temp1 | grep -o '[^ |]*' > temp2
 CN="$(cat temp2 | wc -l)"
 rm temp1
 let LOOP=0
@@ -333,7 +333,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 done
 fi
 echo ""
-echo -e "${RED}Please do not set maxconnections lower than 32 or your node may not receive rewards.${NC}"
+echo -e "${RED}Please do not set maxconnections lower than 38 or your node may not receive rewards as .${NC}"
 echo -e "${RED}If you get "timeoffset" = -1 when checking for node errors, it means your maxconnections is too low.${NC}"
 echo ""
 echo "Commands:"
