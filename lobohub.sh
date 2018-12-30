@@ -233,7 +233,6 @@ RPCPORT=$(($RPCPORTT+$COUNTER))
   echo "dbcache=20" >> transcendence.conf_TEMP
   echo "maxorphantx=5" >> transcendence.conf_TEMP
   echo "maxmempool=100" >> transcendence.conf_TEMP
-  echo "banscore=2" >> transcendence.conf_TEMP
   echo "" >> transcendence.conf_TEMP
   echo "" >> transcendence.conf_TEMP
   echo "bind=$IP4:$PORT" >> transcendence.conf_TEMP
@@ -309,7 +308,6 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "dbcache=20" >> transcendence.conf_TEMP
   echo "maxorphantx=5" >> transcendence.conf_TEMP
   echo "maxmempool=100" >> transcendence.conf_TEMP
-  echo "banscore=2" >> transcendence.conf_TEMP
   echo "bind=[${gateway}$COUNTER]:$PORT" >> transcendence.conf_TEMP
   echo "externalip=[${gateway}$COUNTER]" >> transcendence.conf_TEMP
   echo "masternodeaddr=[${gateway}$COUNTER]:$PORT" >> transcendence.conf_TEMP
