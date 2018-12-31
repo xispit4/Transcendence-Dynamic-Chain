@@ -250,8 +250,8 @@ RPCPORT=$(($RPCPORTT+$COUNTER))
 	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_${ALIAS} getinfo\"" >> .bashrc
         echo "alias ${ALIAS}_getpeerinfo=\"transcendence-cli -datadir=/root/.transcendence_${ALIAS} getpeerinfo\"" >> .bashrc
-	echo "alias ${ALIAS}_resync=\"/root/bin/transcendenced_${ALIAS} -resync\"" >> .bashrc
-	echo "alias ${ALIAS}_reindex=\"/root/bin/transcendenced_${ALIAS} -reindex\"" >> .bashrc
+	echo "alias ${ALIAS}_resync=\"/root/bin/transcendenced_${ALIAS}.sh -resync\"" >> .bashrc
+	echo "alias ${ALIAS}_reindex=\"/root/bin/transcendenced_${ALIAS}.sh -reindex\"" >> .bashrc
 	echo "alias ${ALIAS}_restart=\"systemctl restart transcendenced$ALIAS\""  >> .bashrc
 	## Config Systemctl
 	configure_systemd
@@ -322,8 +322,8 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_${ALIAS} getinfo\"" >> .bashrc
         echo "alias ${ALIAS}_getpeerinfo=\"transcendence-cli -datadir=/root/.transcendence_${ALIAS} getpeerinfo\"" >> .bashrc
-	echo "alias ${ALIAS}_resync=\"/root/bin/transcendenced_${ALIAS} -resync\"" >> .bashrc
-	echo "alias ${ALIAS}_reindex=\"/root/bin/transcendenced_${ALIAS} -reindex\"" >> .bashrc
+	echo "alias ${ALIAS}_resync=\"/root/bin/transcendenced_${ALIAS}.sh -resync\"" >> .bashrc
+	echo "alias ${ALIAS}_reindex=\"/root/bin/transcendenced_${ALIAS}.sh -reindex\"" >> .bashrc
 	echo "alias ${ALIAS}_restart=\"systemctl restart transcendenced$ALIAS\""  >> .bashrc
 	## Config Systemctl
 	configure_systemd
