@@ -277,12 +277,6 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo ""
   echo "Enter masternode private key for node $ALIAS"
   read PRIVKEY
-  if [ $EE = "2" ]
-	then
-	echo ""
-	echo "Enter port for $ALIAS"
-	read PORT
-  fi
   echo "up /sbin/ip -6 addr add ${gateway}$COUNTER$MASK dev $face # $ALIAS" >> /etc/network/interfaces
   /sbin/ip -6 addr add ${gateway}$COUNTER$MASK dev $face
   mkdir ~/.transcendence_$ALIAS
