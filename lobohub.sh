@@ -140,9 +140,6 @@ then
   apt-get -y dist-upgrade
   apt-get update
   apt-get install -y zip unzip bc curl nano lshw gawk
-  if [ ! -f /var/swap.img ]
-  echo -e "${GREEN} You already have the swap."
-  then
   echo -e "${RED}Creating swap. This may take a while.${NC}"
   dd if=/dev/zero of=/var/swap.img bs=2048 count=1M
   chmod 600 /var/swap.img
