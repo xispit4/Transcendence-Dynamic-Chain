@@ -6,6 +6,7 @@ NC='\033[0m'
 IP4COUNT=$(find /root/.transcendence_* -maxdepth 0 -type d | wc -l)
 DELETED="$(cat /root/bin/deleted | wc -l)"
 ALIASES="$(find /root/.transcendence_* -maxdepth 0 -type d | cut -c22-)"
+face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
 if [[ $(lsb_release -d) != *16.04* ]]; then
   echo -e "${RED}You are not running Ubuntu 16.04. Installation is cancelled.${NC}"
   exit 1
@@ -180,7 +181,6 @@ if [ ! -f Bootstrap.zip ]
 then
 wget https://aeros-os.org/Bootstrap1.zip -O /root/Bootstrap.zip
 fi
-face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
 gateway1=$(/sbin/route -A inet6 | grep -w "$face")
 gateway2=${gateway1:0:26}
 gateway3="$(echo -e "${gateway2}" | tr -d '[:space:]')"
