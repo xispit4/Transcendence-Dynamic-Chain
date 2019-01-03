@@ -4,7 +4,6 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 IP4COUNT=$(find /root/.transcendence_* -maxdepth 0 -type d | wc -l)
-face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
 DELETED="$(cat /root/bin/deleted | wc -l)"
 ALIASES="$(find /root/.transcendence_* -maxdepth 0 -type d | cut -c22-)"
 if [[ $(lsb_release -d) != *16.04* ]]; then
@@ -135,49 +134,53 @@ fi
 if [ $DOSETUP = "y" ]
 then
   echo -e "Installing ${GREEN}Transcendence dependencies${NC}. Please wait."
-  sudo apt-get update 
-  sudo apt-get -y upgrade
-  sudo apt-get -y dist-upgrade
-  sudo apt-get update
-  sudo apt-get install -y zip unzip bc curl nano lshw gawk
-  cd /var
+  apt-get update 
+  apt-get -y upgrade
+  apt-get -y dist-upgrade
+  apt-get update
+  apt-get install -y zip unzip bc curl nano lshw gawk
+  if [ ! -f /var/swap.img ]
+  echo -e "${GREEN} You already have the swap."
+  then
   echo -e "${RED}Creating swap. This may take a while.${NC}"
-  sudo touch swap.img
-  sudo chmod 600 swap.img
-  sudo dd if=/dev/zero of=/var/swap.img bs=1024k count=2000
-  sudo mkswap /var/swap.img 
-  sudo swapon /var/swap.img 
-  sudo free 
-  sudo echo "/var/swap.img none swap sw 0 0" >> /etc/fstab
-  cd
+  dd if=/dev/zero of=/var/swap.img bs=2048 count=1M
+  chmod 600 /var/swap.img
+  mkswap /var/swap.img 
+  swapon /var/swap.img 
+  free -m
+  echo "/var/swap.img none swap sw 0 0" >> /etc/fstab
+  cd /root
+  fi
+  
  if [ ! -f Linux.zip ]
   then
-  wget https://github.com/phoenixkonsole/transcendence/releases/download/v1.1.0.0/Linux.zip  
+  wget https://github.com/phoenixkonsole/transcendence/releases/download/v1.1.0.0/Linux.zip -O /root/Linux.zip
  fi
   unzip Linux.zip 
   chmod +x Linux/bin/* 
-  sudo mv  Linux/bin/* /usr/local/bin
+  mv  Linux/bin/* /usr/local/bin
   rm -rf Linux.zip Windows Linux Mac
-  sudo apt-get install -y ufw 
-  sudo ufw allow ssh/tcp 
-  sudo ufw limit ssh/tcp 
-  sudo ufw logging on
-  echo "y" | sudo ufw enable 
-  sudo ufw allow 22123
+  apt-get install -y ufw 
+  ufw allow ssh/tcp 
+  ufw limit ssh/tcp 
+  ufw logging on
+  echo "y" | ufw enable 
+  ufw allow 22123
   mkdir -p ~/bin 
   echo 'export PATH=~/bin:$PATH' > ~/.bash_aliases
   source ~/.bashrc
   echo ""
   cd
-  sudo sysctl vm.swappiness=10
-  sudo sysctl vm.vfs_cache_pressure=200
-  echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
-  echo 'vm.vfs_cache_pressure=200' | sudo tee -a /etc/sysctl.conf
+  sysctl vm.swappiness=10
+  sysctl vm.vfs_cache_pressure=200
+  echo 'vm.swappiness=10' | tee -a /etc/sysctl.conf
+  echo 'vm.vfs_cache_pressure=200' | tee -a /etc/sysctl.conf
 fi
 if [ ! -f Bootstrap.zip ]
 then
-wget https://aeros-os.org/Bootstrap.zip
+wget https://aeros-os.org/Bootstrap1.zip -O /root/Bootstrap.zip
 fi
+face="$(lshw -C network | grep "logical name:" | sed -e 's/logical name:/logical name: /g' | awk '{print $3}')"
 gateway1=$(/sbin/route -A inet6 | grep -w "$face")
 gateway2=${gateway1:0:26}
 gateway3="$(echo -e "${gateway2}" | tr -d '[:space:]')"
@@ -249,7 +252,7 @@ RPCPORT=$(($RPCPORTT+$COUNTER))
 	echo "alias ${ALIAS}_start=\"systemctl start transcendenced$ALIAS\""  >> .bashrc
 	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_${ALIAS} getinfo\"" >> .bashrc
-        echo "alias ${ALIAS}_getpeerinfo=\"transcendence-cli -datadir=/root/.transcendence_${ALIAS} getpeerinfo\"" >> .bashrc
+    	echo "alias ${ALIAS}_getpeerinfo=\"transcendence-cli -datadir=/root/.transcendence_${ALIAS} getpeerinfo\"" >> .bashrc
 	echo "alias ${ALIAS}_resync=\"/root/bin/transcendenced_${ALIAS}.sh -resync\"" >> .bashrc
 	echo "alias ${ALIAS}_reindex=\"/root/bin/transcendenced_${ALIAS}.sh -reindex\"" >> .bashrc
 	echo "alias ${ALIAS}_restart=\"systemctl restart transcendenced$ALIAS\""  >> .bashrc
@@ -315,7 +318,7 @@ while [  $COUNTER -lt $MNCOUNT ]; do
 	echo "alias ${ALIAS}_start=\"systemctl start transcendenced$ALIAS\""  >> .bashrc
 	echo "alias ${ALIAS}_config=\"nano /root/.transcendence_${ALIAS}/transcendence.conf\""  >> .bashrc
 	echo "alias ${ALIAS}_getinfo=\"transcendence-cli -datadir=/root/.transcendence_${ALIAS} getinfo\"" >> .bashrc
-        echo "alias ${ALIAS}_getpeerinfo=\"transcendence-cli -datadir=/root/.transcendence_${ALIAS} getpeerinfo\"" >> .bashrc
+    	echo "alias ${ALIAS}_getpeerinfo=\"transcendence-cli -datadir=/root/.transcendence_${ALIAS} getpeerinfo\"" >> .bashrc
 	echo "alias ${ALIAS}_resync=\"/root/bin/transcendenced_${ALIAS}.sh -resync\"" >> .bashrc
 	echo "alias ${ALIAS}_reindex=\"/root/bin/transcendenced_${ALIAS}.sh -reindex\"" >> .bashrc
 	echo "alias ${ALIAS}_restart=\"systemctl restart transcendenced$ALIAS\""  >> .bashrc
@@ -329,15 +332,15 @@ echo -e "${RED}Please do not set maxconnections lower than 48 or your node may n
 echo -e "${RED}If you get "timeoffset" = -1 when checking for node errors, it means your maxconnections is too low.${NC}"
 echo ""
 echo "Commands:"
-echo "ALIAS_start"
-echo "ALIAS_restart"
-echo "ALIAS_status"
-echo "ALIAS_stop"
-echo "ALIAS_config"
-echo "ALIAS_getinfo"
-echo "ALIAS_getpeerinfo"
-echo "ALIAS_resync"
-echo "ALIAS_reindex"
+echo "${ALIAS}_start"
+echo "${ALIAS}_restart"
+echo "${ALIAS}_status"
+echo "${ALIAS}_stop"
+echo "${ALIAS}_config"
+echo "${ALIAS}_getinfo"
+echo "${ALIAS}_getpeerinfo"
+echo "${ALIAS}_resync"
+echo "${ALIAS}_reindex"
 fi
 echo ""
 echo "Made by lobo & xispita with the help of all Transcendence team "
