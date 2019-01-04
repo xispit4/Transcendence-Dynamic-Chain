@@ -147,9 +147,7 @@ then
   swapon /var/swap.img 
   free -m
   echo "/var/swap.img none swap sw 0 0" >> /etc/fstab
-  cd /root
-  fi
-  
+  cd /root 
  if [ ! -f Linux.zip ]
   then
   wget https://github.com/phoenixkonsole/transcendence/releases/download/v1.1.0.0/Linux.zip -O /root/Linux.zip
