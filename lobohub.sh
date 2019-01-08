@@ -176,7 +176,7 @@ if [ ! -f Bootstrap.zip ]
 then
 wget https://aeros-os.org/Bootstrap1.zip -O /root/Bootstrap.zip
 fi
-gateway1=$(/sbin/route -A inet6 | grep -w "$face")
+gateway1=$(/sbin/route -A inet6 | grep -v ^fe80 | grep -v ^ff00 | grep -w "$face")
 gateway2=${gateway1:0:26}
 gateway3="$(echo -e "${gateway2}" | tr -d '[:space:]')"
 if [[ $gateway3 = *"128"* ]]; then
@@ -304,7 +304,6 @@ while [  $COUNTER -lt $MNCOUNT ]; do
   echo "externalip=[${gateway}$COUNTER]" >> transcendence.conf_TEMP
   echo "masternodeaddr=[${gateway}$COUNTER]:$PORT" >> transcendence.conf_TEMP
   echo "masternodeprivkey=$PRIVKEY" >> transcendence.conf_TEMP
-  echo "addnode=127.0.0.1" >> transcendence.conf_TEMP
   mv transcendence.conf_TEMP $CONF_DIR/transcendence.conf
   echo ""
   echo -e "Your ip is ${GREEN}[${gateway}$COUNTER]:$PORT${NC}"
